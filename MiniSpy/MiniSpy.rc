@@ -1,0 +1,453 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUTBOX DIALOG DISCARDABLE  0, 0, 142, 63
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "About MiniSpy"
+FONT 8, "MS Sans Serif"
+BEGIN
+    ICON            IDR_MAINFRAME,IDC_STATIC,7,7,20,20
+    LTEXT           "MiniSpy Version 1.2\n\n© Daniel Godson 2002",IDC_STATIC,
+                    39,7,96,28,SS_NOPREFIX
+    DEFPUSHBUTTON   "OK",IDOK,45,42,50,14,WS_GROUP
+END
+
+IDD_MINISPY_DIALOG DIALOGEX 0, 0, 184, 238
+STYLE WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+EXSTYLE WS_EX_APPWINDOW
+CAPTION "MiniSpy"
+FONT 8, "MS Sans Serif"
+BEGIN
+    COMBOBOX        IDC_FILTER,0,0,184,160,CBS_DROPDOWNLIST | CBS_SORT | 
+                    WS_VSCROLL | WS_TABSTOP
+    CONTROL         "List1",IDC_ATTRIBUTES,"SysListView32",LVS_REPORT | 
+                    LVS_SINGLESEL | LVS_NOSORTHEADER | WS_BORDER | 
+                    WS_TABSTOP,0,14,184,223
+END
+
+
+#ifndef _MAC
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 2,0,0,0
+ PRODUCTVERSION 2,0,0,0
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "Comments", "\0"
+            VALUE "CompanyName", "\0"
+            VALUE "FileDescription", "MiniSpy MFC Application\0"
+            VALUE "FileVersion", "2, 0, 0, 0\0"
+            VALUE "InternalName", "MiniSpy\0"
+            VALUE "LegalCopyright", "Copyright (C) 2002\0"
+            VALUE "LegalTrademarks", "\0"
+            VALUE "OriginalFilename", "MiniSpy.EXE\0"
+            VALUE "PrivateBuild", "\0"
+            VALUE "ProductName", "MiniSpy Application\0"
+            VALUE "ProductVersion", "2, 0, 0, 0\0"
+            VALUE "SpecialBuild", "\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+#endif    // !_MAC
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_ABOUTBOX, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 135
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 56
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog Info
+//
+
+IDD_MINISPY_DIALOG DLGINIT
+BEGIN
+    IDC_FILTER, 0x403, 7, 0
+0x7542, 0x7474, 0x6e6f, "\000" 
+    IDC_FILTER, 0x403, 7, 0
+0x7453, 0x7461, 0x6369, "\000" 
+    IDC_FILTER, 0x403, 5, 0
+0x6445, 0x7469, "\000" 
+    IDC_FILTER, 0x403, 9, 0
+0x6f43, 0x626d, 0x426f, 0x786f, "\000" 
+    IDC_FILTER, 0x403, 8, 0
+0x694c, 0x7473, 0x6f42, 0x0078, 
+    IDC_FILTER, 0x403, 10, 0
+0x6353, 0x6f72, 0x6c6c, 0x6162, 0x0072, 
+    IDC_FILTER, 0x403, 16, 0
+0x6f74, 0x6c6f, 0x6162, 0x7772, 0x6e69, 0x6f64, 0x3377, 0x0032, 
+    IDC_FILTER, 0x403, 16, 0
+0x736d, 0x7463, 0x736c, 0x755f, 0x6470, 0x776f, 0x336e, 0x0032, 
+    IDC_FILTER, 0x403, 18, 0
+0x736d, 0x7463, 0x736c, 0x705f, 0x6f72, 0x7267, 0x7365, 0x3373, 0x0032, 
+
+    IDC_FILTER, 0x403, 18, 0
+0x736d, 0x7463, 0x736c, 0x745f, 0x6172, 0x6b63, 0x6162, 0x3372, 0x0032, 
+
+    IDC_FILTER, 0x403, 16, 0
+0x736d, 0x7463, 0x736c, 0x685f, 0x746f, 0x656b, 0x3379, 0x0032, 
+    IDC_FILTER, 0x403, 14, 0
+0x7953, 0x4c73, 0x7369, 0x5674, 0x6569, 0x3377, 0x0032, 
+    IDC_FILTER, 0x403, 14, 0
+0x7953, 0x5473, 0x6572, 0x5665, 0x6569, 0x3377, 0x0032, 
+    IDC_FILTER, 0x403, 16, 0
+0x7953, 0x5473, 0x6261, 0x6f43, 0x746e, 0x6f72, 0x336c, 0x0032, 
+    IDC_FILTER, 0x403, 13, 0
+0x7953, 0x4173, 0x696e, 0x616d, 0x6574, 0x3233, "\000" 
+    IDC_FILTER, 0x403, 9, 0
+0x6952, 0x6863, 0x6465, 0x7469, "\000" 
+    IDC_FILTER, 0x403, 18, 0
+0x7953, 0x4473, 0x7461, 0x5465, 0x6d69, 0x5065, 0x6369, 0x336b, 0x0032, 
+
+    IDC_FILTER, 0x403, 14, 0
+0x7953, 0x4d73, 0x6e6f, 0x6874, 0x6143, 0x336c, 0x0032, 
+    IDC_FILTER, 0x403, 15, 0
+0x7953, 0x4973, 0x4150, 0x6464, 0x6572, 0x7373, 0x3233, "\000" 
+    IDC_FILTER, 0x403, 11, 0
+0x7953, 0x5073, 0x6761, 0x7265, 0x3233, "\000" 
+    IDC_FILTER, 0x403, 13, 0
+0x6f43, 0x626d, 0x426f, 0x786f, 0x7845, 0x3233, "\000" 
+    IDC_FILTER, 0x403, 19, 0
+0x736d, 0x7463, 0x736c, 0x735f, 0x6174, 0x7574, 0x6273, 0x7261, 0x3233, 
+"\000" 
+    IDC_FILTER, 0x403, 14, 0
+0x6552, 0x6142, 0x5772, 0x6e69, 0x6f64, 0x3377, 0x0032, 
+    IDC_FILTER, 0x403, 12, 0
+0x7953, 0x4873, 0x6165, 0x6564, 0x3372, 0x0032, 
+    IDC_FILTER, 0x403, 20, 0
+0x6944, 0x6c61, 0x676f, 0x4220, 0x786f, 0x2820, 0x3323, 0x3732, 0x3037, 
+0x0029, 
+    IDC_FILTER, 0x403, 10, 0
+0x444d, 0x4349, 0x696c, 0x6e65, 0x0074, 
+    IDC_FILTER, 0x403, 10, 0
+0x6f43, 0x626d, 0x4c6f, 0x6f42, 0x0078, 
+    IDC_FILTER, 0x403, 14, 0
+0x654d, 0x756e, 0x2820, 0x3323, 0x3732, 0x3836, 0x0029, 
+    IDC_FILTER, 0x403, 17, 0
+0x6544, 0x6b73, 0x6f74, 0x2070, 0x2328, 0x3233, 0x3637, 0x2939, "\000" 
+    IDC_FILTER, 0x403, 20, 0
+0x6349, 0x6e6f, 0x5420, 0x7469, 0x656c, 0x2820, 0x3323, 0x3732, 0x3237, 
+0x0029, 
+    IDC_FILTER, 0x403, 17, 0
+0x6f74, 0x6c6f, 0x6974, 0x7370, 0x635f, 0x616c, 0x7373, 0x3233, "\000" 
+    IDC_FILTER, 0x403, 23, 0
+0x6154, 0x6b73, 0x5320, 0x6977, 0x6374, 0x6568, 0x2072, 0x2328, 0x3233, 
+0x3737, 0x2931, "\000" 
+    0
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_ABOUTBOX            "&About MiniSpy..."
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// English (Australia) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENA)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_AUS
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON    DISCARDABLE     "res\\MiniSpy.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_DIALOG1 DIALOG DISCARDABLE  0, 0, 301, 218
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dialog"
+FONT 8, "MS Sans Serif"
+BEGIN
+    GROUPBOX        "Static",IDC_STATIC,166,154,128,57
+    PUSHBUTTON      "Button1",IDC_BUTTON1,174,169,50,14
+    PUSHBUTTON      "Button1",IDC_BUTTON2,174,189,50,14
+    DEFPUSHBUTTON   "OK",IDOK,244,7,50,14,BS_MULTILINE | BS_NOTIFY | BS_FLAT
+    CONTROL         "",IDC_STATIC,"Static",SS_BLACKFRAME,7,7,20,20
+    LTEXT           "Static",IDC_STATIC,33,7,19,8
+    EDITTEXT        IDC_EDIT1,60,7,40,14,ES_AUTOHSCROLL
+    COMBOBOX        IDC_COMBO1,7,31,48,30,CBS_DROPDOWN | CBS_SORT | 
+                    WS_VSCROLL | WS_TABSTOP
+    LISTBOX         IDC_LIST1,69,29,48,40,LBS_SORT | LBS_NOINTEGRALHEIGHT | 
+                    WS_VSCROLL | WS_TABSTOP
+    SCROLLBAR       IDC_SCROLLBAR1,7,73,40,11
+    CONTROL         "Spin1",IDC_SPIN1,"msctls_updown32",UDS_ARROWKEYS,61,74,
+                    10,14
+    CONTROL         "Progress1",IDC_PROGRESS1,"msctls_progress32",WS_BORDER,
+                    83,73,80,14
+    CONTROL         "Slider1",IDC_SLIDER1,"msctls_trackbar32",TBS_BOTH | 
+                    TBS_NOTICKS | WS_TABSTOP,194,73,100,15
+    CONTROL         "HotKey1",IDC_HOTKEY1,"msctls_hotkey32",WS_BORDER | 
+                    WS_TABSTOP,123,47,52,14
+    CONTROL         "List2",IDC_LIST2,"SysListView32",WS_BORDER | WS_TABSTOP,
+                    7,97,42,31
+    CONTROL         "Tree1",IDC_TREE1,"SysTreeView32",WS_BORDER | WS_TABSTOP,
+                    57,94,47,37
+    CONTROL         "Tab1",IDC_TAB1,"SysTabControl32",TCS_TOOLTIPS,113,98,36,
+                    30
+    CONTROL         "Animate1",IDC_ANIMATE1,"SysAnimate32",WS_BORDER | 
+                    WS_TABSTOP,172,99,20,20
+    CONTROL         "",IDC_RICHEDIT1,"RICHEDIT",ES_AUTOHSCROLL | ES_NUMBER | 
+                    WS_BORDER | WS_TABSTOP,205,98,40,14
+    CONTROL         "DateTimePicker1",IDC_DATETIMEPICKER1,"SysDateTimePick32",
+                    DTS_RIGHTALIGN | WS_TABSTOP,7,138,100,15
+    CONTROL         "MonthCalendar1",IDC_MONTHCALENDAR1,"SysMonthCal32",
+                    MCS_NOTODAY | WS_TABSTOP,114,133,42,27
+    CONTROL         "IPAddress1",IDC_IPADDRESS1,"SysIPAddress32",WS_TABSTOP,
+                    166,133,49,15
+    CONTROL         "",IDC_COMBOBOXEX1,"ComboBoxEx32",CBS_DROPDOWN | 
+                    CBS_SORT | WS_VSCROLL | WS_TABSTOP,192,49,48,30
+    CONTROL         "Check1",IDC_CHECK1,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,165,15,41,10
+    CONTROL         "Radio1",IDC_RADIO1,"Button",BS_AUTORADIOBUTTON,184,33,
+                    39,10
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_DIALOG1, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 294
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 211
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)\r\n"
+    "#ifdef _WIN32\r\n"
+    "LANGUAGE 9, 1\r\n"
+    "#pragma code_page(1252)\r\n"
+    "#endif //_WIN32\r\n"
+    "#include ""res\\MiniSpy.rc2""  // non-Microsoft Visual C++ edited resources\r\n"
+    "#include ""afxres.rc""         // Standard components\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Toolbar
+//
+
+IDR_MINISPY TOOLBAR DISCARDABLE  16, 15
+BEGIN
+    BUTTON      ID_RESTORESIZE
+    BUTTON      ID_REFRESH
+    SEPARATOR
+    BUTTON      ID_TOPLEFT
+    SEPARATOR
+    BUTTON      ID_TOPRIGHT
+    BUTTON      ID_BOTTOMRIGHT
+    BUTTON      ID_BOTTOMLEFT
+    SEPARATOR
+    BUTTON      ID_LOCKUPDATES
+    SEPARATOR
+    BUTTON      ID_GOTOPARENT
+    BUTTON      ID_GOTOCHILD
+    SEPARATOR
+    BUTTON      ID_GOTONEXT
+    BUTTON      ID_GOTOPREV
+    SEPARATOR
+    BUTTON      ID_APP_ABOUT
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDR_MINISPY             BITMAP  DISCARDABLE     "res\\minispy.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Accelerator
+//
+
+IDR_ACCELERATOR ACCELERATORS DISCARDABLE 
+BEGIN
+    "L",            ID_LOCKUPDATES,         VIRTKEY, CONTROL, NOINVERT
+    "R",            ID_RESTORESIZE,         VIRTKEY, CONTROL, NOINVERT
+    VK_DOWN,        ID_GOTOCHILD,           VIRTKEY, CONTROL, NOINVERT
+    VK_F5,          ID_REFRESH,             VIRTKEY, NOINVERT
+    VK_LEFT,        ID_GOTOPREV,            VIRTKEY, CONTROL, NOINVERT
+    VK_RIGHT,       ID_GOTONEXT,            VIRTKEY, CONTROL, NOINVERT
+    VK_UP,          ID_GOTOPARENT,          VIRTKEY, CONTROL, NOINVERT
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_REFRESH              "\nRefresh Attributes (F5)"
+    ID_RESTORESIZE          "\nRestore Size (Ctrl+R)"
+    ID_TOPLEFT              "\nPick with Top Left Corner"
+    ID_TOPRIGHT             "\nPick with Top Right Corner"
+    ID_BOTTOMRIGHT          "\nPick with Bottom Right Corner"
+    ID_BOTTOMLEFT           "\nPick with Bottom Left Corner"
+    ID_BUTTON32779          "\nLock Updates"
+    ID_GOTOPARENT           "\nGo to Parent (Ctrl+Up Arrow)"
+    ID_GOTOCHILD            "\nGo to First Child (Ctrl+Down Arrow)"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_APP_ABOUT            "\nAbout MiniSpy"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_GOTONEXT             "\nGo to Next Window (Ctrl+Right Arrow)"
+    ID_LOCKUPDATES          "\nLock Updates (Ctrl+L)"
+    ID_GOTOPREV             "\nGo to Previous Window (Ctrl+Left Arrow)"
+END
+
+#endif    // English (Australia) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE 9, 1
+#pragma code_page(1252)
+#endif //_WIN32
+#include "res\MiniSpy.rc2"  // non-Microsoft Visual C++ edited resources
+#include "afxres.rc"         // Standard components
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
