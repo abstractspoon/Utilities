@@ -143,7 +143,9 @@ BEGIN_MESSAGE_MAP(CMiniSpyDlg, CDialog)
 	ON_COMMAND(ID_GOTOPREV, OnGotoPreviousWindow)
 	//}}AFX_MSG_MAP
 	ON_NOTIFY_EX_RANGE(TTN_NEEDTEXT, 0, 0xFFFF, OnNeedTooltip)
-	END_MESSAGE_MAP()
+	ON_COMMAND(ID_COPYSELECTION, &CMiniSpyDlg::OnCopySelection)
+	ON_COMMAND(ID_SELECTALL, &CMiniSpyDlg::OnSelectAll)
+END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
 // CMiniSpyDlg message handlers
@@ -808,7 +810,7 @@ CString CMiniSpyDlg::GetWindowText(CWnd* pWnd)
 }
 
 
-void CMiniSpyDlg::OnActivateApp(BOOL bActive, HTASK hTask) 
+void CMiniSpyDlg::OnActivateApp(BOOL bActive, DWORD dwThreadID) 
 {
 	// a bit of trickery else the tooltips appear behind the main window
 	// if we are active then remove topmost attribute because we are topmost anyway
@@ -818,7 +820,7 @@ void CMiniSpyDlg::OnActivateApp(BOOL bActive, HTASK hTask)
 	else
 		SetWindowPos(&wndTopMost, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
 	
-	CDialog::OnActivateApp(bActive, hTask);
+	CDialog::OnActivateApp(bActive, dwThreadID);
 }
 
 BOOL CMiniSpyDlg::PreTranslateMessage(MSG* pMsg)
@@ -1139,3 +1141,92 @@ void CMiniSpyDlg::LockUpdates(BOOL bLock)
 		UpdateCurrentWindow(TRUE);
 }
 
+void CMiniSpyDlg::OnCopySelection()
+{
+	CString sText;
+
+	if (m_lcAttributes.GetSelectedCount())
+	{
+		POSITION pos = m_lcAttributes.GetFirstSelectedItemPosition();
+
+		while (pos)
+		{
+			int nRow = m_lcAttributes.GetNextSelectedItem(pos);
+			sText += FormatRow(nRow);
+		}
+	}
+	else
+	{
+		int nStartRow = 0, nEndRow = m_lcAttributes.GetItemCount() - 1;
+
+		for (int nRow = nStartRow; nRow <= nEndRow; nRow++)
+		{
+			sText += FormatRow(nRow);
+		}
+	}
+
+	// Copy to clipboard
+	if (::OpenClipboard(GetSafeHwnd()))
+	{
+		::EmptyClipboard();
+
+		HGLOBAL hglbCopy = NULL; 
+		BOOL bResult = FALSE;
+
+		try
+		{
+			// Allocate a global memory object for the text. 
+			size_t nBytes = ((sText.GetLength() + 1) * sizeof(TCHAR));
+			hglbCopy = ::GlobalAlloc(GMEM_MOVEABLE, nBytes); 
+
+			if (hglbCopy) 
+			{ 
+				// Lock the handle and copy the text to the buffer.
+				LPVOID pCopy = ::GlobalLock(hglbCopy);
+				CopyMemory(pCopy, (LPCTSTR)sText, nBytes); 
+				::GlobalUnlock(hglbCopy); 
+
+				// Place the handle on the clipboard. 
+				bResult = (::SetClipboardData(CF_TEXT, hglbCopy) == hglbCopy);
+			}
+		}
+		catch(...)
+		{
+		}
+
+		// cleanup
+		if (!bResult && hglbCopy)
+		{
+			::GlobalFree(hglbCopy);
+		}
+
+		::CloseClipboard();
+	}
+}
+
+CString CMiniSpyDlg::FormatRow(int nRow) const
+{
+	CString sRow = m_lcAttributes.GetItemText(nRow, 0);
+
+	if (!sRow.IsEmpty())
+	{
+		sRow += "\t\t";
+		sRow += m_lcAttributes.GetItemText(nRow, 1);
+	}
+
+	sRow += "\n";
+	return sRow;
+}
+
+
+void CMiniSpyDlg::OnSelectAll()
+{
+	int nStartRow = 0, nEndRow = m_lcAttributes.GetItemCount() - 1;
+
+	for (int nRow = nStartRow; nRow <= nEndRow; nRow++)
+		m_lcAttributes.SetItemState(nRow, LVIS_SELECTED, LVIS_SELECTED);
+
+	m_lcAttributes.SetFocus();
+}
+
+	
