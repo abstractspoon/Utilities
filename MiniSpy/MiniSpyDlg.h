@@ -122,7 +122,7 @@ protected:
 	afx_msg void OnTimer(UINT nIDEvent);
 	afx_msg void OnSelchangeFilter();
 	afx_msg void OnRefresh();
-	afx_msg void OnActivateApp(BOOL bActive, DWORD dwThreadID);
+	afx_msg void OnActivateApp(BOOL bActive, HTASK hTask);
 	afx_msg void OnRestoresize();
 	afx_msg void OnChangeCorner(UINT nID);
 	afx_msg void OnAppAbout();

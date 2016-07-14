@@ -143,8 +143,8 @@ BEGIN_MESSAGE_MAP(CMiniSpyDlg, CDialog)
 	ON_COMMAND(ID_GOTOPREV, OnGotoPreviousWindow)
 	//}}AFX_MSG_MAP
 	ON_NOTIFY_EX_RANGE(TTN_NEEDTEXT, 0, 0xFFFF, OnNeedTooltip)
-	ON_COMMAND(ID_COPYSELECTION, &CMiniSpyDlg::OnCopySelection)
-	ON_COMMAND(ID_SELECTALL, &CMiniSpyDlg::OnSelectAll)
+	ON_COMMAND(ID_COPYSELECTION, OnCopySelection)
+	ON_COMMAND(ID_SELECTALL, OnSelectAll)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -810,7 +810,7 @@ CString CMiniSpyDlg::GetWindowText(CWnd* pWnd)
 }
 
 
-void CMiniSpyDlg::OnActivateApp(BOOL bActive, DWORD dwThreadID) 
+void CMiniSpyDlg::OnActivateApp(BOOL bActive, HTASK hTask) 
 {
 	// a bit of trickery else the tooltips appear behind the main window
 	// if we are active then remove topmost attribute because we are topmost anyway
@@ -820,7 +820,7 @@ void CMiniSpyDlg::OnActivateApp(BOOL bActive, DWORD dwThreadID)
 	else
 		SetWindowPos(&wndTopMost, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
 	
-	CDialog::OnActivateApp(bActive, dwThreadID);
+	CDialog::OnActivateApp(bActive, hTask);
 }
 
 BOOL CMiniSpyDlg::PreTranslateMessage(MSG* pMsg)
