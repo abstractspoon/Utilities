@@ -1,0 +1,38 @@
+// ProjectZipShExt.idl : IDL source for ProjectZipShExt.dll
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (ProjectZipShExt.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+	[
+		object,
+		uuid(CD3FB6BC-80C8-4E78-AD2F-6DC4262C5437),
+		dual,
+		helpstring("IProjectZipExt Interface"),
+		pointer_default(unique)
+	]
+	interface IProjectZipExt : IDispatch
+	{
+	};
+
+[
+	uuid(24B7CEAB-0780-4E81-AE01-3EC20B633ECF),
+	version(1.0),
+	helpstring("ProjectZipShExt 1.0 Type Library")
+]
+library PROJECTZIPSHEXTLib
+{
+	importlib("stdole32.tlb");
+	importlib("stdole2.tlb");
+
+	[
+		uuid(3E29484C-15C0-4D95-8E69-53AE800CC92A),
+		helpstring("ProjectZipExt Class")
+	]
+	coclass ProjectZipExt
+	{
+		[default] interface IProjectZipExt;
+	};
+};

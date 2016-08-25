@@ -1,0 +1,53 @@
+Microsoft Developer Studio Workspace File, Format Version 6.00
+# WARNING: DO NOT EDIT OR DELETE THIS WORKSPACE FILE!
+
+###############################################################################
+
+Project: "ProjectZip6Addin"=.\ProjectZip6Addin\ProjectZip6Addin.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    "$/ProjectZip/ProjectZip6Addin", YYGAAAAA
+    .\ProjectZip6Addin
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "ProjectZipShExt"=.\ProjectZipShExt\ProjectZipShExt.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    "$/ProjectZip/ProjectZipShExt", CBHAAAAA
+    .\ProjectZipShExt
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Global:
+
+Package=<5>
+{{{
+    begin source code control
+    "$/ProjectZip", WYGAAAAA
+    .
+    end source code control
+}}}
+
+Package=<3>
+{{{
+}}}
+
+###############################################################################
+
