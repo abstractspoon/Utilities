@@ -421,7 +421,18 @@ void CFindIncludesDlg::DoSearch(INCLUDEFILEITEM& fi, HTREEITEM htiParent, CMap<C
                ASSERT(!sFile.IsEmpty());
 
                sFile.Replace('/', '\\');
-               pIncludes->Add(sFile);
+
+			   // Check for function name
+			   if (!m_sFunction.IsEmpty())
+			   {
+				   CString sFileContents;
+
+				   if (FileMisc::LoadFile(sFile, sFileContents))
+				   {
+					   if (sFileContents.Find(m_sFunction) != -1)
+						   pIncludes->Add(sFile);
+				   }
+			   }
                
                pXIInc = pXIInc->GetSibling();
             }
