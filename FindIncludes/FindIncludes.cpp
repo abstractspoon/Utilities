@@ -22,8 +22,8 @@ BOOL CALLBACK FindOtherInstance(HWND hwnd, LPARAM lParam);
 
 BEGIN_MESSAGE_MAP(CFindIncludesApp, CWinApp)
 	//{{AFX_MSG_MAP(CFindIncludesApp)
-		// NOTE - the ClassWizard will add and remove mapping macros here.
-		//    DO NOT EDIT what you see in these blocks of generated code!
+	// NOTE - the ClassWizard will add and remove mapping macros here.
+	//    DO NOT EDIT what you see in these blocks of generated code!
 	//}}AFX_MSG
 	ON_COMMAND(ID_HELP, CWinApp::OnHelp)
 END_MESSAGE_MAP()
@@ -51,22 +51,22 @@ BOOL CFindIncludesApp::InitInstance()
 	// If you are not using these features and wish to reduce the size
 	//  of your final executable, you should remove from the following
 	//  the specific initialization routines you do not need.
-   CoInitialize(NULL);
+	CoInitialize(NULL);
 
 	CEnCommandLineInfo cmd;
 	ParseCommandLine(cmd);
 
 	CString sFileName, sFileExt, sFunction;
-	
+
 	cmd.GetOption(_T("s"), sFileName);
 	cmd.GetOption(_T("e"), sFileExt);
-   cmd.GetOption(_T("f"), sFunction);
+	cmd.GetOption(_T("f"), sFunction);
 
 	if (g_lsi.IsAnotherInstanceRunning())
 	{
 		HWND hWnd = NULL;
 		EnumWindows(FindOtherInstance, (LPARAM)&hWnd);
-		
+
 		if (hWnd)
 		{
 			ShowWindow(hWnd, SW_SHOWNORMAL);
@@ -75,12 +75,12 @@ BOOL CFindIncludesApp::InitInstance()
 			// pass on file to open
 			if (!sFileName.IsEmpty())
 			{
-            COPYDATASTRUCT cds = { 0 };
-            FINDINCLUDESCOPYDATA wsl = { 0 };
+				COPYDATASTRUCT cds = { 0 };
+				FINDINCLUDESCOPYDATA wsl = { 0 };
 
 				lstrcpy(wsl.szFileName, sFileName);
 				lstrcpy(wsl.szFileExt, sFileExt);
-            lstrcpy(wsl.szFunction, sFunction);
+				lstrcpy(wsl.szFunction, sFunction);
 
 				cds.dwData = WSL_NEWSYMBOL;
 				cds.cbData = sizeof(FINDINCLUDESCOPYDATA);
@@ -115,16 +115,16 @@ BOOL CFindIncludesApp::InitInstance()
 
 BOOL CALLBACK FindOtherInstance(HWND hwnd, LPARAM lParam)
 {
-  DWORD dwResult = 0;
+	DWORD dwResult = 0;
 
 	if (SendMessageTimeout(hwnd, WM_ISWINSYMLIBDLG, 0, 0, SMTO_ABORTIFHUNG | SMTO_BLOCK, 100, &dwResult))
 	{
-    if (dwResult == ISWINSYMLIBDLG_ANSWER)
-    {
-		  HWND* pWnd = (HWND*)lParam;
-		  *pWnd = hwnd;
-		  return FALSE;
-    }
+		if (dwResult == ISWINSYMLIBDLG_ANSWER)
+		{
+			HWND* pWnd = (HWND*)lParam;
+			*pWnd = hwnd;
+			return FALSE;
+		}
 	}
 
 	return TRUE;
