@@ -421,18 +421,7 @@ void CFindIncludesDlg::DoSearch(INCLUDEFILEITEM& fi, HTREEITEM htiParent, CMap<C
                ASSERT(!sFile.IsEmpty());
 
                sFile.Replace('/', '\\');
-
-			   // Check for function name
-			   if (!m_sFunction.IsEmpty())
-			   {
-				   CString sFileContents;
-
-				   if (FileMisc::LoadFile(sFile, sFileContents))
-				   {
-					   if (sFileContents.Find(m_sFunction) != -1)
-						   pIncludes->Add(sFile);
-				   }
-			   }
+               pIncludes->Add(sFile);
                
                pXIInc = pXIInc->GetSibling();
             }
@@ -458,6 +447,18 @@ void CFindIncludesDlg::DoSearch(INCLUDEFILEITEM& fi, HTREEITEM htiParent, CMap<C
          CString sFolder = FileMisc::GetFolderFromFilePath(sFilename);
          CString sFile = FileMisc::GetFileNameFromPath(sFilename);
          sFile.Replace('/', '\\');
+
+		 // Check for function name
+		 if (!m_sFunction.IsEmpty())
+		 {
+			 CString sFileContents;
+
+			 if (FileMisc::LoadFile(sFilename, sFileContents))
+			 {
+				 if (sFileContents.Find(m_sFunction) == -1)
+					 continue;
+			 }
+		 }
 
          CString sExt = FileMisc::GetExtension(sFilename);
          sExt.MakeLower();
