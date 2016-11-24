@@ -99,6 +99,7 @@
     <None Include="ReadMe.txt" />
     <None Include="res\FindIncludes.ico" />
     <None Include="res\FindIncludes.rc2" />
+    <None Include="res\icon1.bmp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FindIncludes.h" />
@@ -126,7 +127,15 @@
       <Project>{95605899-9c90-40d8-8774-d1da1fce7464}</Project>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Manifest Include="res\FindIncludes.exe.manifest" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties RESOURCE_FILE="FindIncludes.rc" />
+    </VisualStudio>
+  </ProjectExtensions>
 </Project>
