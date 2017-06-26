@@ -9,6 +9,7 @@
 #include "..\..\ToDoList_Core\shared\FILEMISC.H"
 #include "..\..\ToDoList_Core\shared\xmlfile.H"
 #include "..\..\ToDoList_Core\shared\treectrlhelper.H"
+#include "..\..\ToDoList_Core\shared\misc.H"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -315,6 +316,12 @@ BOOL CFindIncludesDlg::LoadDoxyIndex()
 				{
 					INCLUDEFILEITEM fi(sFilename, sDoxyID);
 
+					if (m_mapFile2IncludeItem.Lookup(sFilename, fi))
+					{
+						fi.sDoxyID += ';';
+						fi.sDoxyID += sDoxyID;
+					}
+
 					m_mapFile2IncludeItem[sFilename.MakeLower()] = fi;
 				}
 			}
@@ -352,9 +359,16 @@ void CFindIncludesDlg::DoSearch()
 	{
 		// prevent circular dependencies
 		CMap<CString, LPCTSTR, BOOL, BOOL&> mapVisited;
-		INCLUDEFILEITEM fi(m_sFile, sDoxyID);
 
-		nNumRes = DoSearch(fi, NULL, mapVisited);
+		CStringArray aDoxyIDs;
+		int nID = Misc::Split(sDoxyID, aDoxyIDs, ';');
+
+		while (nID--)
+		{
+			INCLUDEFILEITEM fi(m_sFile, aDoxyIDs[nID]);
+
+			nNumRes += DoSearch(fi, NULL, mapVisited);
+		}
 
 		if (nNumRes)
 			CTreeCtrlHelper(m_tcResults).ExpandAll();
@@ -367,7 +381,6 @@ void CFindIncludesDlg::DoSearch()
 
 		m_cbSymbols.InsertString(0, m_sFile);
 		m_cbSymbols.SelectString(0, m_sFile);
-
 	}
 
 	CString sResults;
@@ -644,8 +657,14 @@ CString CFindIncludesDlg::GetResultFilePath(HTREEITEM hti)
 {
 	if (hti)
 	{
-		CString sPath = m_tcResults.GetItemText(hti);
+		HTREEITEM htiParent = m_tcResults.GetParentItem(hti);
+		CString sParentPath = m_tcResults.GetItemText(htiParent);
+		CString sFileName = m_tcResults.GetItemText(hti);
 
+		CString sFilePath;
+		FileMisc::MakePath(sFilePath, NULL, sParentPath, sFileName);
+
+/*
 		INCLUDEFILEITEM fi;
 
 		if (!m_mapFile2IncludeItem.Lookup(sPath, fi))
@@ -655,7 +674,7 @@ CString CFindIncludesDlg::GetResultFilePath(HTREEITEM hti)
 
 			FileMisc::SetCwd(m_sXmlFolder);
 
-			CXmlFile file(_T("doxygen")/*, CP_UTF8*/);
+			CXmlFile file(_T("doxygen")/ *, CP_UTF8* /);
 
 			if (file.Load(fi.sDoxyID + _T(".xml")))
 			{
@@ -674,6 +693,8 @@ CString CFindIncludesDlg::GetResultFilePath(HTREEITEM hti)
 		}
 
 		return fi.sFullPath;
+*/
+		return sFilePath;
 	}
 
 	// else
