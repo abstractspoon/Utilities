@@ -458,10 +458,11 @@ namespace VisualXmlDiff
 //			string tempFile = startupPath + Path.DirectorySeparatorChar + "diff" + r.Next() + ".htm";
             string tempFile = Path.GetTempPath() + "diff" + r.Next() + ".htm";
 			StreamWriter sw1 = new StreamWriter( tempFile );
-			
 
-			sw1.Write("<html><body><table width='100%'>");
-			//Write Legend.
+
+            sw1.Write("<html><style> table { table-layout: fixed; } </style>");
+            sw1.Write("<body><table width='100%'>");
+            //Write Legend.
 			sw1.Write("<tr><td colspan='2' align='center'><b>Legend:</b> <font style='background-color: yellow'" + 
 				" color='black'>added</font>&nbsp;&nbsp;<font style='background-color: red'"+
 				" color='black'>removed</font>&nbsp;&nbsp;<font style='background-color: "+
