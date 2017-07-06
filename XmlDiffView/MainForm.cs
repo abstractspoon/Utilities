@@ -457,7 +457,7 @@ namespace VisualXmlDiff
 
 //			string tempFile = startupPath + Path.DirectorySeparatorChar + "diff" + r.Next() + ".htm";
             string tempFile = Path.GetTempPath() + "diff" + r.Next() + ".htm";
-			StreamWriter sw1 = new StreamWriter( tempFile );
+			StreamWriter sw1 = new StreamWriter( tempFile, false, System.Text.Encoding.Unicode );
 
 
             sw1.Write("<html><style> table { table-layout: fixed; } </style>");
