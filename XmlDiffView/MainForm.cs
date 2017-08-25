@@ -24,11 +24,8 @@ namespace VisualXmlDiff
 		private System.Windows.Forms.Button button2;
 		private System.Windows.Forms.Button button1;
 		private System.Windows.Forms.TextBox textBox1;
-		private System.Windows.Forms.TextBox textBox2;
-		/// <summary>
-		/// Required designer variable.
-		/// </summary>
-		private System.ComponentModel.Container components = null;
+        private System.Windows.Forms.TextBox textBox2;
+        private IContainer components;
 
 		public string filename1 = string.Empty;
 		public string filename2 = string.Empty;
@@ -57,6 +54,7 @@ namespace VisualXmlDiff
 
 		public VisualXmlDiff()
 		{
+
 			//
 			// Required for Windows Form Designer support
 			//
@@ -89,6 +87,8 @@ namespace VisualXmlDiff
 			else
 			{
 				VisualXmlDiff vxd = new VisualXmlDiff();
+
+                Application.EnableVisualStyles();
 				Application.Run(vxd);
 			}
 		}
@@ -114,230 +114,231 @@ namespace VisualXmlDiff
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.mainMenu1 = new System.Windows.Forms.MainMenu();
-			this.mnuFile = new System.Windows.Forms.MenuItem();
-			this.menuItem14 = new System.Windows.Forms.MenuItem();
-			this.mnuOptions = new System.Windows.Forms.MenuItem();
-			this.icoOpt = new System.Windows.Forms.MenuItem();
-			this.ipiOpt = new System.Windows.Forms.MenuItem();
-			this.icOpt = new System.Windows.Forms.MenuItem();
-			this.ixdOpt = new System.Windows.Forms.MenuItem();
-			this.iwsOpt = new System.Windows.Forms.MenuItem();
-			this.idtdOpt = new System.Windows.Forms.MenuItem();
-			this.inOpt = new System.Windows.Forms.MenuItem();
-			this.ipOpt = new System.Windows.Forms.MenuItem();
-			this.fOpt = new System.Windows.Forms.MenuItem();
-			this.algOptions = new System.Windows.Forms.MenuItem();
-			this.algAuto = new System.Windows.Forms.MenuItem();
-			this.algPrecise = new System.Windows.Forms.MenuItem();
-			this.algFast = new System.Windows.Forms.MenuItem();
-			this.menuItem1 = new System.Windows.Forms.MenuItem();
-			this.menuItem2 = new System.Windows.Forms.MenuItem();
-			this.button3 = new System.Windows.Forms.Button();
-			this.button2 = new System.Windows.Forms.Button();
-			this.button1 = new System.Windows.Forms.Button();
-			this.textBox1 = new System.Windows.Forms.TextBox();
-			this.textBox2 = new System.Windows.Forms.TextBox();
-			this.SuspendLayout();
-			// 
-			// mainMenu1
-			// 
-			this.mainMenu1.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-																					  this.mnuFile,
-																					  this.mnuOptions,
-																					  this.menuItem1});
-			// 
-			// mnuFile
-			// 
-			this.mnuFile.Index = 0;
-			this.mnuFile.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-																					this.menuItem14});
-			this.mnuFile.Text = "File";
-			// 
-			// menuItem14
-			// 
-			this.menuItem14.Index = 0;
-			this.menuItem14.Text = "Exit";
-			this.menuItem14.Click += new System.EventHandler(this.menuItem14_Click);
-			// 
-			// mnuOptions
-			// 
-			this.mnuOptions.Index = 1;
-			this.mnuOptions.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-																					   this.icoOpt,
-																					   this.ipiOpt,
-																					   this.icOpt,
-																					   this.ixdOpt,
-																					   this.iwsOpt,
-																					   this.idtdOpt,
-																					   this.inOpt,
-																					   this.ipOpt,
-																					   this.fOpt,
-																					   this.algOptions});
-			this.mnuOptions.Text = "Diff Options";
-			// 
-			// icoOpt
-			// 
-			this.icoOpt.Checked = true;
-			this.icoOpt.Index = 0;
-			this.icoOpt.Text = "Ignore Child Order";
-			this.icoOpt.Click += new System.EventHandler(this.diffOptions_Click);
-			// 
-			// ipiOpt
-			// 
-			this.ipiOpt.Index = 1;
-			this.ipiOpt.Text = "Ignore Processing Instructions";
-			this.ipiOpt.Click += new System.EventHandler(this.diffOptions_Click);
-			// 
-			// icOpt
-			// 
-			this.icOpt.Checked = true;
-			this.icOpt.Index = 2;
-			this.icOpt.Text = "Ignore Comments";
-			this.icOpt.Click += new System.EventHandler(this.diffOptions_Click);
-			// 
-			// ixdOpt
-			// 
-			this.ixdOpt.Checked = true;
-			this.ixdOpt.Index = 3;
-			this.ixdOpt.Text = "Ignore Xml Declaration";
-			this.ixdOpt.Click += new System.EventHandler(this.diffOptions_Click);
-			// 
-			// iwsOpt
-			// 
-			this.iwsOpt.Checked = true;
-			this.iwsOpt.Index = 4;
-			this.iwsOpt.Text = "Ignore Whitespaces";
-			this.iwsOpt.Click += new System.EventHandler(this.diffOptions_Click);
-			// 
-			// idtdOpt
-			// 
-			this.idtdOpt.Checked = true;
-			this.idtdOpt.Index = 5;
-			this.idtdOpt.Text = "Ignore Document Type Declaration (DTD)";
-			this.idtdOpt.Click += new System.EventHandler(this.diffOptions_Click);
-			// 
-			// inOpt
-			// 
-			this.inOpt.Index = 6;
-			this.inOpt.Text = "Ignore Namespaces";
-			this.inOpt.Click += new System.EventHandler(this.diffOptions_Click);
-			// 
-			// ipOpt
-			// 
-			this.ipOpt.Index = 7;
-			this.ipOpt.Text = "Ignore Prefixes";
-			this.ipOpt.Click += new System.EventHandler(this.diffOptions_Click);
-			// 
-			// fOpt
-			// 
-			this.fOpt.Index = 8;
-			this.fOpt.Text = "Compare Fragments";
-			this.fOpt.Click += new System.EventHandler(this.diffOptions_Click);
-			// 
-			// algOptions
-			// 
-			this.algOptions.Index = 9;
-			this.algOptions.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-																					   this.algAuto,
-																					   this.algPrecise,
-																					   this.algFast});
-			this.algOptions.Text = "Algorithm";
-			// 
-			// algAuto
-			// 
-			this.algAuto.Checked = true;
-			this.algAuto.Index = 0;
-			this.algAuto.RadioCheck = true;
-			this.algAuto.Text = "Auto";
-			this.algAuto.Click += new System.EventHandler(this.algOptions_Click);
-			// 
-			// algPrecise
-			// 
-			this.algPrecise.Index = 1;
-			this.algPrecise.RadioCheck = true;
-			this.algPrecise.Text = "Greedy";
-			this.algPrecise.Click += new System.EventHandler(this.algOptions_Click);
-			// 
-			// algFast
-			// 
-			this.algFast.Index = 2;
-			this.algFast.RadioCheck = true;
-			this.algFast.Text = "Fast";
-			this.algFast.Click += new System.EventHandler(this.algOptions_Click);
-			// 
-			// menuItem1
-			// 
-			this.menuItem1.Index = 2;
-			this.menuItem1.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-																					  this.menuItem2});
-			this.menuItem1.Text = "Help";
-			// 
-			// menuItem2
-			// 
-			this.menuItem2.Index = 0;
-			this.menuItem2.Text = "About";
-			this.menuItem2.Click += new System.EventHandler(this.menuItem2_Click);
-			// 
-			// button3
-			// 
-			this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((System.Byte)(0)));
-			this.button3.Location = new System.Drawing.Point(204, 70);
-			this.button3.Name = "button3";
-			this.button3.Size = new System.Drawing.Size(98, 24);
-			this.button3.TabIndex = 6;
-			this.button3.Text = "Compare";
-			this.button3.Click += new System.EventHandler(this.Compare_Click);
-			// 
-			// button2
-			// 
-			this.button2.Location = new System.Drawing.Point(8, 40);
-			this.button2.Name = "button2";
-			this.button2.Size = new System.Drawing.Size(104, 24);
-			this.button2.TabIndex = 5;
-			this.button2.Text = "Compare With ...";
-			this.button2.Click += new System.EventHandler(this.button2_Click);
-			// 
-			// button1
-			// 
-			this.button1.Location = new System.Drawing.Point(8, 8);
-			this.button1.Name = "button1";
-			this.button1.Size = new System.Drawing.Size(104, 24);
-			this.button1.TabIndex = 4;
-			this.button1.Text = "Original File  ...";
-			this.button1.Click += new System.EventHandler(this.button1_Click);
-			// 
-			// textBox1
-			// 
-			this.textBox1.Location = new System.Drawing.Point(120, 8);
-			this.textBox1.Name = "textBox1";
-			this.textBox1.Size = new System.Drawing.Size(400, 20);
-			this.textBox1.TabIndex = 8;
-			this.textBox1.Text = "";
-			// 
-			// textBox2
-			// 
-			this.textBox2.Location = new System.Drawing.Point(120, 40);
-			this.textBox2.Name = "textBox2";
-			this.textBox2.Size = new System.Drawing.Size(400, 20);
-			this.textBox2.TabIndex = 9;
-			this.textBox2.Text = "";
-			// 
-			// VisualXmlDiff
-			// 
-			this.AcceptButton = this.button3;
-			this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-			this.ClientSize = new System.Drawing.Size(528, 101);
-			this.Controls.Add(this.textBox2);
-			this.Controls.Add(this.textBox1);
-			this.Controls.Add(this.button3);
-			this.Controls.Add(this.button2);
-			this.Controls.Add(this.button1);
-			this.Menu = this.mainMenu1;
-			this.Name = "VisualXmlDiff";
-			this.Text = "XmlDiff";
-			this.Load += new System.EventHandler(this.VisualXmlDiff_Load);
-			this.ResumeLayout(false);
+            this.components = new System.ComponentModel.Container();
+            this.mainMenu1 = new System.Windows.Forms.MainMenu(this.components);
+            this.mnuFile = new System.Windows.Forms.MenuItem();
+            this.menuItem14 = new System.Windows.Forms.MenuItem();
+            this.mnuOptions = new System.Windows.Forms.MenuItem();
+            this.icoOpt = new System.Windows.Forms.MenuItem();
+            this.ipiOpt = new System.Windows.Forms.MenuItem();
+            this.icOpt = new System.Windows.Forms.MenuItem();
+            this.ixdOpt = new System.Windows.Forms.MenuItem();
+            this.iwsOpt = new System.Windows.Forms.MenuItem();
+            this.idtdOpt = new System.Windows.Forms.MenuItem();
+            this.inOpt = new System.Windows.Forms.MenuItem();
+            this.ipOpt = new System.Windows.Forms.MenuItem();
+            this.fOpt = new System.Windows.Forms.MenuItem();
+            this.algOptions = new System.Windows.Forms.MenuItem();
+            this.algAuto = new System.Windows.Forms.MenuItem();
+            this.algPrecise = new System.Windows.Forms.MenuItem();
+            this.algFast = new System.Windows.Forms.MenuItem();
+            this.menuItem1 = new System.Windows.Forms.MenuItem();
+            this.menuItem2 = new System.Windows.Forms.MenuItem();
+            this.button3 = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.SuspendLayout();
+            // 
+            // mainMenu1
+            // 
+            this.mainMenu1.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+            this.mnuFile,
+            this.mnuOptions,
+            this.menuItem1});
+            // 
+            // mnuFile
+            // 
+            this.mnuFile.Index = 0;
+            this.mnuFile.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+            this.menuItem14});
+            this.mnuFile.Text = "File";
+            // 
+            // menuItem14
+            // 
+            this.menuItem14.Index = 0;
+            this.menuItem14.Text = "Exit";
+            this.menuItem14.Click += new System.EventHandler(this.menuItem14_Click);
+            // 
+            // mnuOptions
+            // 
+            this.mnuOptions.Index = 1;
+            this.mnuOptions.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+            this.icoOpt,
+            this.ipiOpt,
+            this.icOpt,
+            this.ixdOpt,
+            this.iwsOpt,
+            this.idtdOpt,
+            this.inOpt,
+            this.ipOpt,
+            this.fOpt,
+            this.algOptions});
+            this.mnuOptions.Text = "Diff Options";
+            // 
+            // icoOpt
+            // 
+            this.icoOpt.Checked = true;
+            this.icoOpt.Index = 0;
+            this.icoOpt.Text = "Ignore Child Order";
+            this.icoOpt.Click += new System.EventHandler(this.diffOptions_Click);
+            // 
+            // ipiOpt
+            // 
+            this.ipiOpt.Index = 1;
+            this.ipiOpt.Text = "Ignore Processing Instructions";
+            this.ipiOpt.Click += new System.EventHandler(this.diffOptions_Click);
+            // 
+            // icOpt
+            // 
+            this.icOpt.Checked = true;
+            this.icOpt.Index = 2;
+            this.icOpt.Text = "Ignore Comments";
+            this.icOpt.Click += new System.EventHandler(this.diffOptions_Click);
+            // 
+            // ixdOpt
+            // 
+            this.ixdOpt.Checked = true;
+            this.ixdOpt.Index = 3;
+            this.ixdOpt.Text = "Ignore Xml Declaration";
+            this.ixdOpt.Click += new System.EventHandler(this.diffOptions_Click);
+            // 
+            // iwsOpt
+            // 
+            this.iwsOpt.Checked = true;
+            this.iwsOpt.Index = 4;
+            this.iwsOpt.Text = "Ignore Whitespaces";
+            this.iwsOpt.Click += new System.EventHandler(this.diffOptions_Click);
+            // 
+            // idtdOpt
+            // 
+            this.idtdOpt.Checked = true;
+            this.idtdOpt.Index = 5;
+            this.idtdOpt.Text = "Ignore Document Type Declaration (DTD)";
+            this.idtdOpt.Click += new System.EventHandler(this.diffOptions_Click);
+            // 
+            // inOpt
+            // 
+            this.inOpt.Index = 6;
+            this.inOpt.Text = "Ignore Namespaces";
+            this.inOpt.Click += new System.EventHandler(this.diffOptions_Click);
+            // 
+            // ipOpt
+            // 
+            this.ipOpt.Index = 7;
+            this.ipOpt.Text = "Ignore Prefixes";
+            this.ipOpt.Click += new System.EventHandler(this.diffOptions_Click);
+            // 
+            // fOpt
+            // 
+            this.fOpt.Index = 8;
+            this.fOpt.Text = "Compare Fragments";
+            this.fOpt.Click += new System.EventHandler(this.diffOptions_Click);
+            // 
+            // algOptions
+            // 
+            this.algOptions.Index = 9;
+            this.algOptions.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+            this.algAuto,
+            this.algPrecise,
+            this.algFast});
+            this.algOptions.Text = "Algorithm";
+            // 
+            // algAuto
+            // 
+            this.algAuto.Checked = true;
+            this.algAuto.Index = 0;
+            this.algAuto.RadioCheck = true;
+            this.algAuto.Text = "Auto";
+            this.algAuto.Click += new System.EventHandler(this.algOptions_Click);
+            // 
+            // algPrecise
+            // 
+            this.algPrecise.Index = 1;
+            this.algPrecise.RadioCheck = true;
+            this.algPrecise.Text = "Greedy";
+            this.algPrecise.Click += new System.EventHandler(this.algOptions_Click);
+            // 
+            // algFast
+            // 
+            this.algFast.Index = 2;
+            this.algFast.RadioCheck = true;
+            this.algFast.Text = "Fast";
+            this.algFast.Click += new System.EventHandler(this.algOptions_Click);
+            // 
+            // menuItem1
+            // 
+            this.menuItem1.Index = 2;
+            this.menuItem1.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+            this.menuItem2});
+            this.menuItem1.Text = "Help";
+            // 
+            // menuItem2
+            // 
+            this.menuItem2.Index = 0;
+            this.menuItem2.Text = "About";
+            this.menuItem2.Click += new System.EventHandler(this.menuItem2_Click);
+            // 
+            // button3
+            // 
+            this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button3.Location = new System.Drawing.Point(204, 70);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(98, 24);
+            this.button3.TabIndex = 6;
+            this.button3.Text = "Compare";
+            this.button3.Click += new System.EventHandler(this.Compare_Click);
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(8, 40);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(104, 24);
+            this.button2.TabIndex = 5;
+            this.button2.Text = "Compare With ...";
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(8, 8);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(104, 24);
+            this.button1.TabIndex = 4;
+            this.button1.Text = "Original File  ...";
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(120, 10);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(400, 20);
+            this.textBox1.TabIndex = 8;
+            // 
+            // textBox2
+            // 
+            this.textBox2.Location = new System.Drawing.Point(120, 42);
+            this.textBox2.Name = "textBox2";
+            this.textBox2.Size = new System.Drawing.Size(400, 20);
+            this.textBox2.TabIndex = 9;
+            // 
+            // VisualXmlDiff
+            // 
+            this.AcceptButton = this.button3;
+            this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
+            this.ClientSize = new System.Drawing.Size(528, 101);
+            this.Controls.Add(this.textBox2);
+            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.button3);
+            this.Controls.Add(this.button2);
+            this.Controls.Add(this.button1);
+            this.Menu = this.mainMenu1;
+            this.Name = "VisualXmlDiff";
+            this.Text = "XmlDiff";
+            this.Load += new System.EventHandler(this.VisualXmlDiff_Load);
+            this.ResumeLayout(false);
+            this.PerformLayout();
+            this.CenterToScreen();
 
 		}
 		#endregion
