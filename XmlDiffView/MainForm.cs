@@ -380,7 +380,7 @@ namespace VisualXmlDiff
 			
 			if ( !File.Exists ( textBox1.Text ) )
 			{
-				MessageBox.Show("File 1 doesnt exist, please select another file");
+				MessageBox.Show("File 1 doesn't exist, please select another file");
 				return;
 			}
 
@@ -393,7 +393,7 @@ namespace VisualXmlDiff
 
 			if ( !File.Exists ( textBox2.Text ) )
 			{
-				MessageBox.Show("File 2 doesnt exist, please select another file");
+				MessageBox.Show("File 2 doesn't exist, please select another file");
 				return;
 			}
 
@@ -430,7 +430,7 @@ namespace VisualXmlDiff
 			}
 			catch ( XmlException xe )
 			{
-				MessageBox.Show( "An exception occured while comparing\n" + xe.StackTrace );
+				MessageBox.Show( "An exception occurred while comparing\n" + xe.StackTrace );
 			}
 			finally
 			{
