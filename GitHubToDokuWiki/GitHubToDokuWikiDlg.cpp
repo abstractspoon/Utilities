@@ -5,9 +5,9 @@
 #include "GitHubToDokuWiki.h"
 #include "GitHubToDokuWikiDlg.h"
 
-#include "..\..\Shared\FileMisc.h"
-#include "..\..\Shared\Misc.h"
-#include "..\..\Shared\EnBitmap.h"
+#include "..\..\ToDoList_Core\Shared\FileMisc.h"
+#include "..\..\ToDoList_Core\Shared\Misc.h"
+#include "..\..\ToDoList_Core\Shared\EnBitmap.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -25,6 +25,7 @@ CGitHubToDokuWikiDlg::CGitHubToDokuWikiDlg(CWnd* pParent /*=NULL*/)
 	//}}AFX_DATA_INIT
 	m_sGitHubFolder = AfxGetApp()->GetProfileString(_T("Settings"), _T("GitHubFolder"));
 	m_sDokuwikiFolder = AfxGetApp()->GetProfileString(_T("Settings"), _T("DokuwikiFolder"));
+	m_sSidebarPath = AfxGetApp()->GetProfileString(_T("Settings"), _T("SidebarPath"));
 
 	// Note that LoadIcon does not require a subsequent DestroyIcon in Win32
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
@@ -36,6 +37,7 @@ void CGitHubToDokuWikiDlg::DoDataExchange(CDataExchange* pDX)
 	//{{AFX_DATA_MAP(CGitHubToDokuWikiDlg)
 	DDX_Text(pDX, IDC_GITHUBFOLDER, m_sGitHubFolder);
 	DDX_Text(pDX, IDC_DOKUWKIFOLDER, m_sDokuwikiFolder);
+	DDX_Text(pDX, IDC_SIDEBAR, m_sSidebarPath);
 	//}}AFX_DATA_MAP
 }
 
@@ -69,6 +71,8 @@ void CGitHubToDokuWikiDlg::OnConvert()
 
 	CWaitCursor cursor;
 	FileMisc::DeleteFolderContents(m_sDokuwikiFolder, FMDF_SUBFOLDERS);
+
+	BuildTitleMap();
 	
 	CStringArray aFiles;
 	int nNumFiles = FileMisc::FindFiles(m_sGitHubFolder, aFiles, TRUE, _T("*.*"));
@@ -84,15 +88,48 @@ void CGitHubToDokuWikiDlg::OnConvert()
 	}
 }
 
+void CGitHubToDokuWikiDlg::BuildTitleMap()
+{
+	m_mapTitles.RemoveAll();
+	
+	CStringArray aLines;
+	int nNumLines = FileMisc::LoadFile(m_sSidebarPath, aLines);
+		
+	for (int nLine = 0; nLine < nNumLines; nLine++)
+	{
+		const CString& sLine = aLines[nLine];
+		
+		int nStart = sLine.Find(_T("[["));
+		int nEnd = sLine.Find(_T("]]"));
+
+		if ((nStart != -1) && (nEnd != -1))
+		{
+			CString sLink(sLine.Mid((nStart + 2), (nEnd - (nStart + 2)))), sTitle;
+			VERIFY (Misc::Split(sLink, sTitle, '|'));
+
+			m_mapTitles[sLink] = sTitle;
+		}
+	}
+}
+
 CString CGitHubToDokuWikiDlg::GetDestFilePath(const CString& sSrcFile) const
 {
-	CString sDestFile(Misc::ToLower(sSrcFile));
+	CString sDestFile;
 	
-	VERIFY(FileMisc::MakeRelativePath(sDestFile, m_sGitHubFolder, FALSE));
-	VERIFY(FileMisc::MakeFullPath(sDestFile, m_sDokuwikiFolder));
+	if (Misc::ToLower(FileMisc::GetExtension(sSrcFile)) == _T(".md"))
+	{
+		FileMisc::MakePath(sDestFile, NULL, m_sDokuwikiFolder, FileMisc::GetFileNameFromPath(sSrcFile, FALSE), _T(".txt"));
+	}
+	else
+	{
+		sDestFile = FileMisc::GetRelativePath(sSrcFile, m_sGitHubFolder, FALSE);
+		VERIFY(FileMisc::MakeFullPath(sDestFile, m_sDokuwikiFolder));
+	}
 	
-	if (FileMisc::GetExtension(sDestFile) == _T(".md"))
-		FileMisc::ReplaceExtension(sDestFile, _T(".txt"));
+	Misc::MakeLower(sDestFile);
+	
+	sDestFile.Replace(_T("-page."), _T("-dialog."));
+	sDestFile.Replace(_T("-preferences."), _T("-prefs."));
 
 	return sDestFile;
 }
@@ -118,8 +155,14 @@ void CGitHubToDokuWikiDlg::ProcessSrcFile(const CString& sSrcFile) const
 			ProcessLists(sLine);
 			ProcessDivs(sLine);
 			ProcessIcons(sLine);
-			ProcessBreaks(sLine);
+			ProcessMonospacing(sLine);
+			ProcessTable(sLine);
+			ProcessMiscHtml(sLine);
+			ProcessForwardSlashes(sLine);
 		}
+
+		FixupCmdLineSwitches(aLines);
+		AddTitle(sDestFile, aLines);
 			
 		CString sDestContents = FormatLines(aLines);
 		VERIFY(FileMisc::SaveFile(sDestFile, sDestContents, SFEF_UTF8WITHOUTBOM));
@@ -127,6 +170,27 @@ void CGitHubToDokuWikiDlg::ProcessSrcFile(const CString& sSrcFile) const
 	else
 	{
 		VERIFY(FileMisc::CopyFile(sSrcFile, sDestFile, TRUE));
+	}
+}
+
+void CGitHubToDokuWikiDlg::AddTitle(const CString& sDestFile, CStringArray& aLines) const
+{
+	CString sFileName(FileMisc::GetFileNameFromPath(sDestFile, FALSE));
+	Misc::MakeLower(sFileName);
+
+	CString sTitle;
+
+	if (m_mapTitles.Lookup(sFileName, sTitle))
+	{
+		CString sFirstLine(aLines[0]);
+		sFirstLine.TrimLeft();
+		
+		if (sFirstLine.Find(_T("==")) == 0)
+			aLines.RemoveAt(0);
+
+		sFirstLine.Format(_T("====== %s ======"), sTitle);
+
+		aLines.InsertAt(0, sFirstLine);
 	}
 }
 
@@ -150,7 +214,7 @@ void CGitHubToDokuWikiDlg::ProcessImageLinks(CString& sLine) const
 			if (nEnd != -1)
 			{
 				sImage = sLine.Mid((nMid + 2), (nEnd - (nMid + 2)));
-				sImage = FormatImage(sImage);
+				sImage = FormatImageLink(sImage);
 
 				if (!sImage.IsEmpty())
 					sLine = sLine.Left(nStart) + sImage + sLine.Mid(nEnd + 1);
@@ -187,7 +251,7 @@ void CGitHubToDokuWikiDlg::ProcessImageLinks(CString& sLine) const
 					if ((nQuote2 != -1) && (nQuote2 < nEnd))
 					{
 						CString sImage = sLine.Mid((nQuote + 1), (nQuote2 - (nQuote + 1)));
-						sImage = FormatImage(sImage);
+						sImage = FormatImageLink(sImage);
 						
 						if (!sImage.IsEmpty())
 							sLine = sLine.Left(nStart) + sImage + sLine.Mid(nEnd + 2);
@@ -201,7 +265,7 @@ void CGitHubToDokuWikiDlg::ProcessImageLinks(CString& sLine) const
 
 }
 
-CString CGitHubToDokuWikiDlg::FormatImage(const CString& sImage) const
+CString CGitHubToDokuWikiDlg::FormatImageLink(const CString& sImage) const
 {
 	CString sText(sImage);
 	
@@ -223,7 +287,7 @@ void CGitHubToDokuWikiDlg::ProcessPageLinks(CString& sLine) const
 	
 	while (nStart != -1)
 	{
-		CString sLink, sText, sPage;
+		CString sText, sPage;
 		int nMid = sLine.Find(_T("]("), (nStart + 1)), nEnd = -1;
 		
 		if (nMid != -1)
@@ -253,15 +317,7 @@ void CGitHubToDokuWikiDlg::ProcessPageLinks(CString& sLine) const
 		{
 			ASSERT(!sText.IsEmpty());
 
-			if (sPage.IsEmpty())
-			{
-				sLink = sText;
-			}
-			else
-			{
-				sPage.TrimLeft(_T("./"));
-				sLink.Format(_T("[[%s|%s]]"), sPage, sText);
-			}
+			CString sLink = FormatPageLink(sPage, sText);
 
 			// if this line is also a heading then remove the link
 			// and insert it after
@@ -283,6 +339,130 @@ void CGitHubToDokuWikiDlg::ProcessPageLinks(CString& sLine) const
 			nStart = sLine.Find(_T("["), (nStart + 1));
 		}
 	}
+
+	// process HTML links
+	// <a href=”#addingvalues“>Adding Values</a>
+	nStart = sLine.Find(_T("<a "));
+	
+	while (nStart != -1)
+	{
+		int nEnd = sLine.Find(_T("</a>"), nStart + 3);
+		
+		if (nEnd != -1)
+		{
+			int nSrc = sLine.Find(_T("href"), nStart + 3);
+			
+			if ((nSrc != -1) && (nSrc < nEnd))
+			{
+				int nQuote = sLine.Find('\"', nSrc);
+				
+				if ((nQuote != -1) && (nQuote < nEnd))
+				{
+					int nQuote2 = sLine.Find('\"', (nQuote + 1));
+					
+					if ((nQuote2 != -1) && (nQuote2 < nEnd))
+					{
+						CString sPage = sLine.Mid((nQuote + 1), (nQuote2 - (nQuote + 1)));
+						Misc::ToLower(sPage);
+
+						int nStartText = sLine.Find(_T(">"), (nQuote2 + 1));
+
+						if ((nStartText != -1) && (nStartText < nEnd))
+						{
+							CString sText = sLine.Mid((nStartText + 1), (nEnd - (nStartText + 1)));
+
+							if (!sText.IsEmpty())
+							{
+								CString sLink = FormatPageLink(sPage, sText);
+
+								sLine = sLine.Left(nStart) + sLink + sLine.Mid(nEnd + 4);
+							}
+
+						}
+						
+					}
+				}
+			}
+
+			nStart = sLine.Find(_T("<a "), nEnd);
+		}
+		else
+		{
+			nStart = sLine.Find(_T("<a "), nStart + 3);
+		}
+	}
+}
+
+CString CGitHubToDokuWikiDlg::FormatPageLink(const CString& sPage, const CString& sText) const
+{
+	CString sLink, sModPage(sPage);
+
+	sModPage.Replace(_T("-page"), _T("-dialog"));
+	sModPage.Replace(_T("-preferences"), _T("-prefs"));
+
+	if (sPage.IsEmpty())
+	{
+		sLink = sText;
+	}
+	else
+	{
+		int nHash = sPage.Find('#');
+		
+		if (nHash != -1)
+		{
+			CString sHash = Misc::ToLower(sText);
+			sHash.Replace(' ', '_');
+			
+			sModPage = (sModPage.Left(nHash + 1) + sHash);
+		}
+		
+		sModPage.TrimLeft(_T("./"));
+		sLink.Format(_T("[[%s|%s]]"), sModPage, sText);
+	}
+
+	return sLink;
+}
+
+void CGitHubToDokuWikiDlg::ProcessTable(CString& sLine) const
+{
+	// Header items
+	if (sLine.Replace(_T("</b></td></tr>"), _T("^")))
+	{
+		int a= 5;
+	}
+	sLine.Replace(_T("<td><b>"), _T("^"));
+	
+	// Data items
+	sLine.Replace(_T("</tr>"), _T("|"));
+	sLine.Replace(_T("<td>"), _T("|"));
+	
+	// Redundant items
+	sLine.Replace(_T("<table>"), _T(""));
+	sLine.Replace(_T("</table>"), _T(""));
+	sLine.Replace(_T("<tr>"), _T(""));
+	sLine.Replace(_T("</tr>"), _T(""));
+	sLine.Replace(_T("</b></td>"), _T(""));
+	sLine.Replace(_T("<td>"), _T(""));
+	sLine.Replace(_T("</td>"), _T(""));
+	sLine.Replace(_T("<th>"), _T(""));
+	sLine.Replace(_T("</th>"), _T(""));
+	sLine.Replace(_T("<tbody>"), _T(""));
+	sLine.Replace(_T("</tbody>"), _T(""));
+}
+
+void CGitHubToDokuWikiDlg::ProcessMiscHtml(CString& sLine) const
+{
+	sLine.Replace(_T("&lt;"), _T(" <"));
+	sLine.Replace(_T("&gt;"), _T("> "));
+	sLine.Replace(_T("&nbsp;"), _T(" "));
+	sLine.Replace(_T("<b>"), _T("**"));
+	sLine.Replace(_T("</b>"), _T("**"));
+	sLine.Replace(_T("<br/>"), _T(""));
+	sLine.Replace(_T("<br>"), _T(""));
+	sLine.Replace(_T("<u>"), _T("__"));
+	sLine.Replace(_T("</u>"), _T("__"));
+	sLine.Replace(_T(""), _T(""));
+	sLine.Replace(_T(""), _T(""));
 }
 
 void CGitHubToDokuWikiDlg::OnDestroy() 
@@ -291,6 +471,7 @@ void CGitHubToDokuWikiDlg::OnDestroy()
 	
 	AfxGetApp()->WriteProfileString(_T("Settings"), _T("GitHubFolder"), m_sGitHubFolder);
 	AfxGetApp()->WriteProfileString(_T("Settings"), _T("DokuwikiFolder"), m_sDokuwikiFolder);
+	AfxGetApp()->WriteProfileString(_T("Settings"), _T("SidebarPath"), m_sSidebarPath);
 }
 
 CString CGitHubToDokuWikiDlg::FormatLines(const CStringArray& aLines) const
@@ -390,12 +571,6 @@ void CGitHubToDokuWikiDlg::ProcessDivs(CString& sLine) const
 		sLine.Empty();
 }
 
-void CGitHubToDokuWikiDlg::ProcessBreaks(CString& sLine) const
-{
-	sLine.Replace(_T("<br/>"), _T(""));
-	sLine.Replace(_T("<br>"), _T(""));
-}
-
 void CGitHubToDokuWikiDlg::ProcessIcons(CString& sLine) const
 {
 	sLine.Replace(_T(":penguin:"), _T(""));
@@ -414,7 +589,7 @@ void CGitHubToDokuWikiDlg::ProcessIcons(CString& sLine) const
 	sLine.Replace(_T(":question:"), _T(""));
 	sLine.Replace(_T(":free:"), _T(""));
 	sLine.Replace(_T(":house:"), _T(""));
-	sLine.Replace(_T(":construction:"), _T(""));
+	sLine.Replace(_T(":construction:"), _T("// Work in Progress. //"));
 	sLine.Replace(_T(":information_source:"), _T(""));
 	sLine.Replace(_T(":new:"), _T(""));
 	sLine.Replace(_T(":clock3:"), _T(""));
@@ -424,4 +599,41 @@ void CGitHubToDokuWikiDlg::ProcessIcons(CString& sLine) const
 // 	sLine.Replace(_T("::"), _T(""));
 // 	sLine.Replace(_T("::"), _T(""));
 // 	sLine.Replace(_T("::"), _T(""));
+}
+
+void CGitHubToDokuWikiDlg::ProcessMonospacing(CString& sLine) const
+{
+	if (sLine.Replace(_T("```"), _T("''")))
+	{
+		sLine += _T(" \\\\");
+	}
+}
+
+void CGitHubToDokuWikiDlg::FixupCmdLineSwitches(CStringArray& aLines) const
+{
+	int nLine = aLines.GetSize();
+	
+	while (nLine--)
+	{
+		CString& sLine = aLines[nLine];
+
+		if (sLine.Find(_T("==== -")) == 0)
+		{
+			Misc::Trim(sLine, _T("===="));
+
+			CString sNextLine;
+			Misc::Split(sLine, sNextLine, _T(" = "));
+
+			sLine = (_T("====") + sLine + _T("===="));
+			sNextLine = (_T("===") + sNextLine + _T("==="));
+
+			aLines.InsertAt((nLine + 1), sNextLine);
+		}
+	}
+}
+
+void CGitHubToDokuWikiDlg::ProcessForwardSlashes(CString& sLine) const
+{
+	sLine.Replace(_T("tdl://"), _T("%%tdl://%%"));
+	sLine.Replace(_T("file://"), _T("%%file://%%"));
 }

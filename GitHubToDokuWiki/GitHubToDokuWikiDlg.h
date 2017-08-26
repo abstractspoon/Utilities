@@ -22,7 +22,9 @@ public:
 	enum { IDD = IDD_GITHUBTODOKUWIKI_DIALOG };
 	CString	m_sGitHubFolder;
 	CString	m_sDokuwikiFolder;
+	CString	m_sSidebarPath;
 	//}}AFX_DATA
+	CMapStringToString m_mapTitles;
 
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CGitHubToDokuWikiDlg)
@@ -53,11 +55,21 @@ protected:
 	void ProcessLists(CString& sLine) const;
 	void ProcessDivs(CString& sLine) const;
 	void ProcessIcons(CString& sLine) const;
-	void ProcessBreaks(CString& sLine) const;
+	void ProcessMonospacing(CString& sLine) const;
+	void ProcessTable(CString& sLine) const;
+	void ProcessMiscHtml(CString& sLine) const;
+	void ProcessForwardSlashes(CString& sLine) const;
+
+	void AddTitle(const CString& sDestFile, CStringArray& aLines) const;
+	void BuildTitleMap();
+
+	void FixupCmdLineSwitches(CStringArray& aLines) const;
 
 	CString FormatLines(const CStringArray& aLines) const;
-	CString FormatImage(const CString& sImage) const;
+	CString FormatImageLink(const CString& sImage) const;
+	CString FormatPageLink(const CString& sPage, const CString& sText) const;
 	CString GetEquivHeading(const CString& sGHHeading) const;
+
 
 };
 

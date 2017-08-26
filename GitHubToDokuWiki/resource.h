@@ -7,6 +7,7 @@
 #define IDC_GITHUBFOLDER                1000
 #define IDC_DOKUWKIFOLDER               1001
 #define IDC_CONVERT                     1002
+#define IDC_SIDEBAR                     1003
 
 // Next default values for new objects
 // 
