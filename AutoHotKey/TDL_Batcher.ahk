@@ -1,4 +1,4 @@
-﻿;; Programm: Flexstart_for_AutoCAD.ahk
+﻿;; Programm: TDL_Batcher.ahk
 
 ;; Function: a Kind of batch-processing for Todolist
 ;; Reads a DEF-File which contains commands for TDL and fires Todolist.exe with each of this commands
