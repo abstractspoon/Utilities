@@ -8,10 +8,10 @@
 #include "optionsdlg.h"
 #include "selectfiledlg.h"
 
-#include "..\shared\folderdialog.h"
-#include "..\shared\zipper.h"
-#include "..\shared\unzipper.h"
-#include "..\shared\misc.h"
+#include "..\..\ToDoList_Dev\Core\shared\folderdialog.h"
+#include "..\..\ToDoList_Dev\Core\shared\zipper.h"
+#include "..\..\ToDoList_Dev\Core\shared\unzipper.h"
+#include "..\..\ToDoList_Dev\Core\shared\misc.h"
 
 #include <shlwapi.h>
 

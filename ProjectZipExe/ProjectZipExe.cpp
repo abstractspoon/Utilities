@@ -9,8 +9,8 @@
 #include "..\projectzip\projectzip7.h"
 #include "..\projectzip\optionsdlg.h"
 #include "..\projectzip\pzutil.h"
-#include "..\shared\encommandlineinfo.h"
-#include "..\shared\filemisc.h"
+#include "..\..\ToDoList_Dev\Core\shared\encommandlineinfo.h"
+#include "..\..\ToDoList_Dev\Core\shared\filemisc.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

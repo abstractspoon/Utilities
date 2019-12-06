@@ -7,7 +7,7 @@
 // SelectFileDialog.h : header file
 //
 
-#include "..\shared\runtimedlg.h"
+#include "..\..\ToDoList_Dev\Core\shared\runtimedlg.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CSelectFileDlg dialog

@@ -53,7 +53,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 /nologo /subsystem:windows /machine:I386
-# ADD LINK32 "..\shared\unicode_release\shared.lib" /nologo /entry:"wWinMainCRTStartup" /subsystem:windows /machine:I386 /nodefaultlib:"libc.lib" /out:"Release/ProjectZip.exe"
+# ADD LINK32 "..\..\ToDoList_Dev\Core\shared\unicode_release\shared.lib" /nologo /entry:"wWinMainCRTStartup" /subsystem:windows /machine:I386 /nodefaultlib:"libc.lib" /out:"Release/ProjectZip.exe"
 
 !ELSEIF  "$(CFG)" == "ProjectZipExe - Win32 Debug"
 
@@ -79,7 +79,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 /nologo /subsystem:windows /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 "..\shared\unicode_debug\shared.lib" /nologo /entry:"wWinMainCRTStartup" /subsystem:windows /debug /machine:I386 /nodefaultlib:"libc.lib" /out:"Debug/ProjectZip.exe" /pdbtype:sept
+# ADD LINK32 "..\..\ToDoList_Dev\Core\shared\unicode_debug\shared.lib" "..\..\ToDoList_Dev\Core\3rdparty\zlib\zlibstat.lib" /nologo /entry:"wWinMainCRTStartup" /subsystem:windows /debug /machine:I386 /nodefaultlib:"libc.lib" /out:"Debug/ProjectZip.exe" /pdbtype:sept
 
 !ENDIF 
 
@@ -195,6 +195,10 @@ SOURCE=.\ReadMe.txt
 # Begin Source File
 
 SOURCE=.\res\todolist.exe.manifest
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\ToDoList_Dev\Core\3rdParty\Zlib\ZLIBSTAT.LIB
 # End Source File
 # End Target
 # End Project

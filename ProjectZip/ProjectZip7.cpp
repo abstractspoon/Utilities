@@ -5,8 +5,8 @@
 #include "stdafx.h"
 #include "ProjectZip7.h"
 
-#include "..\Shared\XmlFile.h"
-#include "..\Shared\misc.h"
+#include "..\..\ToDoList_Dev\Core\Shared\XmlFile.h"
+#include "..\..\ToDoList_Dev\Core\Shared\misc.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -55,7 +55,7 @@ int CProjectZip7::GetSourceFiles(CString sProjectFile, CStringArray& aFiles) con
 {
 	aFiles.RemoveAll();
 
-	CXmlFile file(_T(""), CP_UTF8);
+	CXmlFile file(_T(""));
 	
 	if (file.Load(sProjectFile, _T("Project"))) // vcxproj
 	{
