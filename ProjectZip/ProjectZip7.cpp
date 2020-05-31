@@ -7,6 +7,7 @@
 
 #include "..\..\ToDoList_Dev\Core\Shared\XmlFile.h"
 #include "..\..\ToDoList_Dev\Core\Shared\misc.h"
+#include "..\..\ToDoList_Dev\Core\Shared\filemisc.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -57,13 +58,14 @@ int CProjectZip7::GetSourceFiles(CString sProjectFile, CStringArray& aFiles) con
 
 	CXmlFile file(_T(""));
 	
-	if (file.Load(sProjectFile, _T("Project"))) // vcxproj
+	if (file.Load(sProjectFile, _T("Project"))) // vcxproj/csproj
 	{
+		BOOL bVccProj = !FileMisc::HasExtension(sProjectFile, _T(".csproj"));
 		const CXmlItem* pXIGroup = file.GetItem(_T("ItemGroup"));
 
 		while (pXIGroup)
 		{
-			ProcessFileGroup(pXIGroup, aFiles);
+			ProcessFileGroup(pXIGroup, aFiles, bVccProj);
 
 			pXIGroup = pXIGroup->GetSibling();
 		}
@@ -74,7 +76,7 @@ int CProjectZip7::GetSourceFiles(CString sProjectFile, CStringArray& aFiles) con
 
 		while (pXIGroup)
 		{
-			ProcessFileGroup(pXIGroup, aFiles);
+			ProcessFileGroup(pXIGroup, aFiles, TRUE);
 			
 			pXIGroup = pXIGroup->GetSibling();
 		}
@@ -109,12 +111,12 @@ BOOL CProjectZip7::GetNextProjectFile(CStdioFile& fileWorkspace, CString& sFileP
 	return !sFilePath.IsEmpty();
 }
 
-void CProjectZip7::ProcessFileGroup(const CXmlItem* pXIGroup, CStringArray& aFiles) const
+void CProjectZip7::ProcessFileGroup(const CXmlItem* pXIGroup, CStringArray& aFiles, BOOL bVccProj) const
 {
-	if (pXIGroup->GetName() == _T("ItemGroup")) // vcxproj
+	if (pXIGroup->GetName() == _T("ItemGroup")) // vcxproj/csproj
 	{
 		// source files
-		const CXmlItem* pXISrc = pXIGroup->GetItem(_T("ClCompile"));
+		const CXmlItem* pXISrc = pXIGroup->GetItem(bVccProj ? _T("ClCompile") : _T("Compile"));
 
 		while (pXISrc)
 		{

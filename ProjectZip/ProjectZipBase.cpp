@@ -425,9 +425,9 @@ int CProjectZipBase::BuildWorkspaceFileList(CString sWorkspaceFile, CStringArray
 		PrepareFilePaths(sWorkspaceFile, aProjects, aFailures);
 
 		// now build a master file list of all files
-		int nProject = aProjects.GetSize();
+		int nNumProj = aProjects.GetSize();
 
-		while (nProject--)
+		for (int nProject = 0; nProject < nNumProj; nProject++)
 		{
 			CString sProject(aProjects[nProject]);
 

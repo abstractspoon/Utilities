@@ -26,7 +26,7 @@ public:
 
 	// helpers
 	BOOL GetNextProjectFile(CStdioFile& fileWorkspace, CString& sFilePath) const;
-	void ProcessFileGroup(const CXmlItem* pXIGroup, CStringArray& aFiles) const;
+	void ProcessFileGroup(const CXmlItem* pXIGroup, CStringArray& aFiles, BOOL bVccProj) const;
 
 };
 
