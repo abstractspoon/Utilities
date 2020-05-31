@@ -46,7 +46,10 @@ int CProjectZip7::GetProjectFiles(CString sWorkspaceFile, CStringArray& aFiles) 
 		CString sFile;
 		
 		while (GetNextProjectFile(file, sFile))
-			AddFile(sFile, aFiles);
+		{
+			if (IsProject(sFile))
+				AddFile(sFile, aFiles);
+		}
 	}
 	
 	return aFiles.GetSize();
@@ -60,12 +63,11 @@ int CProjectZip7::GetSourceFiles(CString sProjectFile, CStringArray& aFiles) con
 	
 	if (file.Load(sProjectFile, _T("Project"))) // vcxproj/csproj
 	{
-		BOOL bVccProj = !FileMisc::HasExtension(sProjectFile, _T(".csproj"));
 		const CXmlItem* pXIGroup = file.GetItem(_T("ItemGroup"));
 
 		while (pXIGroup)
 		{
-			ProcessFileGroup(pXIGroup, aFiles, bVccProj);
+			ProcessFileGroup(pXIGroup, aFiles);
 
 			pXIGroup = pXIGroup->GetSibling();
 		}
@@ -76,7 +78,7 @@ int CProjectZip7::GetSourceFiles(CString sProjectFile, CStringArray& aFiles) con
 
 		while (pXIGroup)
 		{
-			ProcessFileGroup(pXIGroup, aFiles, TRUE);
+			ProcessFileGroup(pXIGroup, aFiles);
 			
 			pXIGroup = pXIGroup->GetSibling();
 		}
@@ -101,56 +103,49 @@ BOOL CProjectZip7::GetNextProjectFile(CStdioFile& fileWorkspace, CString& sFileP
 		sFilePath = aParts[1]; // 2nd item
 		
 		// cleanup
-		sFilePath.Replace('\"', ' ');
-		sFilePath.TrimLeft();
-		sFilePath.TrimRight();
-		
+		VERIFY(ValidatePath(sFilePath));
+
 		TRACE (_T("%s\n"), sFilePath);
 	}
 	
 	return !sFilePath.IsEmpty();
 }
 
-void CProjectZip7::ProcessFileGroup(const CXmlItem* pXIGroup, CStringArray& aFiles, BOOL bVccProj) const
+void CProjectZip7::ProcessFileGroup(const CXmlItem* pXIGroup, CStringArray& aFiles) const
 {
 	if (pXIGroup->GetName() == _T("ItemGroup")) // vcxproj/csproj
 	{
+		LPCTSTR FILETYPES[] = 
+		{
+			_T("ClCompile"),		// vcxproj
+			_T("ClInclude"),		// vcxproj
+			_T("ResourceCompile"),	// vcxproj
+			_T("Image"),			// vcxproj
+			_T("Compile"),			// csproj
+			_T("EmbeddedResource"),	// csproj
+			_T("Content"),			// csproj
+			_T("None"),				// vcxproj/csproj
+		};
+		const int NUM_FILETYPES = (sizeof(FILETYPES) / sizeof(FILETYPES[0]));
+
 		// source files
-		const CXmlItem* pXISrc = pXIGroup->GetItem(bVccProj ? _T("ClCompile") : _T("Compile"));
+		int nFileType = NUM_FILETYPES;
 
-		while (pXISrc)
+		while (nFileType--)
 		{
-			CString sFilePath(pXISrc->GetItemValue(_T("Include")));
+			const CXmlItem* pXISrc = pXIGroup->GetItem(FILETYPES[nFileType]);
 
-			// cleanup
-			sFilePath.Replace('\"', ' ');
-			sFilePath.TrimLeft();
-			sFilePath.TrimRight();
-			
-			if (!sFilePath.IsEmpty())
-				aFiles.Add(sFilePath);
+			while (pXISrc)
+			{
+				CString sFilePath(pXISrc->GetItemValue(_T("Include")));
 
-			// next
-			pXISrc = pXISrc->GetSibling();
-		}
+				// cleanup
+				if (ValidatePath(sFilePath))
+					aFiles.Add(sFilePath);
 
-		// header files
-		const CXmlItem* pXIInc = pXIGroup->GetItem(_T("ClInclude"));
-
-		while (pXIInc)
-		{
-			CString sFilePath(pXIInc->GetItemValue(_T("Include")));
-
-			// cleanup
-			sFilePath.Replace('\"', ' ');
-			sFilePath.TrimLeft();
-			sFilePath.TrimRight();
-			
-			if (!sFilePath.IsEmpty())
-				aFiles.Add(sFilePath);
-
-			// next
-			pXIInc = pXIInc->GetSibling();
+				// next
+				pXISrc = pXISrc->GetSibling();
+			}
 		}
 	}
 	else if (pXIGroup->GetName() == _T("Filter")) // vcproj
@@ -162,15 +157,20 @@ void CProjectZip7::ProcessFileGroup(const CXmlItem* pXIGroup, CStringArray& aFil
 			CString sFilePath(pXIFile->GetItemValue(_T("RelativePath")));
 
 			// cleanup
-			sFilePath.Replace('\"', ' ');
-			sFilePath.TrimLeft();
-			sFilePath.TrimRight();
-			
-			if (!sFilePath.IsEmpty())
+			if (ValidatePath(sFilePath))
 				aFiles.Add(sFilePath);
 
 			// next
 			pXIFile = pXIFile->GetSibling();
 		}
 	}
+}
+
+BOOL CProjectZip7::ValidatePath(CString& sFilePath)
+{
+	sFilePath.Replace('\"', ' ');
+	sFilePath.TrimLeft();
+	sFilePath.TrimRight();
+
+	return !sFilePath.IsEmpty();
 }

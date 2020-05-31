@@ -84,10 +84,6 @@
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="res\projectzipexe.exe.manifest" />
-    <Manifest Include="res\todolist.exe.manifest" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="..\..\ToDoList_Dev\Core\3rdParty\Zlib\ZLIBSTAT.LIB" />

@@ -26,8 +26,9 @@ public:
 
 	// helpers
 	BOOL GetNextProjectFile(CStdioFile& fileWorkspace, CString& sFilePath) const;
-	void ProcessFileGroup(const CXmlItem* pXIGroup, CStringArray& aFiles, BOOL bVccProj) const;
+	void ProcessFileGroup(const CXmlItem* pXIGroup, CStringArray& aFiles) const;
 
+	static BOOL ValidatePath(CString& sFilePath);
 };
 
 #endif // !defined(AFX_PROJECTZIP7_H__64187883_1169_44E0_8651_4620B5BFA638__INCLUDED_)
