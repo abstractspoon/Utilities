@@ -9,21 +9,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Microsoft.Win32;
 
 namespace IPCounter
 {
 	public partial class Form1 : Form
 	{
-		const string MyIPAddress = "114.74.200.69";
-
 		public Form1()
 		{
 			InitializeComponent();
 
-// 			int colWidth = ((m_ResultsList.Width - SystemInformation.VerticalScrollBarWidth) / m_ResultsList.Columns.Count);
-// 
-// 			foreach (ColumnHeader col in m_ResultsList.Columns)
-// 				col.Width = colWidth;
+			RegistryKey key = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\AbstractSpoon\IPCounter");
+			var myIP = key.GetValue("MyIPAddress");
+
+			if (myIP != null)
+				m_MyIPAddress.Text = myIP.ToString();
 		}
 
 		private void OnBrowseLogFiles(object sender, EventArgs e)
@@ -61,6 +61,9 @@ namespace IPCounter
 		{
 			Cursor = Cursors.WaitCursor;
 
+			m_ProgressList.Items.Clear();
+			m_ResultsList.Items.Clear();
+
 			var ipCounts = new Dictionary<string, int>();
 			int totalCount = 0;
 
@@ -95,7 +98,7 @@ namespace IPCounter
 				lvItem.SubItems.Add(ip.Value.ToString());
 				lvItem.SubItems.Add(string.Format("{0:F1}", ((ip.Value * 100.0) / totalCount)));
 
-				if (ip.Key == MyIPAddress)
+				if (ip.Key == m_MyIPAddress.Text)
 				{
 					lvItem.ForeColor = Color.White;
 					lvItem.BackColor = Color.Blue;
