@@ -14,6 +14,8 @@ namespace IPCounter
 {
 	public partial class Form1 : Form
 	{
+		const string MyIPAddress = "114.74.200.69";
+
 		public Form1()
 		{
 			InitializeComponent();
@@ -57,6 +59,8 @@ namespace IPCounter
 
 		private void OnAnalyseLogFiles(object sender, EventArgs e)
 		{
+			Cursor = Cursors.WaitCursor;
+
 			var ipCounts = new Dictionary<string, int>();
 			int totalCount = 0;
 
@@ -81,6 +85,9 @@ namespace IPCounter
 
 			m_ResultsList.SuspendLayout();
 
+			bool foundMyIP = false;
+			int count = 0;
+
 			foreach (var ip in ipCounts)
 			{
 				var lvItem = new ListViewItem(ip.Key);
@@ -88,10 +95,28 @@ namespace IPCounter
 				lvItem.SubItems.Add(ip.Value.ToString());
 				lvItem.SubItems.Add(string.Format("{0:F1}", ((ip.Value * 100.0) / totalCount)));
 
+				if (ip.Key == MyIPAddress)
+				{
+					lvItem.ForeColor = Color.White;
+					lvItem.BackColor = Color.Blue;
+					foundMyIP = true;
+				}
+				else if (!foundMyIP)
+				{
+					lvItem.ForeColor = Color.White;
+					lvItem.BackColor = Color.Red;
+				}
+
 				m_ResultsList.Items.Add(lvItem);
+
+				if (++count == 50)
+					m_ResultsList.Update();
 			}
 
 			m_ResultsList.ResumeLayout();
+			m_ResultsList.TopItem = m_ResultsList.Items[0];
+
+			Cursor = Cursors.Default;
 		}
 
 		private int AnalyseLogFile(string logPath, Dictionary<string, int> ipCounts)
@@ -226,5 +251,10 @@ namespace IPCounter
 			return tempFileName;
 		}
 
+		private void OnDoubleClickResult(object sender, EventArgs e)
+		{
+			if (m_ResultsList.SelectedItems.Count > 0)
+				Clipboard.SetData(DataFormats.Text, m_ResultsList.SelectedItems[0].Text);
+		}
 	}
 }
