@@ -9,6 +9,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Text.RegularExpressions;
+
 using Microsoft.Win32;
 
 namespace IPCounter
@@ -134,9 +136,27 @@ namespace IPCounter
 				while ((line = file.ReadLine()) != null)
 				{
 					numLines++;
-					var ipAddress = line.Substring(0, line.IndexOf(' '));
 
-					if (!string.IsNullOrEmpty(ipAddress))
+					var ipAddress = string.Empty;
+					int httpCode = -1;
+
+					var values = Regex.Matches(line, @"[\""].+?[\""]|[^ ]+")
+									 	.Cast<Match>()
+										.Select(m => m.Value)
+										.ToList();
+
+					if (values.Count() >= 10)
+					{
+						int.TryParse(values[values.Count - 4], out httpCode);
+
+						ipAddress = values[0];
+					}
+					else
+					{
+						ipAddress = line.Substring(0, line.IndexOf(' '));
+					}
+
+					if (!string.IsNullOrEmpty(ipAddress) && ((httpCode == -1) || ((httpCode >= 200) && (httpCode < 300))))
 					{
 						if (!ipCounts.ContainsKey(ipAddress))
 							ipCounts[ipAddress] = 0;
