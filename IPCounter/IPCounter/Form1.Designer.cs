@@ -81,9 +81,9 @@
             | System.Windows.Forms.AnchorStyles.Left)));
 			this.m_ProgressList.FormattingEnabled = true;
 			this.m_ProgressList.IntegralHeight = false;
-			this.m_ProgressList.Location = new System.Drawing.Point(12, 240);
+			this.m_ProgressList.Location = new System.Drawing.Point(15, 240);
 			this.m_ProgressList.Name = "m_ProgressList";
-			this.m_ProgressList.Size = new System.Drawing.Size(286, 145);
+			this.m_ProgressList.Size = new System.Drawing.Size(283, 145);
 			this.m_ProgressList.TabIndex = 2;
 			// 
 			// label1
