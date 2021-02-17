@@ -38,7 +38,8 @@ namespace IPCounter
 			if (key != null)
 			{
 				m_MyIPAddress.Text = key.GetValue("MyIPAddress", "").ToString();
-
+				m_MinCount.Text = key.GetValue("MinCount", "10").ToString();
+				
 				int numZips = 0;
 				int.TryParse(key.GetValue("NumZipFiles", "0").ToString(), out numZips);
 
@@ -66,6 +67,7 @@ namespace IPCounter
 
 			key.SetValue("MyIPAddress", m_MyIPAddress.Text);
 			key.SetValue("NumZipFiles", m_LogFileList.Items.Count);
+			key.SetValue("MinCount", m_MinCount.Value);
 
 			for (int i = 0; i < m_LogFileList.Items.Count; i++)
 				key.SetValue(String.Format("ZipFile{0}", i), m_LogFileList.Items[i]);
@@ -141,21 +143,27 @@ namespace IPCounter
 
 			foreach (var ip in ipCounts)
 			{
+				if (ip.Value < m_MinCount.Value)
+					break;
+
 				var lvItem = new ListViewItem(ip.Key);
 
 				lvItem.SubItems.Add(ip.Value.ToString());
 				lvItem.SubItems.Add(string.Format("{0:F1}", ((ip.Value * 100.0) / totalCount)));
 
-				if (ip.Key == m_MyIPAddress.Text)
+				if (!String.IsNullOrWhiteSpace(m_MyIPAddress.Text))
 				{
-					lvItem.ForeColor = Color.White;
-					lvItem.BackColor = Color.Blue;
-					foundMyIP = true;
-				}
-				else if (!foundMyIP)
-				{
-					lvItem.ForeColor = Color.White;
-					lvItem.BackColor = Color.Red;
+					if (ip.Key == m_MyIPAddress.Text)
+					{
+						lvItem.ForeColor = Color.White;
+						lvItem.BackColor = Color.Blue;
+						foundMyIP = true;
+					}
+					else if (!foundMyIP)
+					{
+						lvItem.ForeColor = Color.White;
+						lvItem.BackColor = Color.Red;
+					}
 				}
 
 				m_ResultsList.Items.Add(lvItem);
@@ -366,6 +374,13 @@ namespace IPCounter
 				httpRanges.Add(new Tuple<int, int>(500, 599));
 
 			return httpRanges;
+		}
+
+		private void OnMinCountKeyPress(object sender, KeyPressEventArgs e)
+		{
+			// Native control does not prevent decimals 
+			// or negatives being typed
+			e.Handled = ((e.KeyChar == '.') || (e.KeyChar == ',') || (e.KeyChar == '-'));
 		}
 	}
 }

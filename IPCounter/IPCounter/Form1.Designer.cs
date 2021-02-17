@@ -45,6 +45,9 @@
 			this.m_MyIPAddress = new System.Windows.Forms.TextBox();
 			this.m_HttpCodes = new System.Windows.Forms.CheckedListBox();
 			this.label4 = new System.Windows.Forms.Label();
+			this.label5 = new System.Windows.Forms.Label();
+			this.m_MinCount = new System.Windows.Forms.NumericUpDown();
+			((System.ComponentModel.ISupportInitialize)(this.m_MinCount)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// m_BrowseButton
@@ -70,7 +73,7 @@
 			// button1
 			// 
 			this.button1.AutoSize = true;
-			this.button1.Location = new System.Drawing.Point(13, 245);
+			this.button1.Location = new System.Drawing.Point(13, 302);
 			this.button1.Name = "button1";
 			this.button1.Size = new System.Drawing.Size(99, 23);
 			this.button1.TabIndex = 3;
@@ -85,15 +88,15 @@
 			this.m_ProgressList.FormattingEnabled = true;
 			this.m_ProgressList.HorizontalScrollbar = true;
 			this.m_ProgressList.IntegralHeight = false;
-			this.m_ProgressList.Location = new System.Drawing.Point(15, 291);
+			this.m_ProgressList.Location = new System.Drawing.Point(15, 348);
 			this.m_ProgressList.Name = "m_ProgressList";
-			this.m_ProgressList.Size = new System.Drawing.Size(283, 158);
+			this.m_ProgressList.Size = new System.Drawing.Size(283, 127);
 			this.m_ProgressList.TabIndex = 2;
 			// 
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(12, 274);
+			this.label1.Location = new System.Drawing.Point(12, 331);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(48, 13);
 			this.label1.TabIndex = 4;
@@ -122,7 +125,7 @@
 			this.m_ResultsList.Location = new System.Drawing.Point(312, 30);
 			this.m_ResultsList.MultiSelect = false;
 			this.m_ResultsList.Name = "m_ResultsList";
-			this.m_ResultsList.Size = new System.Drawing.Size(267, 419);
+			this.m_ResultsList.Size = new System.Drawing.Size(267, 445);
 			this.m_ResultsList.TabIndex = 5;
 			this.m_ResultsList.UseCompatibleStateImageBehavior = false;
 			this.m_ResultsList.View = System.Windows.Forms.View.Details;
@@ -185,11 +188,45 @@
 			this.label4.TabIndex = 10;
 			this.label4.Text = "Count these HTTP codes:";
 			// 
+			// label5
+			// 
+			this.label5.AutoSize = true;
+			this.label5.Location = new System.Drawing.Point(12, 268);
+			this.label5.Name = "label5";
+			this.label5.Size = new System.Drawing.Size(112, 13);
+			this.label5.TabIndex = 12;
+			this.label5.Text = "Omit \'counts\' less than";
+			// 
+			// m_MinCount
+			// 
+			this.m_MinCount.Location = new System.Drawing.Point(149, 266);
+			this.m_MinCount.Maximum = new decimal(new int[] {
+            100000,
+            0,
+            0,
+            0});
+			this.m_MinCount.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+			this.m_MinCount.Name = "m_MinCount";
+			this.m_MinCount.Size = new System.Drawing.Size(86, 20);
+			this.m_MinCount.TabIndex = 13;
+			this.m_MinCount.Value = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+			this.m_MinCount.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.OnMinCountKeyPress);
+			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(591, 461);
+			this.ClientSize = new System.Drawing.Size(591, 487);
+			this.Controls.Add(this.m_MinCount);
+			this.Controls.Add(this.label5);
 			this.Controls.Add(this.m_HttpCodes);
 			this.Controls.Add(this.label4);
 			this.Controls.Add(this.m_MyIPAddress);
@@ -205,6 +242,7 @@
 			this.Name = "Form1";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "IP Address Counter";
+			((System.ComponentModel.ISupportInitialize)(this.m_MinCount)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -225,6 +263,8 @@
 		private System.Windows.Forms.TextBox m_MyIPAddress;
 		private System.Windows.Forms.CheckedListBox m_HttpCodes;
 		private System.Windows.Forms.Label label4;
+		private System.Windows.Forms.Label label5;
+		private System.Windows.Forms.NumericUpDown m_MinCount;
 	}
 }
 
