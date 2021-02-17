@@ -21,11 +21,57 @@ namespace IPCounter
 		{
 			InitializeComponent();
 
-			RegistryKey key = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\AbstractSpoon\IPCounter");
-			var myIP = key.GetValue("MyIPAddress");
+			RestoreLastState();
+		}
 
-			if (myIP != null)
-				m_MyIPAddress.Text = myIP.ToString();
+		protected override void OnClosed(EventArgs e)
+		{
+			SaveCurrentState();
+
+			base.OnClosed(e);
+		}
+
+		private void RestoreLastState()
+		{
+			RegistryKey key = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\AbstractSpoon\IPCounter");
+
+			if (key != null)
+			{
+				m_MyIPAddress.Text = key.GetValue("MyIPAddress", "").ToString();
+
+				int numZips = 0;
+				int.TryParse(key.GetValue("NumZipFiles", "0").ToString(), out numZips);
+
+				for (int i = 0; i < numZips; i++)
+					m_LogFileList.Items.Add(key.GetValue(String.Format("ZipFile{0}", i), "").ToString());
+
+				for (int i = 0; i < m_HttpCodes.Items.Count; i++)
+				{
+					bool check = true;
+					bool.TryParse(key.GetValue(String.Format("HttpCodeChecked{0}", i), true).ToString(), out check);
+
+					m_HttpCodes.SetItemChecked(i, check);
+				}
+			}
+			else
+			{
+				for (int i = 0; i < m_HttpCodes.Items.Count; i++)
+					m_HttpCodes.SetItemChecked(i, true);
+			}
+		}
+
+		private void SaveCurrentState()
+		{
+			RegistryKey key = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\AbstractSpoon\IPCounter");
+
+			key.SetValue("MyIPAddress", m_MyIPAddress.Text);
+			key.SetValue("NumZipFiles", m_LogFileList.Items.Count);
+
+			for (int i = 0; i < m_LogFileList.Items.Count; i++)
+				key.SetValue(String.Format("ZipFile{0}", i), m_LogFileList.Items[i]);
+
+			for (int i = 0; i < m_HttpCodes.Items.Count; i++)
+				key.SetValue(String.Format("HttpCodeChecked{0}", i), m_HttpCodes.GetItemChecked(i));
 		}
 
 		private void OnBrowseLogFiles(object sender, EventArgs e)
@@ -119,13 +165,16 @@ namespace IPCounter
 			}
 
 			m_ResultsList.ResumeLayout();
-			m_ResultsList.TopItem = m_ResultsList.Items[0];
+
+			if (m_ResultsList.Items.Count > 0)
+				m_ResultsList.TopItem = m_ResultsList.Items[0];
 
 			Cursor = Cursors.Default;
 		}
 
 		private int AnalyseLogFile(string logPath, Dictionary<string, int> ipCounts)
 		{
+			var httpRanges = GetHttpRanges();
 			int numLines = 0;
 
 			try
@@ -156,7 +205,7 @@ namespace IPCounter
 						ipAddress = line.Substring(0, line.IndexOf(' '));
 					}
 
-					if (!string.IsNullOrEmpty(ipAddress) && ((httpCode == -1) || ((httpCode >= 200) && (httpCode < 300))))
+					if (WantCountLogEntry(ipAddress, httpCode, httpRanges))
 					{
 						if (!ipCounts.ContainsKey(ipAddress))
 							ipCounts[ipAddress] = 0;
@@ -278,6 +327,45 @@ namespace IPCounter
 		{
 			if (m_ResultsList.SelectedItems.Count > 0)
 				Clipboard.SetData(DataFormats.Text, m_ResultsList.SelectedItems[0].Text);
+		}
+
+		private static bool WantCountLogEntry(string ipAddress, int httpCode, List<Tuple<int, int>> httpRanges)
+		{
+			if (string.IsNullOrEmpty(ipAddress))
+				return false;
+
+			if (httpCode < 0)
+				return true; // couldn't figure out the code
+
+			foreach (var range in httpRanges)
+			{
+				if ((httpCode >= range.Item1) && (httpCode < range.Item2))
+					return true;
+			}
+
+			return false;
+		}
+
+		private List<Tuple<int, int>> GetHttpRanges()
+		{
+			var httpRanges = new List<Tuple<int, int>>();
+
+			if (m_HttpCodes.CheckedItems.Contains("100-199"))
+				httpRanges.Add(new Tuple<int, int>(100, 199));
+
+			if (m_HttpCodes.CheckedItems.Contains("200-299"))
+				httpRanges.Add(new Tuple<int, int>(200, 299));
+
+			if (m_HttpCodes.CheckedItems.Contains("300-399"))
+				httpRanges.Add(new Tuple<int, int>(300, 399));
+
+			if (m_HttpCodes.CheckedItems.Contains("400-499"))
+				httpRanges.Add(new Tuple<int, int>(400, 499));
+
+			if (m_HttpCodes.CheckedItems.Contains("500-599"))
+				httpRanges.Add(new Tuple<int, int>(500, 599));
+
+			return httpRanges;
 		}
 	}
 }
