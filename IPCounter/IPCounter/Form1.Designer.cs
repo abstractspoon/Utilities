@@ -47,6 +47,10 @@
 			this.label4 = new System.Windows.Forms.Label();
 			this.label5 = new System.Windows.Forms.Label();
 			this.m_MinCount = new System.Windows.Forms.NumericUpDown();
+			this.m_FromDate = new System.Windows.Forms.DateTimePicker();
+			this.label6 = new System.Windows.Forms.Label();
+			this.m_ToDate = new System.Windows.Forms.DateTimePicker();
+			this.label7 = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.m_MinCount)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -73,7 +77,7 @@
 			// button1
 			// 
 			this.button1.AutoSize = true;
-			this.button1.Location = new System.Drawing.Point(13, 302);
+			this.button1.Location = new System.Drawing.Point(13, 325);
 			this.button1.Name = "button1";
 			this.button1.Size = new System.Drawing.Size(99, 23);
 			this.button1.TabIndex = 3;
@@ -88,15 +92,15 @@
 			this.m_ProgressList.FormattingEnabled = true;
 			this.m_ProgressList.HorizontalScrollbar = true;
 			this.m_ProgressList.IntegralHeight = false;
-			this.m_ProgressList.Location = new System.Drawing.Point(15, 348);
+			this.m_ProgressList.Location = new System.Drawing.Point(15, 369);
 			this.m_ProgressList.Name = "m_ProgressList";
-			this.m_ProgressList.Size = new System.Drawing.Size(283, 127);
+			this.m_ProgressList.Size = new System.Drawing.Size(283, 106);
 			this.m_ProgressList.TabIndex = 2;
 			// 
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(12, 331);
+			this.label1.Location = new System.Drawing.Point(12, 354);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(48, 13);
 			this.label1.TabIndex = 4;
@@ -191,7 +195,7 @@
 			// label5
 			// 
 			this.label5.AutoSize = true;
-			this.label5.Location = new System.Drawing.Point(12, 268);
+			this.label5.Location = new System.Drawing.Point(12, 300);
 			this.label5.Name = "label5";
 			this.label5.Size = new System.Drawing.Size(112, 13);
 			this.label5.TabIndex = 12;
@@ -199,7 +203,7 @@
 			// 
 			// m_MinCount
 			// 
-			this.m_MinCount.Location = new System.Drawing.Point(149, 266);
+			this.m_MinCount.Location = new System.Drawing.Point(149, 298);
 			this.m_MinCount.Maximum = new decimal(new int[] {
             100000,
             0,
@@ -220,11 +224,53 @@
             0});
 			this.m_MinCount.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.OnMinCountKeyPress);
 			// 
+			// m_FromDate
+			// 
+			this.m_FromDate.Checked = false;
+			this.m_FromDate.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+			this.m_FromDate.Location = new System.Drawing.Point(46, 267);
+			this.m_FromDate.Name = "m_FromDate";
+			this.m_FromDate.ShowCheckBox = true;
+			this.m_FromDate.Size = new System.Drawing.Size(97, 20);
+			this.m_FromDate.TabIndex = 14;
+			// 
+			// label6
+			// 
+			this.label6.AutoSize = true;
+			this.label6.Location = new System.Drawing.Point(10, 270);
+			this.label6.Name = "label6";
+			this.label6.Size = new System.Drawing.Size(30, 13);
+			this.label6.TabIndex = 15;
+			this.label6.Text = "From";
+			// 
+			// m_ToDate
+			// 
+			this.m_ToDate.Checked = false;
+			this.m_ToDate.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+			this.m_ToDate.Location = new System.Drawing.Point(197, 267);
+			this.m_ToDate.Name = "m_ToDate";
+			this.m_ToDate.ShowCheckBox = true;
+			this.m_ToDate.Size = new System.Drawing.Size(101, 20);
+			this.m_ToDate.TabIndex = 14;
+			// 
+			// label7
+			// 
+			this.label7.AutoSize = true;
+			this.label7.Location = new System.Drawing.Point(171, 270);
+			this.label7.Name = "label7";
+			this.label7.Size = new System.Drawing.Size(20, 13);
+			this.label7.TabIndex = 15;
+			this.label7.Text = "To";
+			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(591, 487);
+			this.Controls.Add(this.label7);
+			this.Controls.Add(this.label6);
+			this.Controls.Add(this.m_ToDate);
+			this.Controls.Add(this.m_FromDate);
 			this.Controls.Add(this.m_MinCount);
 			this.Controls.Add(this.label5);
 			this.Controls.Add(this.m_HttpCodes);
@@ -265,6 +311,10 @@
 		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.Label label5;
 		private System.Windows.Forms.NumericUpDown m_MinCount;
+		private System.Windows.Forms.DateTimePicker m_FromDate;
+		private System.Windows.Forms.Label label6;
+		private System.Windows.Forms.DateTimePicker m_ToDate;
+		private System.Windows.Forms.Label label7;
 	}
 }
 

@@ -15,6 +15,73 @@ using Microsoft.Win32;
 
 namespace IPCounter
 {
+	struct LogEntry
+	{
+		public LogEntry(string logLine)
+		{
+			IpAddress = string.Empty;
+			Date = DateTime.MinValue;
+			HttpCode = -1;
+
+			var values = Regex.Matches(logLine, @"[\""].+?[\""]|[^ ]+")
+								.Cast<Match>()
+								.Select(m => m.Value)
+								.ToList();
+
+			if (values.Count() >= 10)
+			{
+				IpAddress = values[0];
+
+				var date = values[3].Substring(1); // trim off '['
+				date = date.Substring(0, date.IndexOf(':')); // trim off time
+				date = date.Replace('/', ' ');
+
+				DateTime.TryParse(date, out Date);
+
+				int.TryParse(values[values.Count - 4], out HttpCode);
+			}
+			else
+			{
+				IpAddress = logLine.Substring(0, logLine.IndexOf(' '));
+			}
+
+		}
+
+		public bool Matches(List<Tuple<int, int>> httpRanges)
+		{
+			if (HttpCode < 0)
+				return true;
+
+			foreach (var range in httpRanges)
+			{
+				if ((HttpCode >= range.Item1) && (HttpCode < range.Item2))
+					return true;
+			}
+
+			return false;
+		}
+
+		public bool Matches(DateTimePicker from, DateTimePicker to)
+		{
+			if (Date == DateTime.MinValue)
+				return true; // couldn't figure out the date
+
+			if (from.Checked && (Date < from.Value))
+				return false;
+
+			if (to.Checked && (Date > to.Value))
+				return false;
+
+			return true;
+		}
+
+		public bool IsValid { get { return !string.IsNullOrWhiteSpace(IpAddress); } }
+
+		public string IpAddress;
+		public DateTime Date;
+		public int HttpCode;
+	}
+
 	public partial class Form1 : Form
 	{
 		public Form1()
@@ -39,7 +106,29 @@ namespace IPCounter
 			{
 				m_MyIPAddress.Text = key.GetValue("MyIPAddress", "").ToString();
 				m_MinCount.Text = key.GetValue("MinCount", "10").ToString();
-				
+
+				DateTime date;
+
+				if (DateTime.TryParse(key.GetValue("FromDate", "").ToString(), out date))
+				{
+					m_FromDate.Value = date;
+					m_FromDate.Checked = true;
+				}
+				else
+				{
+					m_FromDate.Checked = false;
+				}
+
+				if (DateTime.TryParse(key.GetValue("ToDate", "").ToString(), out date))
+				{
+					m_ToDate.Value = date;
+					m_ToDate.Checked = true;
+				}
+				else
+				{
+					m_ToDate.Checked = false;
+				}
+
 				int numZips = 0;
 				int.TryParse(key.GetValue("NumZipFiles", "0").ToString(), out numZips);
 
@@ -68,6 +157,16 @@ namespace IPCounter
 			key.SetValue("MyIPAddress", m_MyIPAddress.Text);
 			key.SetValue("NumZipFiles", m_LogFileList.Items.Count);
 			key.SetValue("MinCount", m_MinCount.Value);
+
+			if (m_FromDate.Checked)
+				key.SetValue("FromDate", m_FromDate.Value.ToShortDateString());
+			else
+				key.DeleteValue("FromDate", false);
+
+			if (m_ToDate.Checked)
+				key.SetValue("ToDate", m_ToDate.Value.ToShortDateString());
+			else
+				key.DeleteValue("ToDate", false);
 
 			for (int i = 0; i < m_LogFileList.Items.Count; i++)
 				key.SetValue(String.Format("ZipFile{0}", i), m_LogFileList.Items[i]);
@@ -194,32 +293,21 @@ namespace IPCounter
 				{
 					numLines++;
 
-					var ipAddress = string.Empty;
-					int httpCode = -1;
+					var logEntry = new LogEntry(line);
 
-					var values = Regex.Matches(line, @"[\""].+?[\""]|[^ ]+")
-									 	.Cast<Match>()
-										.Select(m => m.Value)
-										.ToList();
+					if (!logEntry.IsValid)
+						continue;
 
-					if (values.Count() >= 10)
-					{
-						int.TryParse(values[values.Count - 4], out httpCode);
+					if (!logEntry.Matches(httpRanges))
+						continue;
 
-						ipAddress = values[0];
-					}
-					else
-					{
-						ipAddress = line.Substring(0, line.IndexOf(' '));
-					}
+					if (!logEntry.Matches(m_FromDate, m_ToDate))
+						continue;
 
-					if (WantCountLogEntry(ipAddress, httpCode, httpRanges))
-					{
-						if (!ipCounts.ContainsKey(ipAddress))
-							ipCounts[ipAddress] = 0;
+					if (!ipCounts.ContainsKey(logEntry.IpAddress))
+						ipCounts[logEntry.IpAddress] = 0;
 
-						ipCounts[ipAddress]++;
-					}
+					ipCounts[logEntry.IpAddress]++;
 				}
 			}
 			catch (Exception)
@@ -335,23 +423,6 @@ namespace IPCounter
 		{
 			if (m_ResultsList.SelectedItems.Count > 0)
 				Clipboard.SetData(DataFormats.Text, m_ResultsList.SelectedItems[0].Text);
-		}
-
-		private static bool WantCountLogEntry(string ipAddress, int httpCode, List<Tuple<int, int>> httpRanges)
-		{
-			if (string.IsNullOrEmpty(ipAddress))
-				return false;
-
-			if (httpCode < 0)
-				return true; // couldn't figure out the code
-
-			foreach (var range in httpRanges)
-			{
-				if ((httpCode >= range.Item1) && (httpCode < range.Item2))
-					return true;
-			}
-
-			return false;
 		}
 
 		private List<Tuple<int, int>> GetHttpRanges()
