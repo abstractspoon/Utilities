@@ -410,7 +410,16 @@ namespace IPCounter
 					{
 						using (GZipStream GZStream = new GZipStream(MStream, CompressionMode.Decompress))
 						{
-							GZStream.CopyTo(decompressedFileStream);
+							try
+							{
+								GZStream.CopyTo(decompressedFileStream);
+							}
+							catch (Exception)
+							{
+#if DEBUG
+								int breakpoint = 0;
+#endif
+							}
 						}
 					}
 				}
