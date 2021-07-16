@@ -462,5 +462,17 @@ namespace IPCounter
 			// or negatives being typed
 			e.Handled = ((e.KeyChar == '.') || (e.KeyChar == ',') || (e.KeyChar == '-'));
 		}
+
+		private void OnCopyAllAsCsv(object sender, EventArgs e)
+		{
+			string csv = string.Empty;
+
+			foreach (ListViewItem result in m_ResultsList.Items)
+			{
+				csv = csv + string.Format("{0}, {1}, {2}\n", result.SubItems[0].Text, result.SubItems[1].Text, result.SubItems[2].Text);
+			}
+
+			Clipboard.SetData(DataFormats.Text,csv);
+		}
 	}
 }

@@ -51,6 +51,7 @@
 			this.label6 = new System.Windows.Forms.Label();
 			this.m_ToDate = new System.Windows.Forms.DateTimePicker();
 			this.label7 = new System.Windows.Forms.Label();
+			this.CopyAllAsCsv = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.m_MinCount)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -262,11 +263,24 @@
 			this.label7.TabIndex = 15;
 			this.label7.Text = "To";
 			// 
+			// CopyAllAsCsv
+			// 
+			this.CopyAllAsCsv.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.CopyAllAsCsv.AutoSize = true;
+			this.CopyAllAsCsv.Location = new System.Drawing.Point(486, 1);
+			this.CopyAllAsCsv.Name = "CopyAllAsCsv";
+			this.CopyAllAsCsv.Size = new System.Drawing.Size(93, 23);
+			this.CopyAllAsCsv.TabIndex = 16;
+			this.CopyAllAsCsv.Text = "Copy All as CSV";
+			this.CopyAllAsCsv.UseVisualStyleBackColor = true;
+			this.CopyAllAsCsv.Click += new System.EventHandler(this.OnCopyAllAsCsv);
+			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(591, 487);
+			this.Controls.Add(this.CopyAllAsCsv);
 			this.Controls.Add(this.label7);
 			this.Controls.Add(this.label6);
 			this.Controls.Add(this.m_ToDate);
@@ -315,6 +329,7 @@
 		private System.Windows.Forms.Label label6;
 		private System.Windows.Forms.DateTimePicker m_ToDate;
 		private System.Windows.Forms.Label label7;
+		private System.Windows.Forms.Button CopyAllAsCsv;
 	}
 }
 
