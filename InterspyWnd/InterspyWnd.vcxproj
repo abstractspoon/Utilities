@@ -95,6 +95,9 @@
       <OutputFile>.\Debug\InterspyWnd.exe</OutputFile>
       <EntryPointSymbol>wWinMainCRTStartup</EntryPointSymbol>
     </Link>
+    <PostBuildEvent>
+      <Command>copy $(TargetPath) d:\tools\</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -134,6 +137,9 @@
       <OutputFile>.\Release\InterspyWnd.exe</OutputFile>
       <EntryPointSymbol>wWinMainCRTStartup</EntryPointSymbol>
     </Link>
+    <PostBuildEvent>
+      <Command>copy $(TargetPath) d:\tools\</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="InterspyWnd.cpp" />
