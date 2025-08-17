@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Diagnostics;
 
 namespace BranchDepends
 {
@@ -11,15 +12,21 @@ namespace BranchDepends
 	{
 		static void Main(string[] args)
 		{
-			if (args.Count() == 0)
+			if ((args.Count() < 2) || (args.Count() > 3))
+			{
+				// TODO
 				return;
+			}
 
-			var dependsDir = args[0];
+			// Read commandline arguments
+			var repoDir = args[0];
+			var srcDir = args[1];
+
 			var fileList = new List<string>();
 
-			if (args.Count() == 2)
+			if (args.Count() == 3)
 			{
-				fileList.AddRange(File.ReadLines(args[1]));
+				fileList.AddRange(File.ReadLines(args[2]));
 			}
 			else
 			{
@@ -32,104 +39,128 @@ namespace BranchDepends
 				}
 			}
 
-			ProcessChangedFiles(dependsDir, fileList);
-		}
+			// Create 'Included By' lookup
+			var allFiles = GetFilesByExtensions(new DirectoryInfo(srcDir), new string[] { ".h", ".cpp" });
+			var allIncludedBy = new Dictionary<string, HashSet<string>>();
 
-		static void ProcessChangedFiles(string dependsDir, List<string> fileList)
-		{
-			// Convert source files to headers 
-			// OR delete them if the header already exists
-			int file = fileList.Count;
-
-			while (file-- > 0)
+			foreach (var file in allFiles)
 			{
-				var filePath = fileList[file];
+				//Console.WriteLine(file.FullName);
 
-				//Console.WriteLine(filePath);
+				var includes = ReadIncludes(file.FullName);
 
-				if (Path.GetExtension(filePath).ToLower() == ".cpp")
+				foreach (var include in includes)
 				{
-					fileList.RemoveAt(file);
+					HashSet<string> includedBy = null;
+					var includeLower = include.ToLower();
 
-					var headerFile = Path.ChangeExtension(filePath, ".h");
-
-					if (!fileList.Contains(headerFile))
-						fileList.Add(headerFile);
-				}
-				else if (Path.GetExtension(filePath).ToLower() != ".h")
-				{
-					fileList.RemoveAt(file);
-				}
-			}
-
-			foreach (var filePath in fileList)
-			{
-				var dotFile = FindDotFile(dependsDir, filePath.Replace('/', '\\'));
-
-				if (dotFile != null)
-				{
-					Console.WriteLine(dotFile);
-				}
-				else
-				{
-					int breakpoint = 0;
-				}
-			}
-		}
-
-		static string FindDotFile(string dependsDir, string filePath)
-		{
-			// work our way from the full path down to the filename
-			// seeing if the corresponding dot file exists
-			bool exists = false;
-			var paths = filePath.Split('\\').ToList();
-
-			while (!exists && (paths.Count > 0))
-			{
-				var dotFilePath = ConvertFilePathToDotStyle(dependsDir, Path.Combine(paths.ToArray()));
-
-				if (File.Exists(dotFilePath))
-					return dotFilePath;
-
-				// Trim leading folder
-				paths.RemoveAt(0);
-			}
-
-			return null;
-		}
-
-		static string ConvertFilePathToDotStyle(string dependsDir, string filePath)
-		{
-			var dotFileName = new StringBuilder();
-
-			foreach (var fchar in filePath)
-			{
-				switch (fchar)
-				{
-				case '.':
-					dotFileName.Append("_8");
-					break;
-
-				case '\\':
-				case '/':
-					dotFileName.Append("_2");
-					break;
-
-				default:
-					if (Char.IsUpper(fchar))
+					if (!allIncludedBy.TryGetValue(includeLower, out includedBy))
 					{
-						dotFileName.Append('_');
-						dotFileName.Append(Char.ToLower(fchar));
+						includedBy = new HashSet<string>();
+						allIncludedBy[includeLower] = includedBy;
 					}
-					else
-					{
-						dotFileName.Append(fchar);
-					}
-					break;
+
+					includedBy.Add(file.FullName);
 				}
 			}
 
-			return Path.Combine(dependsDir, dotFileName.ToString() + "__dep__incl.dot");
+			// Process file list
+			var allDependents = new HashSet<string>();
+
+			foreach (var file in fileList)
+			{
+				string fullFilePath = Path.GetFullPath(Path.Combine(repoDir, file));
+				GetFileDependents(fullFilePath, allIncludedBy, allDependents);
+			}
+
+			// Convert to sorted list
+			var sortedList = allDependents.ToList();
+			sortedList.Sort();
+
+			foreach (var dependent in sortedList)
+			{
+				Console.WriteLine(dependent);
+			}
 		}
+
+		static IEnumerable<FileInfo> GetFilesByExtensions(DirectoryInfo dirInfo, params string[] extensions)
+		{
+			var allowedExtensions = new HashSet<string>(extensions, StringComparer.OrdinalIgnoreCase);
+
+			return dirInfo.EnumerateFiles("*", System.IO.SearchOption.AllDirectories)
+						  .Where(f => allowedExtensions.Contains(f.Extension));
+		}
+
+		static HashSet<string> ReadIncludes(string fullFilePath)
+		{
+			var includes = new HashSet<string>();
+
+			if (File.Exists(fullFilePath))
+			{
+				string fileDir = Path.GetDirectoryName(fullFilePath);
+
+				foreach (var line in File.ReadLines(fullFilePath))
+				{
+					string rest = line.TrimStart();
+
+					if (!rest.StartsWith("#"))
+						continue;
+
+					rest = rest.Substring(1).TrimStart();
+
+					if (!rest.StartsWith("include"))
+						continue;
+
+					rest = rest.Substring(7).TrimStart();
+
+					if (rest.Count() == 0)
+						continue;
+
+					int endOfInclude = 0;
+
+					switch (rest[0])
+					{
+					case '\"':
+						endOfInclude = rest.IndexOf('\"', 1);
+						break;
+
+// 					case '<':
+// 						endOfInclude = rest.IndexOf('>', 1);
+// 						break;
+
+					case '{':
+						return includes;
+
+					default:
+						continue;
+					}
+
+					var include = rest.Substring(1, endOfInclude - 1);
+
+					includes.Add(Path.GetFullPath(Path.Combine(fileDir, include)));
+				}
+			}
+
+			return includes;
+		}
+
+		static void GetFileDependents(string fullFilePath, Dictionary<string, HashSet<string>> allIncludedBy, HashSet<string> dependents)
+		{
+			HashSet<string> includedBy = null;
+
+			if (allIncludedBy.TryGetValue(fullFilePath.ToLower(), out includedBy))
+			{
+				foreach (var include in includedBy)
+				{
+					if (dependents.Contains(include))
+						continue;
+
+					dependents.Add(include);
+
+					GetFileDependents(include, allIncludedBy, dependents); // RECURSIVE CALL
+				}
+			}
+		}
+
 	}
 }
