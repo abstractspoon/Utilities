@@ -30,23 +30,34 @@ namespace BranchDepends
 			}
 			else
 			{
-				string file = Console.ReadLine();
-
-				while (file != null)
-				{
-					fileList.Add(file);
-					file = Console.ReadLine();
-				}
+				var branchList = new List<string>();
+				GetBranchesFromGit(repoDir, branchList);
+				
+				GetFilesFromGit(repoDir, fileList);
 			}
 
+			fileList = fileList.ConvertAll(file => Path.GetFullPath(Path.Combine(repoDir, file)));
+
 			// Create 'Included By' lookup
+			var allIncludedBy = BuildAllIncludedBy(srcDir);
+
+			// Process file list
+			var allDependents = GetDependents(fileList, allIncludedBy);
+
+			// Output
+			foreach (var dependent in allDependents)
+			{
+				Console.WriteLine("{0} ({1})", dependent.Key, string.Join(", ", dependent.Value.ToArray()));
+			}
+		}
+
+		static IReadOnlyDictionary<string, HashSet<string>> BuildAllIncludedBy(string srcDir)
+		{
 			var allFiles = GetFilesByExtensions(new DirectoryInfo(srcDir), new string[] { ".h", ".cpp" });
 			var allIncludedBy = new Dictionary<string, HashSet<string>>();
 
 			foreach (var file in allFiles)
 			{
-				//Console.WriteLine(file.FullName);
-
 				var includes = ReadIncludes(file.FullName);
 
 				foreach (var include in includes)
@@ -64,22 +75,54 @@ namespace BranchDepends
 				}
 			}
 
-			// Process file list
-			var allDependents = new HashSet<string>();
+			return allIncludedBy;
+		}
+
+		static IDictionary<string, HashSet<string>> GetDependents(IList<string> fileList, IReadOnlyDictionary<string, HashSet<string>> allIncludedBy)
+		{
+			var allDependents = new SortedDictionary<string, HashSet<string>>();
 
 			foreach (var file in fileList)
-			{
-				string fullFilePath = Path.GetFullPath(Path.Combine(repoDir, file));
-				GetFileDependents(fullFilePath, allIncludedBy, allDependents);
-			}
+				GetFileDependents(file, allIncludedBy, allDependents);
 
-			// Convert to sorted list
-			var sortedList = allDependents.ToList();
-			sortedList.Sort();
+			return allDependents;
+		}
 
-			foreach (var dependent in sortedList)
+		static void GetFilesFromGit(string repoDir, IList<string> fileList)
+		{
+			RunGitCommand("diff master --name-only", repoDir, fileList);
+		}
+
+		static void GetBranchesFromGit(string repoDir, IList<string> branchList)
+		{
+			RunGitCommand("branch --all", repoDir, branchList);
+		}
+
+		static void RunGitCommand(string command, string repoDir, IList<string> results)
+		{
+			using (var process = new Process())
 			{
-				Console.WriteLine(dependent);
+				process.StartInfo.FileName = "cmd.exe";
+				process.StartInfo.WorkingDirectory = repoDir;
+				process.StartInfo.Arguments = "/c git " + command;
+
+				process.StartInfo.CreateNoWindow = true;
+				process.StartInfo.UseShellExecute = false;
+				process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+
+				if (results != null)
+				{
+					process.StartInfo.RedirectStandardOutput = true;
+					process.OutputDataReceived += (s, e) =>
+					{
+						if (e.Data != null)
+							results.Add(e.Data.Trim());
+					};
+				}
+
+				process.Start();
+				process.BeginOutputReadLine();
+				process.WaitForExit();
 			}
 		}
 
@@ -144,20 +187,27 @@ namespace BranchDepends
 			return includes;
 		}
 
-		static void GetFileDependents(string fullFilePath, Dictionary<string, HashSet<string>> allIncludedBy, HashSet<string> dependents)
+		static void GetFileDependents(string fullFilePath, 
+									  IReadOnlyDictionary<string, HashSet<string>> allIncludedBy, 
+									  IDictionary<string, HashSet<string>> dependents)
 		{
 			HashSet<string> includedBy = null;
 
 			if (allIncludedBy.TryGetValue(fullFilePath.ToLower(), out includedBy))
 			{
-				foreach (var include in includedBy)
+				foreach (var by in includedBy)
 				{
-					if (dependents.Contains(include))
-						continue;
+					HashSet<string> includes = null;
 
-					dependents.Add(include);
+					if (!dependents.TryGetValue(by, out includes))
+					{
+						includes = new HashSet<string>();
+						dependents[by] = includes;
+					}
 
-					GetFileDependents(include, allIncludedBy, dependents); // RECURSIVE CALL
+					includes.Add(Path.GetFileName(fullFilePath));
+
+					GetFileDependents(by, allIncludedBy, dependents); // RECURSIVE CALL
 				}
 			}
 		}
