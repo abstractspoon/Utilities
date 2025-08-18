@@ -155,7 +155,7 @@ namespace BranchDepends
 				m_CurrentSourceFolder = m_SourceFolders.SelectedItem.ToString();
 		}
 
-		private void OnProcessChangedFiles(object sender, EventArgs e)
+		private void OnAnalyseChangedFiles(object sender, EventArgs e)
 		{
 			if (string.IsNullOrEmpty(m_CurrentRepository) ||
 				string.IsNullOrEmpty(m_CurrentBranch) ||
@@ -185,7 +185,7 @@ namespace BranchDepends
 										.TrimStart(new char[] { '\\' });
 
 				var item = m_AffectedFiles.Items.Add(filePath);
-				item.SubItems.Add(string.Join(", ", dependent.Value.Select(f => Path.GetFileName(f))));
+				item.SubItems.Add(string.Join(", ", dependent.Value.Select(f => Path.GetFileName(f.FullPath))));
 			}
 
 			Cursor = Cursors.Default;

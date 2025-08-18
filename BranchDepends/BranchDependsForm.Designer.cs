@@ -39,7 +39,7 @@
 			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.m_AffectedFilesLabel = new System.Windows.Forms.Label();
-			this.m_ProcessChanges = new System.Windows.Forms.Button();
+			this.m_AnalyseChanges = new System.Windows.Forms.Button();
 			this.m_SourceFolderLabel = new System.Windows.Forms.Label();
 			this.m_SourceFolders = new System.Windows.Forms.ComboBox();
 			this.m_RefreshChangeFiles = new System.Windows.Forms.Button();
@@ -157,16 +157,16 @@
 			this.m_AffectedFilesLabel.TabIndex = 6;
 			this.m_AffectedFilesLabel.Text = "Files affected by changes";
 			// 
-			// m_ProcessChanges
+			// m_AnalyseChanges
 			// 
-			this.m_ProcessChanges.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.m_ProcessChanges.Location = new System.Drawing.Point(531, 208);
-			this.m_ProcessChanges.Name = "m_ProcessChanges";
-			this.m_ProcessChanges.Size = new System.Drawing.Size(75, 23);
-			this.m_ProcessChanges.TabIndex = 7;
-			this.m_ProcessChanges.Text = "Process";
-			this.m_ProcessChanges.UseVisualStyleBackColor = true;
-			this.m_ProcessChanges.Click += new System.EventHandler(this.OnProcessChangedFiles);
+			this.m_AnalyseChanges.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.m_AnalyseChanges.Location = new System.Drawing.Point(531, 208);
+			this.m_AnalyseChanges.Name = "m_AnalyseChanges";
+			this.m_AnalyseChanges.Size = new System.Drawing.Size(75, 23);
+			this.m_AnalyseChanges.TabIndex = 7;
+			this.m_AnalyseChanges.Text = "Analyse";
+			this.m_AnalyseChanges.UseVisualStyleBackColor = true;
+			this.m_AnalyseChanges.Click += new System.EventHandler(this.OnAnalyseChangedFiles);
 			// 
 			// m_SourceFolderLabel
 			// 
@@ -216,7 +216,7 @@
 			this.Controls.Add(this.m_RefreshChangeFiles);
 			this.Controls.Add(this.m_SourceFolderLabel);
 			this.Controls.Add(this.m_SourceFolders);
-			this.Controls.Add(this.m_ProcessChanges);
+			this.Controls.Add(this.m_AnalyseChanges);
 			this.Controls.Add(this.m_AffectedFilesLabel);
 			this.Controls.Add(this.m_AffectedFiles);
 			this.MinimumSize = new System.Drawing.Size(634, 498);
@@ -242,7 +242,7 @@
 		private System.Windows.Forms.ColumnHeader columnHeader1;
 		private System.Windows.Forms.ColumnHeader columnHeader2;
 		private System.Windows.Forms.Label m_AffectedFilesLabel;
-		private System.Windows.Forms.Button m_ProcessChanges;
+		private System.Windows.Forms.Button m_AnalyseChanges;
 		private System.Windows.Forms.Label m_SourceFolderLabel;
 		private System.Windows.Forms.ComboBox m_SourceFolders;
 		private System.Windows.Forms.Button m_RefreshChangeFiles;
