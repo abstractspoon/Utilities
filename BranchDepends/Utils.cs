@@ -47,43 +47,6 @@ namespace BranchDepends
 			return allDependents;
 		}
 
-		public static void GetFilesFromGit(string repoDir, IList<string> fileList)
-		{
-			RunGitCommand("diff master --name-only", repoDir, fileList);
-		}
-
-		public static void GetBranchesFromGit(string repoDir, IList<string> branchList)
-		{
-			RunGitCommand("branch --all", repoDir, branchList);
-		}
-
-		static void RunGitCommand(string command, string repoDir, IList<string> results)
-		{
-			using (var process = new Process())
-			{
-				process.StartInfo.FileName = "cmd.exe";
-				process.StartInfo.WorkingDirectory = repoDir;
-				process.StartInfo.Arguments = "/c git " + command;
-
-				process.StartInfo.CreateNoWindow = true;
-				process.StartInfo.UseShellExecute = false;
-				process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-
-				if (results != null)
-				{
-					process.StartInfo.RedirectStandardOutput = true;
-					process.OutputDataReceived += (s, e) =>
-					{
-						if (e.Data != null)
-							results.Add(e.Data.Trim());
-					};
-				}
-
-				process.Start();
-				process.BeginOutputReadLine();
-				process.WaitForExit();
-			}
-		}
 
 		static IEnumerable<FileInfo> GetFilesByExtensions(DirectoryInfo dirInfo, params string[] extensions)
 		{
