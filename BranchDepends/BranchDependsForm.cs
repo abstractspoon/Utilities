@@ -173,8 +173,10 @@ namespace BranchDepends
 			
 			// Process file list
 			var allDependents = Utils.GetDependents(fileList, allIncludedBy);
-			
+
 			// Output
+			m_AffectedFiles.Items.Clear();
+
 			foreach (var dependent in allDependents)
 			{
 				var filePath = dependent.Key

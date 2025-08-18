@@ -23,15 +23,7 @@ namespace BranchDepends
 
 				foreach (var include in includes)
 				{
-					HashSet<string> includedBy = null;
-					var includeLower = include.ToLower();
-
-					if (!allIncludedBy.TryGetValue(includeLower, out includedBy))
-					{
-						includedBy = new HashSet<string>();
-						allIncludedBy[includeLower] = includedBy;
-					}
-
+					var includedBy = GetValue(allIncludedBy, include.ToLower(), true);
 					includedBy.Add(file.FullName);
 				}
 			}
@@ -114,26 +106,37 @@ namespace BranchDepends
 									  IDictionary<string, HashSet<string>> allIncludedBy, 
 									  IDictionary<string, HashSet<string>> dependents)
 		{
-			HashSet<string> includedBy = null;
+			var includedBy = GetValue(allIncludedBy, fullFilePath.ToLower(), false);
 
-			if (allIncludedBy.TryGetValue(fullFilePath.ToLower(), out includedBy))
+			if (includedBy != null)
 			{
 				foreach (var by in includedBy)
 				{
-					HashSet<string> includes = null;
+					var includes = GetValue(dependents, by, true);
+					includes.Add(fullFilePath);
 
-					if (!dependents.TryGetValue(by, out includes))
-					{
-						includes = new HashSet<string>();
-						dependents[by] = includes;
-					}
+					// also include this file's dependencies
+					var depends = GetValue(dependents, fullFilePath, false);
 
-					includes.Add(/*Path.GetFileName*/(fullFilePath));
+					if (depends != null)
+						includes.UnionWith(depends);
 
 					GetFileDependents(by, allIncludedBy, dependents); // RECURSIVE CALL
 				}
 			}
 		}
 
+		static HashSet<string> GetValue(IDictionary<string, HashSet<string>> items, string key, bool autoAdd)
+		{
+			HashSet<string> item = null;
+
+			if (!items.TryGetValue(key, out item) && autoAdd)
+			{
+				item = new HashSet<string>();
+				items[key] = item;
+			}
+
+			return item;
+		}
 	}
 }

@@ -128,6 +128,8 @@
 			this.m_AffectedFiles.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
             this.columnHeader2});
+			this.m_AffectedFiles.FullRowSelect = true;
+			this.m_AffectedFiles.HideSelection = false;
 			this.m_AffectedFiles.Location = new System.Drawing.Point(96, 240);
 			this.m_AffectedFiles.Name = "m_AffectedFiles";
 			this.m_AffectedFiles.Size = new System.Drawing.Size(510, 207);
@@ -144,7 +146,7 @@
 			// columnHeader2
 			// 
 			this.columnHeader2.Text = "Affected By";
-			this.columnHeader2.Width = 240;
+			this.columnHeader2.Width = 2400;
 			// 
 			// m_AffectedFilesLabel
 			// 
