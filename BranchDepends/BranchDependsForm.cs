@@ -137,9 +137,10 @@ namespace BranchDepends
 			var changedFiles = GitUtils.GetChangedFiles(m_CurrentRepository);
 
 			m_ChangedFiles.Items.Clear();
-			m_ChangedFiles.Items.AddRange(changedFiles.ToArray());
-
 			m_AffectedFiles.Items.Clear();
+
+			foreach (var file in changedFiles)
+				m_ChangedFiles.Items.Add(file, true);
 
 			Cursor = Cursors.Default;
 		}
@@ -165,11 +166,11 @@ namespace BranchDepends
 
 			Cursor = Cursors.WaitCursor;
 
-			var fileList = m_ChangedFiles.Items.Cast<string>().ToList();
+			var fileList = m_ChangedFiles.CheckedItems.Cast<string>().ToList();
 			fileList = fileList.ConvertAll(file => Path.GetFullPath(Path.Combine(m_CurrentRepository, file)));
 			
 			// Create 'Included By' lookup
-			var allIncludedBy = Utils.BuildAllIncludedBy(m_CurrentSourceFolder + "\\WorkloadExt");
+			var allIncludedBy = Utils.BuildAllIncludedBy(m_CurrentSourceFolder);
 			
 			// Process file list
 			var allDependents = Utils.GetDependents(fileList, allIncludedBy);

@@ -33,7 +33,7 @@
 			this.m_BrowseRepo = new System.Windows.Forms.Button();
 			this.m_BranchLabel = new System.Windows.Forms.Label();
 			this.m_Branches = new System.Windows.Forms.ComboBox();
-			this.m_ChangedFiles = new System.Windows.Forms.ListBox();
+			this.m_ChangedFiles = new System.Windows.Forms.CheckedListBox();
 			this.m_ChangedFilesLabel = new System.Windows.Forms.Label();
 			this.m_AffectedFiles = new System.Windows.Forms.ListView();
 			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -104,10 +104,11 @@
 			// 
 			this.m_ChangedFiles.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.m_ChangedFiles.CheckOnClick = true;
 			this.m_ChangedFiles.FormattingEnabled = true;
 			this.m_ChangedFiles.Location = new System.Drawing.Point(96, 75);
 			this.m_ChangedFiles.Name = "m_ChangedFiles";
-			this.m_ChangedFiles.Size = new System.Drawing.Size(429, 121);
+			this.m_ChangedFiles.Size = new System.Drawing.Size(429, 124);
 			this.m_ChangedFiles.Sorted = true;
 			this.m_ChangedFiles.TabIndex = 3;
 			// 
@@ -192,7 +193,7 @@
 			// m_RefreshChangeFiles
 			// 
 			this.m_RefreshChangeFiles.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.m_RefreshChangeFiles.Location = new System.Drawing.Point(531, 173);
+			this.m_RefreshChangeFiles.Location = new System.Drawing.Point(531, 176);
 			this.m_RefreshChangeFiles.Name = "m_RefreshChangeFiles";
 			this.m_RefreshChangeFiles.Size = new System.Drawing.Size(75, 23);
 			this.m_RefreshChangeFiles.TabIndex = 7;
@@ -235,7 +236,7 @@
 		private System.Windows.Forms.Button m_BrowseRepo;
 		private System.Windows.Forms.Label m_BranchLabel;
 		private System.Windows.Forms.ComboBox m_Branches;
-		private System.Windows.Forms.ListBox m_ChangedFiles;
+		private System.Windows.Forms.CheckedListBox m_ChangedFiles;
 		private System.Windows.Forms.Label m_ChangedFilesLabel;
 		private System.Windows.Forms.ListView m_AffectedFiles;
 		private System.Windows.Forms.ColumnHeader columnHeader1;

@@ -10,10 +10,10 @@ namespace BranchDepends
 {
 	class Utils
 	{
-		public static IDictionary<string, HashSet<string>> BuildAllIncludedBy(string srcDir)
+		public static IDictionary<string, SortedSet<string>> BuildAllIncludedBy(string srcDir)
 		{
 			var allFiles = GetFilesByExtensions(new DirectoryInfo(srcDir), new string[] { ".h", ".cpp" });
-			var allIncludedBy = new SortedDictionary<string, HashSet<string>>();
+			var allIncludedBy = new SortedDictionary<string, SortedSet<string>>();
 
 			// Build a dictionary mapping a file path to all
 			// those files which explitly include it
@@ -31,9 +31,9 @@ namespace BranchDepends
 			return allIncludedBy;
 		}
 
-		public static IDictionary<string, HashSet<string>> GetDependents(IList<string> fileList, IDictionary<string, HashSet<string>> allIncludedBy)
+		public static IDictionary<string, SortedSet<string>> GetDependents(IList<string> fileList, IDictionary<string, SortedSet<string>> allIncludedBy)
 		{
-			var allDependents = new SortedDictionary<string, HashSet<string>>();
+			var allDependents = new SortedDictionary<string, SortedSet<string>>();
 
 			foreach (var file in fileList)
 				GetFileDependents(file, allIncludedBy, allDependents);
@@ -43,15 +43,15 @@ namespace BranchDepends
 
 		static IEnumerable<FileInfo> GetFilesByExtensions(DirectoryInfo dirInfo, params string[] extensions)
 		{
-			var allowedExtensions = new HashSet<string>(extensions, StringComparer.OrdinalIgnoreCase);
+			var allowedExtensions = new SortedSet<string>(extensions, StringComparer.OrdinalIgnoreCase);
 
 			return dirInfo.EnumerateFiles("*", System.IO.SearchOption.AllDirectories)
 						  .Where(f => allowedExtensions.Contains(f.Extension));
 		}
 
-		static HashSet<string> ReadIncludes(string fullFilePath)
+		static SortedSet<string> ReadIncludes(string fullFilePath)
 		{
-			var includes = new HashSet<string>();
+			var includes = new SortedSet<string>();
 
 			if (File.Exists(fullFilePath))
 			{
@@ -103,8 +103,8 @@ namespace BranchDepends
 		}
 
 		static void GetFileDependents(string fullFilePath, 
-									  IDictionary<string, HashSet<string>> allIncludedBy, 
-									  IDictionary<string, HashSet<string>> dependents)
+									  IDictionary<string, SortedSet<string>> allIncludedBy, 
+									  IDictionary<string, SortedSet<string>> dependents)
 		{
 			var includedBy = GetValue(allIncludedBy, fullFilePath.ToLower(), false);
 
@@ -126,13 +126,13 @@ namespace BranchDepends
 			}
 		}
 
-		static HashSet<string> GetValue(IDictionary<string, HashSet<string>> items, string key, bool autoAdd)
+		static SortedSet<string> GetValue(IDictionary<string, SortedSet<string>> items, string key, bool autoAdd)
 		{
-			HashSet<string> item = null;
+			SortedSet<string> item = null;
 
 			if (!items.TryGetValue(key, out item) && autoAdd)
 			{
-				item = new HashSet<string>();
+				item = new SortedSet<string>();
 				items[key] = item;
 			}
 
