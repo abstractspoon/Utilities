@@ -17,6 +17,7 @@ namespace BranchDepends
 	{
 		string m_CurrentRepository = string.Empty;
 		string m_CurrentBranch = string.Empty;
+		string m_CurrentSourceFolder = string.Empty;
 
 		public BranchDependsForm()
 		{
@@ -70,6 +71,65 @@ namespace BranchDepends
 			}
 		}
 
+		private void OnRepositoryChanged(object sender, EventArgs e)
+		{
+			if (m_Repositories.SelectedItem.Equals(m_CurrentRepository))
+				return;
+
+			m_CurrentRepository = m_Repositories.SelectedItem.ToString();
+
+			var branches = GitUtils.GetBranches(m_CurrentRepository);
+			
+			m_Branches.Items.Clear();
+			m_Branches.Items.AddRange(branches.ToArray());
+
+			m_Branches.SelectedItem = GitUtils.GetActiveBranch(m_CurrentRepository);
+
+			var srcFolders = Directory.GetDirectories(m_CurrentRepository).Where(d => !d.Contains(".git")).ToList();
+
+			m_SourceFolders.Items.Clear();
+			m_SourceFolders.Items.AddRange(srcFolders.ToArray());
+
+			m_SourceFolders.SelectedItem = srcFolders.FirstOrDefault();
+		}
+
+		private void OnBranchChanged(object sender, EventArgs e)
+		{
+			if (m_Branches.SelectedItem == null)
+			{
+				m_ChangedFiles.Items.Clear();
+				return;
+			}
+
+			var newBranch = m_Branches.SelectedItem.ToString();
+
+			if (newBranch == m_CurrentBranch)
+				return;
+
+			if (!string.IsNullOrEmpty(m_CurrentBranch))
+			{
+				if (!GitUtils.SelectBranch(m_CurrentRepository, newBranch))
+					return;
+			}
+
+			var changedFiles = GitUtils.GetChangedFiles(m_CurrentRepository);
+
+			m_ChangedFiles.Items.Clear();
+			m_ChangedFiles.Items.AddRange(changedFiles.ToArray());
+
+			m_CurrentBranch = newBranch;
+		}
+
+		private void OnSourceFolderChanged(object sender, EventArgs e)
+		{
+			m_AffectedFiles.Items.Clear();
+
+			if (m_SourceFolders.SelectedItem == null)
+				m_CurrentSourceFolder = string.Empty;
+			else
+				m_CurrentSourceFolder = m_SourceFolders.SelectedItem.ToString();
+		}
+
 		private void OnProcessChangedFiles(object sender, EventArgs e)
 		{
 			// 			var repoDir = String.Empty; // TODO
@@ -102,26 +162,6 @@ namespace BranchDepends
 			// 			{
 			// 				Console.WriteLine("{0} ({1})", dependent.Key, string.Join(", ", dependent.Value.ToArray()));
 			// 			}
-
-		}
-
-		private void OnRepositoryChanged(object sender, EventArgs e)
-		{
-			if (m_Repositories.SelectedItem.Equals(m_CurrentRepository))
-				return;
-
-			m_CurrentRepository = m_Repositories.SelectedItem.ToString();
-
-			var branches = GitUtils.GetBranches(m_CurrentRepository);
-			
-			m_Branches.Items.Clear();
-			m_Branches.Items.AddRange(branches.ToArray());
-
-			m_Branches.SelectedItem = GitUtils.GetActiveBranch(m_CurrentRepository);
-		}
-
-		private void OnBranchChanged(object sender, EventArgs e)
-		{
 
 		}
 	}

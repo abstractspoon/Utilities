@@ -10,17 +10,12 @@ namespace BranchDepends
 {
 	class GitUtils
 	{
-		public static IList<string> GetChangedFiles(string repoDir)
-		{
-			return RunGitCommand("diff master --name-only", repoDir);
-		}
-
 		public static IList<string> GetBranches(string repoDir)
 		{
 			var branches = RunGitCommand("branch --all", repoDir);
 
 			branches = branches.Where(b => !b.Contains("master"))
-							   .Select(b => b.TrimStart(new char[] { '*', ' ' }))
+							   .Where(b => b.StartsWith("remotes/origin/"))
 							   .Select(b => b.Replace("remotes/origin/", ""))
 							   .ToList();
 
@@ -32,11 +27,25 @@ namespace BranchDepends
 			var branches = RunGitCommand("branch", repoDir);
 
 			branches = branches.Where(b => !b.Contains("master"))
-							   .Where(b => b.StartsWith("*"))
-							   .Select(b => b.TrimStart(new char[] { '*', ' ' }))
+							   .Where(b => b.StartsWith("* "))
+							   .Select(b => b.Substring(2))
 							   .ToList();
 
 			return branches.FirstOrDefault();
+		}
+
+		public static bool SelectBranch(string repoDir, string branch)
+		{
+			var result = RunGitCommand(string.Format("checkout {0}", branch), repoDir);
+
+			return true;
+		}
+
+		public static IList<string> GetChangedFiles(string repoDir)
+		{
+			var files = RunGitCommand("diff master --name-only", repoDir);
+
+			return files.Select(f => f.Replace('/', '\\')).ToList();
 		}
 
 		static IList<string> RunGitCommand(string command, string repoDir)

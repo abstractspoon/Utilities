@@ -40,6 +40,8 @@
 			this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.m_AffectedFilesLabel = new System.Windows.Forms.Label();
 			this.m_ProcessChanges = new System.Windows.Forms.Button();
+			this.m_SourceFolderLabel = new System.Windows.Forms.Label();
+			this.m_SourceFolders = new System.Windows.Forms.ComboBox();
 			this.SuspendLayout();
 			// 
 			// m_RepoLabel
@@ -125,9 +127,9 @@
 			this.m_AffectedFiles.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
             this.columnHeader2});
-			this.m_AffectedFiles.Location = new System.Drawing.Point(96, 213);
+			this.m_AffectedFiles.Location = new System.Drawing.Point(96, 240);
 			this.m_AffectedFiles.Name = "m_AffectedFiles";
-			this.m_AffectedFiles.Size = new System.Drawing.Size(510, 234);
+			this.m_AffectedFiles.Size = new System.Drawing.Size(510, 207);
 			this.m_AffectedFiles.Sorting = System.Windows.Forms.SortOrder.Ascending;
 			this.m_AffectedFiles.TabIndex = 5;
 			this.m_AffectedFiles.UseCompatibleStateImageBehavior = false;
@@ -145,7 +147,7 @@
 			// 
 			// m_AffectedFilesLabel
 			// 
-			this.m_AffectedFilesLabel.Location = new System.Drawing.Point(13, 213);
+			this.m_AffectedFilesLabel.Location = new System.Drawing.Point(13, 240);
 			this.m_AffectedFilesLabel.Name = "m_AffectedFilesLabel";
 			this.m_AffectedFilesLabel.Size = new System.Drawing.Size(77, 35);
 			this.m_AffectedFilesLabel.TabIndex = 6;
@@ -154,13 +156,35 @@
 			// m_ProcessChanges
 			// 
 			this.m_ProcessChanges.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.m_ProcessChanges.Location = new System.Drawing.Point(531, 173);
+			this.m_ProcessChanges.Location = new System.Drawing.Point(531, 208);
 			this.m_ProcessChanges.Name = "m_ProcessChanges";
 			this.m_ProcessChanges.Size = new System.Drawing.Size(75, 23);
 			this.m_ProcessChanges.TabIndex = 7;
 			this.m_ProcessChanges.Text = "Process";
 			this.m_ProcessChanges.UseVisualStyleBackColor = true;
 			this.m_ProcessChanges.Click += new System.EventHandler(this.OnProcessChangedFiles);
+			// 
+			// m_SourceFolderLabel
+			// 
+			this.m_SourceFolderLabel.AutoSize = true;
+			this.m_SourceFolderLabel.Location = new System.Drawing.Point(13, 211);
+			this.m_SourceFolderLabel.Name = "m_SourceFolderLabel";
+			this.m_SourceFolderLabel.Size = new System.Drawing.Size(73, 13);
+			this.m_SourceFolderLabel.TabIndex = 0;
+			this.m_SourceFolderLabel.Text = "Source Folder";
+			// 
+			// m_SourceFolders
+			// 
+			this.m_SourceFolders.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.m_SourceFolders.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.m_SourceFolders.FormattingEnabled = true;
+			this.m_SourceFolders.Location = new System.Drawing.Point(96, 208);
+			this.m_SourceFolders.Name = "m_SourceFolders";
+			this.m_SourceFolders.Size = new System.Drawing.Size(429, 21);
+			this.m_SourceFolders.Sorted = true;
+			this.m_SourceFolders.TabIndex = 1;
+			this.m_SourceFolders.SelectedIndexChanged += new System.EventHandler(this.OnSourceFolderChanged);
 			// 
 			// BranchDependsForm
 			// 
@@ -174,6 +198,8 @@
 			this.Controls.Add(this.m_Branches);
 			this.Controls.Add(this.m_ChangedFilesLabel);
 			this.Controls.Add(this.m_ChangedFiles);
+			this.Controls.Add(this.m_SourceFolderLabel);
+			this.Controls.Add(this.m_SourceFolders);
 			this.Controls.Add(this.m_ProcessChanges);
 			this.Controls.Add(this.m_AffectedFilesLabel);
 			this.Controls.Add(this.m_AffectedFiles);
@@ -201,6 +227,8 @@
 		private System.Windows.Forms.ColumnHeader columnHeader2;
 		private System.Windows.Forms.Label m_AffectedFilesLabel;
 		private System.Windows.Forms.Button m_ProcessChanges;
+		private System.Windows.Forms.Label m_SourceFolderLabel;
+		private System.Windows.Forms.ComboBox m_SourceFolders;
 	}
 }
 
