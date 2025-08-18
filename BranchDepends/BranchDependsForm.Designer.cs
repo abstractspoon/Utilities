@@ -42,6 +42,7 @@
 			this.m_ProcessChanges = new System.Windows.Forms.Button();
 			this.m_SourceFolderLabel = new System.Windows.Forms.Label();
 			this.m_SourceFolders = new System.Windows.Forms.ComboBox();
+			this.m_RefreshChangeFiles = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
 			// m_RepoLabel
@@ -186,6 +187,17 @@
 			this.m_SourceFolders.TabIndex = 1;
 			this.m_SourceFolders.SelectedIndexChanged += new System.EventHandler(this.OnSourceFolderChanged);
 			// 
+			// m_RefreshChangeFiles
+			// 
+			this.m_RefreshChangeFiles.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.m_RefreshChangeFiles.Location = new System.Drawing.Point(531, 173);
+			this.m_RefreshChangeFiles.Name = "m_RefreshChangeFiles";
+			this.m_RefreshChangeFiles.Size = new System.Drawing.Size(75, 23);
+			this.m_RefreshChangeFiles.TabIndex = 7;
+			this.m_RefreshChangeFiles.Text = "Refresh";
+			this.m_RefreshChangeFiles.UseVisualStyleBackColor = true;
+			this.m_RefreshChangeFiles.Click += new System.EventHandler(this.OnRefreshChangedFiles);
+			// 
 			// BranchDependsForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -198,6 +210,7 @@
 			this.Controls.Add(this.m_Branches);
 			this.Controls.Add(this.m_ChangedFilesLabel);
 			this.Controls.Add(this.m_ChangedFiles);
+			this.Controls.Add(this.m_RefreshChangeFiles);
 			this.Controls.Add(this.m_SourceFolderLabel);
 			this.Controls.Add(this.m_SourceFolders);
 			this.Controls.Add(this.m_ProcessChanges);
@@ -229,6 +242,7 @@
 		private System.Windows.Forms.Button m_ProcessChanges;
 		private System.Windows.Forms.Label m_SourceFolderLabel;
 		private System.Windows.Forms.ComboBox m_SourceFolders;
+		private System.Windows.Forms.Button m_RefreshChangeFiles;
 	}
 }
 

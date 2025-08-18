@@ -31,6 +31,9 @@ namespace BranchDepends
 
 				var currentRepo = Registry.CurrentUser.GetValue("CurrentRepository")?.ToString();
 				m_Repositories.SelectedItem = currentRepo;
+
+				var currentSrcFolder = Registry.CurrentUser.GetValue("CurrentSourceFolder")?.ToString();
+				m_SourceFolders.SelectedItem = currentSrcFolder;
 			}
 		}
 
@@ -40,6 +43,7 @@ namespace BranchDepends
 
 			Registry.CurrentUser.SetValue("Repositories", string.Join("|", m_Repositories.Items.Cast<string>()));
 			Registry.CurrentUser.SetValue("CurrentRepository", m_CurrentRepository);
+			Registry.CurrentUser.SetValue("CurrentSourceFolder", m_CurrentSourceFolder);
 		}
 
 		private void OnBrowseRepositories(object sender, EventArgs e)
@@ -106,18 +110,38 @@ namespace BranchDepends
 			if (newBranch == m_CurrentBranch)
 				return;
 
+			Cursor = Cursors.WaitCursor;
+
 			if (!string.IsNullOrEmpty(m_CurrentBranch))
 			{
 				if (!GitUtils.SelectBranch(m_CurrentRepository, newBranch))
 					return;
 			}
 
+			m_CurrentBranch = newBranch;
+
+			Cursor = Cursors.Default;
+
+			RefreshChangedFiles();
+		}
+
+		private void OnRefreshChangedFiles(object sender, EventArgs e)
+		{
+			RefreshChangedFiles();
+		}
+
+		private void RefreshChangedFiles()
+		{
+			Cursor = Cursors.WaitCursor;
+
 			var changedFiles = GitUtils.GetChangedFiles(m_CurrentRepository);
 
 			m_ChangedFiles.Items.Clear();
 			m_ChangedFiles.Items.AddRange(changedFiles.ToArray());
 
-			m_CurrentBranch = newBranch;
+			m_AffectedFiles.Items.Clear();
+
+			Cursor = Cursors.Default;
 		}
 
 		private void OnSourceFolderChanged(object sender, EventArgs e)
@@ -132,37 +156,36 @@ namespace BranchDepends
 
 		private void OnProcessChangedFiles(object sender, EventArgs e)
 		{
-			// 			var repoDir = String.Empty; // TODO
-			// 			var srcDir = String.Empty; // TODO
-			// 
-			// 			var fileList = new List<string>(); // TODO
-			// 
-			// 			if (args.Count() == 3)
-			// 			{
-			// 				fileList.AddRange(File.ReadLines(args[2]));
-			// 			}
-			// 			else
-			// 			{
-			// 				var branchList = new List<string>();
-			// 				GetBranchesFromGit(repoDir, branchList);
-			// 
-			// 				GetFilesFromGit(repoDir, fileList);
-			// 			}
-			// 
-			// 			fileList = fileList.ConvertAll(file => Path.GetFullPath(Path.Combine(repoDir, file)));
-			// 
-			// 			// Create 'Included By' lookup
-			// 			var allIncludedBy = BuildAllIncludedBy(srcDir);
-			// 
-			// 			// Process file list
-			// 			var allDependents = GetDependents(fileList, allIncludedBy);
-			// 
-			// 			// Output
-			// 			foreach (var dependent in allDependents)
-			// 			{
-			// 				Console.WriteLine("{0} ({1})", dependent.Key, string.Join(", ", dependent.Value.ToArray()));
-			// 			}
+			if (string.IsNullOrEmpty(m_CurrentRepository) ||
+				string.IsNullOrEmpty(m_CurrentBranch) ||
+				string.IsNullOrEmpty(m_CurrentSourceFolder))
+			{
+				return;
+			}
 
+			Cursor = Cursors.WaitCursor;
+
+			var fileList = m_ChangedFiles.Items.Cast<string>().ToList();
+			fileList = fileList.ConvertAll(file => Path.GetFullPath(Path.Combine(m_CurrentRepository, file)));
+			
+			// Create 'Included By' lookup
+			var allIncludedBy = Utils.BuildAllIncludedBy(m_CurrentSourceFolder + "\\WorkloadExt");
+			
+			// Process file list
+			var allDependents = Utils.GetDependents(fileList, allIncludedBy);
+			
+			// Output
+			foreach (var dependent in allDependents)
+			{
+				var filePath = dependent.Key
+										.Replace(m_CurrentRepository, "")
+										.TrimStart(new char[] { '\\' });
+
+				var item = m_AffectedFiles.Items.Add(filePath);
+				item.SubItems.Add(string.Join(", ", dependent.Value.Select(f => Path.GetFileName(f))));
+			}
+
+			Cursor = Cursors.Default;
 		}
 	}
 }

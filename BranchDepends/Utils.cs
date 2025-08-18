@@ -10,11 +10,13 @@ namespace BranchDepends
 {
 	class Utils
 	{
-		public static IReadOnlyDictionary<string, HashSet<string>> BuildAllIncludedBy(string srcDir)
+		public static IDictionary<string, HashSet<string>> BuildAllIncludedBy(string srcDir)
 		{
 			var allFiles = GetFilesByExtensions(new DirectoryInfo(srcDir), new string[] { ".h", ".cpp" });
-			var allIncludedBy = new Dictionary<string, HashSet<string>>();
+			var allIncludedBy = new SortedDictionary<string, HashSet<string>>();
 
+			// Build a dictionary mapping a file path to all
+			// those files which explitly include it
 			foreach (var file in allFiles)
 			{
 				var includes = ReadIncludes(file.FullName);
@@ -37,7 +39,7 @@ namespace BranchDepends
 			return allIncludedBy;
 		}
 
-		public static IDictionary<string, HashSet<string>> GetDependents(IList<string> fileList, IReadOnlyDictionary<string, HashSet<string>> allIncludedBy)
+		public static IDictionary<string, HashSet<string>> GetDependents(IList<string> fileList, IDictionary<string, HashSet<string>> allIncludedBy)
 		{
 			var allDependents = new SortedDictionary<string, HashSet<string>>();
 
@@ -46,7 +48,6 @@ namespace BranchDepends
 
 			return allDependents;
 		}
-
 
 		static IEnumerable<FileInfo> GetFilesByExtensions(DirectoryInfo dirInfo, params string[] extensions)
 		{
@@ -110,7 +111,7 @@ namespace BranchDepends
 		}
 
 		static void GetFileDependents(string fullFilePath, 
-									  IReadOnlyDictionary<string, HashSet<string>> allIncludedBy, 
+									  IDictionary<string, HashSet<string>> allIncludedBy, 
 									  IDictionary<string, HashSet<string>> dependents)
 		{
 			HashSet<string> includedBy = null;
@@ -127,7 +128,7 @@ namespace BranchDepends
 						dependents[by] = includes;
 					}
 
-					includes.Add(Path.GetFileName(fullFilePath));
+					includes.Add(/*Path.GetFileName*/(fullFilePath));
 
 					GetFileDependents(by, allIncludedBy, dependents); // RECURSIVE CALL
 				}
