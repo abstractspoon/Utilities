@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using System.IO;
 using System.Windows.Forms;
@@ -71,7 +71,7 @@ namespace BranchDepends
 
 					if (!Directory.Exists(Path.Combine(folderPath, ".git")))
 					{
-						MessageBox.Show("Not a Git repository");
+						MessageBox.Show("Not a Git repository", "Branch Dependencies");
 					}
 					else
 					{
@@ -89,6 +89,9 @@ namespace BranchDepends
 		{
 			if (m_Repositories.SelectedItem.Equals(m_CurrentRepository))
 				return;
+
+			ClearChangedFileUI();
+			ClearAffectedFileUI();
 
 			m_CurrentRepository = m_Repositories.SelectedItem.ToString();
 
@@ -109,55 +112,70 @@ namespace BranchDepends
 
 		private void OnBranchChanged(object sender, EventArgs e)
 		{
-			if (m_Branches.SelectedItem == null)
-			{
-				m_ChangedFiles.Items.Clear();
-				return;
-			}
-
-			var newBranch = m_Branches.SelectedItem.ToString();
+			var newBranch = m_Branches.SelectedItem?.ToString();
 
 			if (newBranch == m_CurrentBranch)
 				return;
 
+			ClearChangedFileUI();
+			ClearAffectedFileUI();
+
+			if (string.IsNullOrEmpty(newBranch))
+			{
+				// Shouldn't be possible
+				Debug.Assert(false);
+				return;
+			}
+
 			Cursor = Cursors.WaitCursor;
 
-			if (!string.IsNullOrEmpty(m_CurrentBranch))
-			{
-				if (!GitUtils.SelectBranch(m_CurrentRepository, newBranch))
-					return;
-			}
+			if (!GitUtils.SelectBranch(m_CurrentRepository, newBranch))
+				return;
 
 			m_CurrentBranch = newBranch;
 
 			Cursor = Cursors.Default;
 
-			RefreshChangedFiles();
+			RefreshChangedFileUI();
 		}
 
 		private void OnRefreshChangedFiles(object sender, EventArgs e)
 		{
-			RefreshChangedFiles();
-		}
-
-		private void RefreshChangedFiles()
-		{
 			Cursor = Cursors.WaitCursor;
 
-			var changedFiles = GitUtils.GetChangedFiles(m_CurrentRepository);
-
-			m_ChangedFiles.Items.Clear();
-			m_AffectedFiles.Items.Clear();
-
-			foreach (var file in changedFiles)
-				m_ChangedFiles.Items.Add(file, true);
+			RefreshChangedFileUI();
 
 			Cursor = Cursors.Default;
 		}
 
-		private void OnSourceFolderChanged(object sender, EventArgs e)
+		private void RefreshChangedFileUI()
+		{
+			ClearChangedFileUI();
+			ClearAffectedFileUI();
+
+			var changedFiles = Utils.GetChangedFiles(m_CurrentRepository);
+
+			foreach (var file in changedFiles)
+				m_ChangedFiles.Items.Add(file, true);
+
+			m_NumChangedFilesLabel.Text = string.Format("({0})", changedFiles.Count);
+		}
+
+		private void ClearChangedFileUI()
+		{
+			m_ChangedFiles.Items.Clear();
+			m_NumChangedFilesLabel.Text = string.Empty;
+		}
+
+		private void ClearAffectedFileUI()
 		{
 			m_AffectedFiles.Items.Clear();
+			m_NumAffectedFilesLabel.Text = string.Empty;
+		}
+
+		private void OnSourceFolderChanged(object sender, EventArgs e)
+		{
+			ClearAffectedFileUI();
 
 			if (m_SourceFolders.SelectedItem == null)
 				m_CurrentSourceFolder = string.Empty;
@@ -180,8 +198,6 @@ namespace BranchDepends
 			var fileList = m_ChangedFiles.CheckedItems.Cast<string>().ToList();
 			fileList = fileList.ConvertAll(f => Path.GetFullPath(Path.Combine(m_CurrentRepository, f)));
 
-			Utils.PrepareFileList(fileList);
-
 			// Create 'Includes' lookup
 			m_ProgressBase = 0;
 			m_AllIncludes = Utils.GetAllIncludes(m_CurrentSourceFolder, this);
@@ -195,16 +211,24 @@ namespace BranchDepends
 			var allDependents = Utils.GetDependents(fileList, allIncludedBy, this);
 
 			// Output to results list
+			m_ProgressBase = 300;
+
 			m_AffectedFiles.Items.Clear();
+			m_NumAffectedFilesLabel.Text = string.Empty;
+
+			int iFile = 0, numFiles = allDependents.Count;
 
 			foreach (var dependent in allDependents)
 			{
+				Report((++iFile * 100) / numFiles);
+
 				var lvi = new ListViewItem(dependent.Key) { Tag = dependent.Value };
 				lvi.SubItems.Add("."); // dummy text to trigger subitem ownerdraw
 
 				m_AffectedFiles.Items.Add(lvi);
 			}
 
+			m_NumAffectedFilesLabel.Text = string.Format("({0})", allDependents.Count);
 			m_Progress.Value = 0;
 
 			Cursor = Cursors.Default;

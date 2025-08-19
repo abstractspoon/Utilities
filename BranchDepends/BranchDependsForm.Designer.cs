@@ -45,12 +45,14 @@
 			this.m_RefreshChangeFiles = new System.Windows.Forms.Button();
 			this.m_Progress = new System.Windows.Forms.ProgressBar();
 			this.m_ProgressLabel = new System.Windows.Forms.Label();
+			this.m_NumChangedFilesLabel = new System.Windows.Forms.Label();
+			this.m_NumAffectedFilesLabel = new System.Windows.Forms.Label();
 			this.SuspendLayout();
 			// 
 			// m_RepoLabel
 			// 
 			this.m_RepoLabel.AutoSize = true;
-			this.m_RepoLabel.Location = new System.Drawing.Point(13, 15);
+			this.m_RepoLabel.Location = new System.Drawing.Point(12, 15);
 			this.m_RepoLabel.Name = "m_RepoLabel";
 			this.m_RepoLabel.Size = new System.Drawing.Size(59, 13);
 			this.m_RepoLabel.TabIndex = 0;
@@ -83,7 +85,7 @@
 			// m_BranchLabel
 			// 
 			this.m_BranchLabel.AutoSize = true;
-			this.m_BranchLabel.Location = new System.Drawing.Point(13, 46);
+			this.m_BranchLabel.Location = new System.Drawing.Point(12, 46);
 			this.m_BranchLabel.Name = "m_BranchLabel";
 			this.m_BranchLabel.Size = new System.Drawing.Size(40, 13);
 			this.m_BranchLabel.TabIndex = 0;
@@ -106,7 +108,6 @@
 			// 
 			this.m_ChangedFiles.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.m_ChangedFiles.CheckOnClick = true;
 			this.m_ChangedFiles.FormattingEnabled = true;
 			this.m_ChangedFiles.IntegralHeight = false;
 			this.m_ChangedFiles.Location = new System.Drawing.Point(96, 75);
@@ -117,7 +118,7 @@
 			// 
 			// m_ChangedFilesLabel
 			// 
-			this.m_ChangedFilesLabel.Location = new System.Drawing.Point(13, 79);
+			this.m_ChangedFilesLabel.Location = new System.Drawing.Point(12, 79);
 			this.m_ChangedFilesLabel.Name = "m_ChangedFilesLabel";
 			this.m_ChangedFilesLabel.Size = new System.Drawing.Size(74, 34);
 			this.m_ChangedFilesLabel.TabIndex = 4;
@@ -158,7 +159,7 @@
 			// 
 			// m_AffectedFilesLabel
 			// 
-			this.m_AffectedFilesLabel.Location = new System.Drawing.Point(13, 240);
+			this.m_AffectedFilesLabel.Location = new System.Drawing.Point(12, 240);
 			this.m_AffectedFilesLabel.Name = "m_AffectedFilesLabel";
 			this.m_AffectedFilesLabel.Size = new System.Drawing.Size(77, 32);
 			this.m_AffectedFilesLabel.TabIndex = 6;
@@ -178,7 +179,7 @@
 			// m_SourceFolderLabel
 			// 
 			this.m_SourceFolderLabel.AutoSize = true;
-			this.m_SourceFolderLabel.Location = new System.Drawing.Point(13, 211);
+			this.m_SourceFolderLabel.Location = new System.Drawing.Point(12, 211);
 			this.m_SourceFolderLabel.Name = "m_SourceFolderLabel";
 			this.m_SourceFolderLabel.Size = new System.Drawing.Size(73, 13);
 			this.m_SourceFolderLabel.TabIndex = 0;
@@ -211,7 +212,7 @@
 			// m_Progress
 			// 
 			this.m_Progress.Location = new System.Drawing.Point(96, 450);
-			this.m_Progress.Maximum = 300;
+			this.m_Progress.Maximum = 400;
 			this.m_Progress.Name = "m_Progress";
 			this.m_Progress.Size = new System.Drawing.Size(510, 20);
 			this.m_Progress.Step = 1;
@@ -220,11 +221,25 @@
 			// m_ProgressLabel
 			// 
 			this.m_ProgressLabel.AutoSize = true;
-			this.m_ProgressLabel.Location = new System.Drawing.Point(13, 452);
+			this.m_ProgressLabel.Location = new System.Drawing.Point(12, 450);
 			this.m_ProgressLabel.Name = "m_ProgressLabel";
 			this.m_ProgressLabel.Size = new System.Drawing.Size(49, 13);
 			this.m_ProgressLabel.TabIndex = 9;
 			this.m_ProgressLabel.Text = "Progress";
+			// 
+			// m_NumChangedFilesLabel
+			// 
+			this.m_NumChangedFilesLabel.Location = new System.Drawing.Point(12, 111);
+			this.m_NumChangedFilesLabel.Name = "m_NumChangedFilesLabel";
+			this.m_NumChangedFilesLabel.Size = new System.Drawing.Size(74, 13);
+			this.m_NumChangedFilesLabel.TabIndex = 10;
+			// 
+			// m_NumAffectedFilesLabel
+			// 
+			this.m_NumAffectedFilesLabel.Location = new System.Drawing.Point(12, 272);
+			this.m_NumAffectedFilesLabel.Name = "m_NumAffectedFilesLabel";
+			this.m_NumAffectedFilesLabel.Size = new System.Drawing.Size(73, 13);
+			this.m_NumAffectedFilesLabel.TabIndex = 10;
 			// 
 			// BranchDependsForm
 			// 
@@ -239,12 +254,14 @@
 			this.Controls.Add(this.m_BranchLabel);
 			this.Controls.Add(this.m_Branches);
 			this.Controls.Add(this.m_ChangedFilesLabel);
+			this.Controls.Add(this.m_NumChangedFilesLabel);
 			this.Controls.Add(this.m_ChangedFiles);
 			this.Controls.Add(this.m_RefreshChangeFiles);
 			this.Controls.Add(this.m_SourceFolderLabel);
 			this.Controls.Add(this.m_SourceFolders);
 			this.Controls.Add(this.m_AnalyseChanges);
 			this.Controls.Add(this.m_AffectedFilesLabel);
+			this.Controls.Add(this.m_NumAffectedFilesLabel);
 			this.Controls.Add(this.m_AffectedFiles);
 			this.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.MinimumSize = new System.Drawing.Size(634, 498);
@@ -276,6 +293,8 @@
 		private System.Windows.Forms.Button m_RefreshChangeFiles;
 		private System.Windows.Forms.ProgressBar m_Progress;
 		private System.Windows.Forms.Label m_ProgressLabel;
+		private System.Windows.Forms.Label m_NumChangedFilesLabel;
+		private System.Windows.Forms.Label m_NumAffectedFilesLabel;
 	}
 }
 

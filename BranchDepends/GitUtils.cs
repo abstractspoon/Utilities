@@ -41,9 +41,16 @@ namespace BranchDepends
 			return true;
 		}
 
-		public static IList<string> GetChangedFiles(string repoDir)
+		public static IList<string> GetChangedFiles(string repoDir, params string[] extensions)
 		{
 			var files = RunGitCommand("diff master --name-only", repoDir);
+
+			if (extensions.Count() != 0)
+			{
+				var allowedExtensions = new HashSet<string>(extensions, Utils.CaseInsensitive);
+
+				files = files.Where(f => allowedExtensions.Contains(Path.GetExtension(f))).ToList();
+			}
 
 			return files.Select(f => f.Replace('/', '\\')).ToList();
 		}

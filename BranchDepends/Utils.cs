@@ -27,8 +27,10 @@ namespace BranchDepends
 
 		// --------------------------------------------------------
 
-		public static void PrepareFileList(IList<string> fileList)
+		public static IList<string> GetChangedFiles(string repoDir)
 		{
+			var fileList = GitUtils.GetChangedFiles(repoDir, new string[] { ".h", ".cpp" });
+
 			// Convert all .cpp file to their header equivalent
 			// ie. If the .cpp file has been modified then all
 			//     files which include its .h are potentially affected
@@ -46,11 +48,14 @@ namespace BranchDepends
 					if (!fileSet.Contains(header) && File.Exists(header))
 						fileList.Add(header);
 				}
-				else if (lowerExt == ".h")
+				else
 				{
+					Debug.Assert(lowerExt == ".h");
 					fileList.Add(file);
 				}
 			}
+
+			return fileList;
 		}
 
 		public static IDictionary<string, HashSet<string>> GetAllIncludes(string srcDir, IProgress<int> progress)
@@ -110,7 +115,7 @@ namespace BranchDepends
 		{
 			var allowedExtensions = new HashSet<string>(extensions, CaseInsensitive);
 
-			return dirInfo.EnumerateFiles("*", System.IO.SearchOption.AllDirectories)
+			return dirInfo.EnumerateFiles("*", SearchOption.AllDirectories)
 						  .Where(f => allowedExtensions.Contains(f.Extension));
 		}
 
