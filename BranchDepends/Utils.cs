@@ -8,49 +8,38 @@ using System.Diagnostics;
 
 namespace BranchDepends
 {
-	class IncludeFile
-	{
-		public IncludeFile(string fullPath, bool explicitInclude = true)
-		{
-			FullPath = fullPath;
-			Explicit = explicitInclude;
-		}
-
-		public string FullPath;
-		public bool Explicit = false;
-
-		public override string ToString() {	return FullPath; }
-
-		public string ToLower() { return FullPath.ToLower(); }
-		public string GetFilename() { return Path.GetFileName(FullPath); }
-	}
-
 	class Utils
 	{
-		public static IDictionary<string, HashSet<IncludeFile>> BuildAllIncludedBy(string srcDir)
+		public static IDictionary<string, HashSet<string>> GetAllIncludes(string srcDir)
 		{
 			var allFiles = GetFilesByExtensions(new DirectoryInfo(srcDir), new string[] { ".h", ".cpp" });
-			var allIncludedBy = new SortedDictionary<string, HashSet<IncludeFile>>();
+			var allIncludes = new SortedDictionary<string, HashSet<string>>();
 
-			// Build a dictionary mapping a file path to all
-			// those files which explitly include it
 			foreach (var file in allFiles)
-			{
-				var includes = ReadIncludes(file.FullName);
+				allIncludes[file.FullName.ToLower()] = ReadIncludes(file.FullName);
 
-				foreach (var include in includes)
+			return allIncludes;
+		}
+
+		public static IDictionary<string, HashSet<string>> BuildIncludedBy(IDictionary<string, HashSet<string>> fileIncludes)
+		{
+			var allIncludedBy = new SortedDictionary<string, HashSet<string>>();
+
+			foreach (var file in fileIncludes)
+			{
+				foreach (var include in file.Value)
 				{
 					var includedBy = GetValue(allIncludedBy, include.ToLower(), true);
-					includedBy.Add(new IncludeFile(file.FullName, true));
+					includedBy.Add(file.Key);
 				}
 			}
 
 			return allIncludedBy;
 		}
 
-		public static IDictionary<string, HashSet<IncludeFile>> GetDependents(IList<string> fileList, IDictionary<string, HashSet<IncludeFile>> allIncludedBy)
+		public static IDictionary<string, HashSet<string>> GetDependents(IList<string> fileList, IDictionary<string, HashSet<string>> allIncludedBy)
 		{
-			var allDependents = new SortedDictionary<string, HashSet<IncludeFile>>();
+			var allDependents = new SortedDictionary<string, HashSet<string>>();
 
 			foreach (var file in fileList)
 				GetFileDependents(file, true, allIncludedBy, allDependents);
@@ -66,9 +55,9 @@ namespace BranchDepends
 						  .Where(f => allowedExtensions.Contains(f.Extension));
 		}
 
-		static HashSet<IncludeFile> ReadIncludes(string fullFilePath)
+		static HashSet<string> ReadIncludes(string fullFilePath)
 		{
-			var includes = new HashSet<IncludeFile>();
+			var includes = new HashSet<string>();
 
 			if (File.Exists(fullFilePath))
 			{
@@ -112,7 +101,7 @@ namespace BranchDepends
 
 					rest = rest.Substring(1, endOfInclude - 1);
 
-					includes.Add(new IncludeFile(Path.GetFullPath(Path.Combine(fileDir, rest))));
+					includes.Add(Path.GetFullPath(Path.Combine(fileDir, rest)).ToLower());
 				}
 			}
 
@@ -121,8 +110,8 @@ namespace BranchDepends
 
 		static void GetFileDependents(string fullFilePath,
 									  bool explicitInclude, 
-									  IDictionary<string, HashSet<IncludeFile>> allIncludedBy, 
-									  IDictionary<string, HashSet<IncludeFile>> dependents)
+									  IDictionary<string, HashSet<string>> allIncludedBy, 
+									  IDictionary<string, HashSet<string>> dependents)
 		{
 			var includedBy = GetValue(allIncludedBy, fullFilePath.ToLower(), false);
 
@@ -130,8 +119,8 @@ namespace BranchDepends
 			{
 				foreach (var by in includedBy)
 				{
-					var includes = GetValue(dependents, by.FullPath, true);
-					includes.Add(new IncludeFile(fullFilePath, explicitInclude));
+					var includes = GetValue(dependents, by, true);
+					includes.Add(fullFilePath);
 
 					// also include this file's dependencies
 					var depends = GetValue(dependents, fullFilePath, false);
@@ -139,18 +128,18 @@ namespace BranchDepends
 					if (depends != null)
 						includes.UnionWith(depends);
 
-					GetFileDependents(by.FullPath, false, allIncludedBy, dependents); // RECURSIVE CALL
+					GetFileDependents(by, false, allIncludedBy, dependents); // RECURSIVE CALL
 				}
 			}
 		}
 
-		static HashSet<IncludeFile> GetValue(IDictionary<string, HashSet<IncludeFile>> items, string key, bool autoAdd)
+		internal static HashSet<string> GetValue(IDictionary<string, HashSet<string>> items, string key, bool autoAdd)
 		{
-			HashSet<IncludeFile> item = null;
+			HashSet<string> item = null;
 
 			if (!items.TryGetValue(key, out item) && autoAdd)
 			{
-				item = new HashSet<IncludeFile>();
+				item = new HashSet<string>();
 				items[key] = item;
 			}
 

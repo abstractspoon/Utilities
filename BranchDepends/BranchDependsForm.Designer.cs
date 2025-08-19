@@ -50,7 +50,7 @@
 			this.m_RepoLabel.AutoSize = true;
 			this.m_RepoLabel.Location = new System.Drawing.Point(13, 15);
 			this.m_RepoLabel.Name = "m_RepoLabel";
-			this.m_RepoLabel.Size = new System.Drawing.Size(57, 13);
+			this.m_RepoLabel.Size = new System.Drawing.Size(59, 13);
 			this.m_RepoLabel.TabIndex = 0;
 			this.m_RepoLabel.Text = "Repository";
 			// 
@@ -83,7 +83,7 @@
 			this.m_BranchLabel.AutoSize = true;
 			this.m_BranchLabel.Location = new System.Drawing.Point(13, 46);
 			this.m_BranchLabel.Name = "m_BranchLabel";
-			this.m_BranchLabel.Size = new System.Drawing.Size(41, 13);
+			this.m_BranchLabel.Size = new System.Drawing.Size(40, 13);
 			this.m_BranchLabel.TabIndex = 0;
 			this.m_BranchLabel.Text = "Branch";
 			// 
@@ -224,6 +224,7 @@
 			this.Controls.Add(this.m_AnalyseChanges);
 			this.Controls.Add(this.m_AffectedFilesLabel);
 			this.Controls.Add(this.m_AffectedFiles);
+			this.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.MinimumSize = new System.Drawing.Size(634, 498);
 			this.Name = "BranchDependsForm";
 			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show;

@@ -19,6 +19,8 @@ namespace BranchDepends
 		string m_CurrentBranch = string.Empty;
 		string m_CurrentSourceFolder = string.Empty;
 
+		IDictionary<string, HashSet<string>> m_AllIncludes; // for Results drawing
+
 		public BranchDependsForm()
 		{
 			InitializeComponent();
@@ -170,7 +172,9 @@ namespace BranchDepends
 			fileList = fileList.ConvertAll(file => Path.GetFullPath(Path.Combine(m_CurrentRepository, file)));
 			
 			// Create 'Included By' lookup
-			var allIncludedBy = Utils.BuildAllIncludedBy(m_CurrentSourceFolder);
+			m_AllIncludes = Utils.GetAllIncludes(m_CurrentSourceFolder);
+
+			var allIncludedBy = Utils.BuildIncludedBy(m_AllIncludes);
 			
 			// Process file list
 			var allDependents = Utils.GetDependents(fileList, allIncludedBy);
@@ -217,22 +221,24 @@ namespace BranchDepends
 			{
 			case 0:
 				{
-					e.Graphics.DrawString(e.Item.Text, m_AffectedFiles.Font, textBrush, e.Bounds, format);
+					e.Graphics.DrawString(e.Item.Text.Replace(m_CurrentRepository.ToLower(), ""), m_AffectedFiles.Font, textBrush, e.Bounds, format);
 				}
 				break;
 
 			case 1:
 				{
-					var depends = (e.Item.Tag as HashSet<IncludeFile>);
-					bool first = true;
+					var depends = (e.Item.Tag as HashSet<string>);
 
 					if (depends != null)
 					{
+						HashSet<string> includes = Utils.GetValue(m_AllIncludes, e.Item.Text.ToLower(), false);
+
 						RectangleF textRect = e.Bounds;
+						bool first = true;
 
 						foreach (var depend in depends)
 						{
-							DrawSubItemTextAndAdvance(depend, first, e, format, ref textRect);
+							DrawSubItemTextAndAdvance(depend, includes, first, e, format, ref textRect);
 							first = false;
 						}
 					}
@@ -241,7 +247,7 @@ namespace BranchDepends
 			}
 		}
 
-		private void DrawSubItemTextAndAdvance(IncludeFile file, bool first, DrawListViewSubItemEventArgs e, StringFormat format, ref RectangleF rect)
+		private void DrawSubItemTextAndAdvance(string depend, HashSet<string> includes, bool first, DrawListViewSubItemEventArgs e, StringFormat format, ref RectangleF rect)
 		{
 			var textBrush = (e.Item.Selected ? SystemBrushes.HighlightText : SystemBrushes.WindowText);
 
@@ -253,10 +259,10 @@ namespace BranchDepends
 				rect.Offset(e.Graphics.MeasureString(", ", font).Width, 0);
 			}
 
-			if (file.Explicit)
-				font = new Font(font, FontStyle.Bold);
+ 			if ((includes != null) && includes.Contains(depend.ToLower()))
+ 				font = new Font(font, FontStyle.Bold);
 
-			var text = file.GetFilename();
+			var text = Path.GetFileName(depend);
 
 			e.Graphics.DrawString(text, font, textBrush, rect, format);
 			rect.Offset(e.Graphics.MeasureString(text, font).Width, 0);
