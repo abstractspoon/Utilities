@@ -25,6 +25,8 @@ namespace BranchDepends
 	{
 		public readonly static CaseInsensitiveComparer CaseInsensitive = new CaseInsensitiveComparer();
 
+		// --------------------------------------------------------
+
 		public static void PrepareFileList(IList<string> fileList)
 		{
 			// Convert all .cpp file to their header equivalent
@@ -51,23 +53,33 @@ namespace BranchDepends
 			}
 		}
 
-		public static IDictionary<string, HashSet<string>> GetAllIncludes(string srcDir)
+		public static IDictionary<string, HashSet<string>> GetAllIncludes(string srcDir, IProgress<int> progress)
 		{
 			var allFiles = GetFilesByExtensions(new DirectoryInfo(srcDir), new string[] { ".h", ".cpp" });
 			var allIncludes = new SortedDictionary<string, HashSet<string>>(StringComparer.OrdinalIgnoreCase);
 
+			int iFile = 0, numFiles = allFiles.Count();
+
 			foreach (var file in allFiles)
+			{
+				progress?.Report((++iFile * 100) / numFiles);
+
 				allIncludes[file.FullName] = ReadIncludes(file.FullName);
+			}
 
 			return allIncludes;
 		}
 
-		public static IDictionary<string, HashSet<string>> BuildIncludedBy(IDictionary<string, HashSet<string>> fileIncludes)
+		public static IDictionary<string, HashSet<string>> BuildIncludedBy(IDictionary<string, HashSet<string>> fileIncludes, IProgress<int> progress)
 		{
 			var allIncludedBy = new SortedDictionary<string, HashSet<string>>(StringComparer.OrdinalIgnoreCase);
 
+			int iFile = 0, numFiles = fileIncludes.Count();
+
 			foreach (var file in fileIncludes)
 			{
+				progress?.Report((++iFile * 100) / numFiles);
+
 				foreach (var include in file.Value)
 				{
 					var includedBy = GetValue(allIncludedBy, include, true);
@@ -78,12 +90,18 @@ namespace BranchDepends
 			return allIncludedBy;
 		}
 
-		public static IDictionary<string, HashSet<string>> GetDependents(IList<string> fileList, IDictionary<string, HashSet<string>> allIncludedBy)
+		public static IDictionary<string, HashSet<string>> GetDependents(IList<string> fileList, IDictionary<string, HashSet<string>> allIncludedBy, IProgress<int> progress)
 		{
 			var allDependents = new SortedDictionary<string, HashSet<string>>(StringComparer.OrdinalIgnoreCase);
 
+			int iFile = 0, numFiles = fileList.Count();
+
 			foreach (var file in fileList)
+			{
+				progress?.Report((++iFile * 100) / numFiles);
+
 				GetFileDependents(file, true, allIncludedBy, allDependents);
+			}
 
 			return allDependents;
 		}

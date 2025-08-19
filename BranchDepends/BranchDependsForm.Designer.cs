@@ -43,6 +43,8 @@
 			this.m_SourceFolderLabel = new System.Windows.Forms.Label();
 			this.m_SourceFolders = new System.Windows.Forms.ComboBox();
 			this.m_RefreshChangeFiles = new System.Windows.Forms.Button();
+			this.m_Progress = new System.Windows.Forms.ProgressBar();
+			this.m_ProgressLabel = new System.Windows.Forms.Label();
 			this.SuspendLayout();
 			// 
 			// m_RepoLabel
@@ -135,7 +137,7 @@
 			this.m_AffectedFiles.MultiSelect = false;
 			this.m_AffectedFiles.Name = "m_AffectedFiles";
 			this.m_AffectedFiles.OwnerDraw = true;
-			this.m_AffectedFiles.Size = new System.Drawing.Size(510, 207);
+			this.m_AffectedFiles.Size = new System.Drawing.Size(510, 204);
 			this.m_AffectedFiles.Sorting = System.Windows.Forms.SortOrder.Ascending;
 			this.m_AffectedFiles.TabIndex = 5;
 			this.m_AffectedFiles.UseCompatibleStateImageBehavior = false;
@@ -206,11 +208,31 @@
 			this.m_RefreshChangeFiles.UseVisualStyleBackColor = true;
 			this.m_RefreshChangeFiles.Click += new System.EventHandler(this.OnRefreshChangedFiles);
 			// 
+			// m_Progress
+			// 
+			this.m_Progress.Location = new System.Drawing.Point(96, 450);
+			this.m_Progress.Maximum = 300;
+			this.m_Progress.Name = "m_Progress";
+			this.m_Progress.Size = new System.Drawing.Size(510, 20);
+			this.m_Progress.Step = 1;
+			this.m_Progress.TabIndex = 8;
+			// 
+			// m_ProgressLabel
+			// 
+			this.m_ProgressLabel.AutoSize = true;
+			this.m_ProgressLabel.Location = new System.Drawing.Point(13, 452);
+			this.m_ProgressLabel.Name = "m_ProgressLabel";
+			this.m_ProgressLabel.Size = new System.Drawing.Size(49, 13);
+			this.m_ProgressLabel.TabIndex = 9;
+			this.m_ProgressLabel.Text = "Progress";
+			// 
 			// BranchDependsForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(618, 459);
+			this.ClientSize = new System.Drawing.Size(618, 482);
+			this.Controls.Add(this.m_ProgressLabel);
+			this.Controls.Add(this.m_Progress);
 			this.Controls.Add(this.m_RepoLabel);
 			this.Controls.Add(this.m_Repositories);
 			this.Controls.Add(this.m_BrowseRepo);
@@ -252,6 +274,8 @@
 		private System.Windows.Forms.Label m_SourceFolderLabel;
 		private System.Windows.Forms.ComboBox m_SourceFolders;
 		private System.Windows.Forms.Button m_RefreshChangeFiles;
+		private System.Windows.Forms.ProgressBar m_Progress;
+		private System.Windows.Forms.Label m_ProgressLabel;
 	}
 }
 

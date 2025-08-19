@@ -13,11 +13,13 @@ using Microsoft.Win32;
 
 namespace BranchDepends
 {
-	public partial class BranchDependsForm : Form
+	public partial class BranchDependsForm : Form, IProgress<int>
 	{
 		string m_CurrentRepository = string.Empty;
 		string m_CurrentBranch = string.Empty;
 		string m_CurrentSourceFolder = string.Empty;
+
+		int m_ProgressBase = 0;
 
 		IDictionary<string, HashSet<string>> m_AllIncludes; // for Results drawing
 
@@ -37,6 +39,12 @@ namespace BranchDepends
 				var currentSrcFolder = Registry.CurrentUser.GetValue("CurrentSourceFolder")?.ToString();
 				m_SourceFolders.SelectedItem = currentSrcFolder;
 			}
+		}
+
+		public virtual void Report(int percent)
+		{
+			m_Progress.Value = (m_ProgressBase + percent);
+			m_Progress.Update();
 		}
 
 		protected override void OnFormClosed(FormClosedEventArgs e)
@@ -175,13 +183,16 @@ namespace BranchDepends
 			Utils.PrepareFileList(fileList);
 
 			// Create 'Includes' lookup
-			m_AllIncludes = Utils.GetAllIncludes(m_CurrentSourceFolder);
+			m_ProgressBase = 0;
+			m_AllIncludes = Utils.GetAllIncludes(m_CurrentSourceFolder, this);
 
 			// Create 'Included By' lookup
-			var allIncludedBy = Utils.BuildIncludedBy(m_AllIncludes);
+			m_ProgressBase = 100;
+			var allIncludedBy = Utils.BuildIncludedBy(m_AllIncludes, this);
 			
 			// Generate map of dependents
-			var allDependents = Utils.GetDependents(fileList, allIncludedBy);
+			m_ProgressBase = 200;
+			var allDependents = Utils.GetDependents(fileList, allIncludedBy, this);
 
 			// Output to results list
 			m_AffectedFiles.Items.Clear();
@@ -193,6 +204,8 @@ namespace BranchDepends
 
 				m_AffectedFiles.Items.Add(lvi);
 			}
+
+			m_Progress.Value = 0;
 
 			Cursor = Cursors.Default;
 		}
