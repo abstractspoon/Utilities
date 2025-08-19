@@ -8,28 +8,43 @@ using System.Diagnostics;
 
 namespace BranchDepends
 {
+	public class FilenameComparer : IEqualityComparer<string>
+	{
+		public virtual bool Equals(string x, string y)
+		{
+			return (x.ToLower() == y.ToLower());
+		}
+
+		public virtual int GetHashCode(string obj)
+		{
+			return obj.ToLower().GetHashCode();
+		}
+	}
+
 	class Utils
 	{
+		public readonly static FilenameComparer FilenameComparer = new FilenameComparer();
+
 		public static IDictionary<string, HashSet<string>> GetAllIncludes(string srcDir)
 		{
 			var allFiles = GetFilesByExtensions(new DirectoryInfo(srcDir), new string[] { ".h", ".cpp" });
-			var allIncludes = new SortedDictionary<string, HashSet<string>>();
+			var allIncludes = new SortedDictionary<string, HashSet<string>>(StringComparer.OrdinalIgnoreCase);
 
 			foreach (var file in allFiles)
-				allIncludes[file.FullName.ToLower()] = ReadIncludes(file.FullName);
+				allIncludes[file.FullName] = ReadIncludes(file.FullName);
 
 			return allIncludes;
 		}
 
 		public static IDictionary<string, HashSet<string>> BuildIncludedBy(IDictionary<string, HashSet<string>> fileIncludes)
 		{
-			var allIncludedBy = new SortedDictionary<string, HashSet<string>>();
+			var allIncludedBy = new SortedDictionary<string, HashSet<string>>(StringComparer.OrdinalIgnoreCase);
 
 			foreach (var file in fileIncludes)
 			{
 				foreach (var include in file.Value)
 				{
-					var includedBy = GetValue(allIncludedBy, include.ToLower(), true);
+					var includedBy = GetValue(allIncludedBy, include, true);
 					includedBy.Add(file.Key);
 				}
 			}
@@ -39,7 +54,7 @@ namespace BranchDepends
 
 		public static IDictionary<string, HashSet<string>> GetDependents(IList<string> fileList, IDictionary<string, HashSet<string>> allIncludedBy)
 		{
-			var allDependents = new SortedDictionary<string, HashSet<string>>();
+			var allDependents = new SortedDictionary<string, HashSet<string>>(StringComparer.OrdinalIgnoreCase);
 
 			foreach (var file in fileList)
 				GetFileDependents(file, true, allIncludedBy, allDependents);
@@ -49,7 +64,7 @@ namespace BranchDepends
 
 		static IEnumerable<FileInfo> GetFilesByExtensions(DirectoryInfo dirInfo, params string[] extensions)
 		{
-			var allowedExtensions = new HashSet<string>(extensions, StringComparer.OrdinalIgnoreCase);
+			var allowedExtensions = new HashSet<string>(extensions, FilenameComparer);
 
 			return dirInfo.EnumerateFiles("*", System.IO.SearchOption.AllDirectories)
 						  .Where(f => allowedExtensions.Contains(f.Extension));
@@ -57,7 +72,7 @@ namespace BranchDepends
 
 		static HashSet<string> ReadIncludes(string fullFilePath)
 		{
-			var includes = new HashSet<string>();
+			var includes = new HashSet<string>(FilenameComparer);
 
 			if (File.Exists(fullFilePath))
 			{
@@ -101,7 +116,7 @@ namespace BranchDepends
 
 					rest = rest.Substring(1, endOfInclude - 1);
 
-					includes.Add(Path.GetFullPath(Path.Combine(fileDir, rest)).ToLower());
+					includes.Add(Path.GetFullPath(Path.Combine(fileDir, rest)));
 				}
 			}
 
@@ -113,7 +128,7 @@ namespace BranchDepends
 									  IDictionary<string, HashSet<string>> allIncludedBy, 
 									  IDictionary<string, HashSet<string>> dependents)
 		{
-			var includedBy = GetValue(allIncludedBy, fullFilePath.ToLower(), false);
+			var includedBy = GetValue(allIncludedBy, fullFilePath, false);
 
 			if (includedBy != null)
 			{
@@ -139,7 +154,7 @@ namespace BranchDepends
 
 			if (!items.TryGetValue(key, out item) && autoAdd)
 			{
-				item = new HashSet<string>();
+				item = new HashSet<string>(FilenameComparer);
 				items[key] = item;
 			}
 

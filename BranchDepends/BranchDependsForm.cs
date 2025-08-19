@@ -184,11 +184,7 @@ namespace BranchDepends
 
 			foreach (var dependent in allDependents)
 			{
-				var filePath = dependent.Key
-										.Replace(m_CurrentRepository, "")
-										.TrimStart(new char[] { '\\' });
-
-				var lvi = new ListViewItem(filePath) { Tag = dependent.Value };
+				var lvi = new ListViewItem(dependent.Key) { Tag = dependent.Value };
 				lvi.SubItems.Add("."); // dummy text to trigger subitem ownerdraw
 
 				m_AffectedFiles.Items.Add(lvi);
@@ -221,7 +217,8 @@ namespace BranchDepends
 			{
 			case 0:
 				{
-					e.Graphics.DrawString(e.Item.Text.Replace(m_CurrentRepository.ToLower(), ""), m_AffectedFiles.Font, textBrush, e.Bounds, format);
+					var text = e.Item.Text.Replace(m_CurrentRepository, "").TrimStart(new[] { '\\'});
+					e.Graphics.DrawString(text, m_AffectedFiles.Font, textBrush, e.Bounds, format);
 				}
 				break;
 
@@ -231,7 +228,7 @@ namespace BranchDepends
 
 					if (depends != null)
 					{
-						HashSet<string> includes = Utils.GetValue(m_AllIncludes, e.Item.Text.ToLower(), false);
+						HashSet<string> includes = Utils.GetValue(m_AllIncludes, e.Item.Text, false);
 
 						RectangleF textRect = e.Bounds;
 						bool first = true;
@@ -259,8 +256,8 @@ namespace BranchDepends
 				rect.Offset(e.Graphics.MeasureString(", ", font).Width, 0);
 			}
 
- 			if ((includes != null) && includes.Contains(depend.ToLower()))
- 				font = new Font(font, FontStyle.Bold);
+ 			if ((includes != null) && includes.Contains(depend))
+ 				font = new Font(font, FontStyle.Underline);
 
 			var text = Path.GetFileName(depend);
 
