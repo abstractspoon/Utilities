@@ -38,7 +38,7 @@ namespace BranchDepends
 		{
 			var result = RunGitCommand(string.Format("checkout {0}", branch), repoDir);
 
-			return true;
+			return ((result.Count() > 0) && (GetActiveBranch(repoDir) == branch));
 		}
 
 		public static IList<string> GetChangedFiles(string repoDir, params string[] extensions)

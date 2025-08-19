@@ -71,7 +71,7 @@ namespace BranchDepends
 
 					if (!Directory.Exists(Path.Combine(folderPath, ".git")))
 					{
-						MessageBox.Show("Not a Git repository", "Branch Dependencies");
+						MessageBox.Show("Not a Git repository.", "Branch Dependencies");
 					}
 					else
 					{
@@ -130,13 +130,17 @@ namespace BranchDepends
 			Cursor = Cursors.WaitCursor;
 
 			if (!GitUtils.SelectBranch(m_CurrentRepository, newBranch))
-				return;
-
-			m_CurrentBranch = newBranch;
-
-			Cursor = Cursors.Default;
+			{
+				MessageBox.Show("Unable to switch branch.", "Branch Dependencies");
+				m_Branches.SelectedItem = m_CurrentBranch;
+			}
+			else
+			{
+				m_CurrentBranch = newBranch;
+			}
 
 			RefreshChangedFileUI();
+			Cursor = Cursors.Default;
 		}
 
 		private void OnRefreshChangedFiles(object sender, EventArgs e)
