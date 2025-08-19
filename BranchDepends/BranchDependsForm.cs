@@ -184,11 +184,82 @@ namespace BranchDepends
 										.Replace(m_CurrentRepository, "")
 										.TrimStart(new char[] { '\\' });
 
-				var item = m_AffectedFiles.Items.Add(filePath);
-				item.SubItems.Add(string.Join(", ", dependent.Value.Select(f => Path.GetFileName(f.FullPath))));
+				var lvi = new ListViewItem(filePath) { Tag = dependent.Value };
+				lvi.SubItems.Add("."); // dummy text to trigger subitem ownerdraw
+
+				m_AffectedFiles.Items.Add(lvi);
 			}
 
 			Cursor = Cursors.Default;
+		}
+
+		private void OnDrawResultColumnHeader(object sender, DrawListViewColumnHeaderEventArgs e)
+		{
+			e.DrawDefault = true;
+		}
+
+		private void OnDrawResult(object sender, DrawListViewItemEventArgs e)
+		{
+			// Do it all in OnDrawResultSubItem
+		}
+
+		private void OnDrawResultSubItem(object sender, DrawListViewSubItemEventArgs e)
+		{
+			Brush backBrush = (e.Item.Selected ? SystemBrushes.Highlight : SystemBrushes.Window);
+			e.Graphics.FillRectangle(backBrush, e.Bounds);
+
+			e.DrawFocusRectangle(e.Item.Bounds);
+
+			Brush textBrush = (e.Item.Selected ? SystemBrushes.HighlightText : SystemBrushes.WindowText);
+			var format = new StringFormat() { LineAlignment = StringAlignment.Center, FormatFlags = StringFormatFlags.NoWrap };
+
+			switch (e.ColumnIndex)
+			{
+			case 0:
+				{
+					e.Graphics.DrawString(e.Item.Text, m_AffectedFiles.Font, textBrush, e.Bounds, format);
+				}
+				break;
+
+			case 1:
+				{
+					var depends = (e.Item.Tag as HashSet<IncludeFile>);
+					bool first = true;
+
+					if (depends != null)
+					{
+						RectangleF textRect = e.Bounds;
+
+						foreach (var depend in depends)
+						{
+							DrawSubItemTextAndAdvance(depend, first, e, format, ref textRect);
+							first = false;
+						}
+					}
+				}
+				break;
+			}
+		}
+
+		private void DrawSubItemTextAndAdvance(IncludeFile file, bool first, DrawListViewSubItemEventArgs e, StringFormat format, ref RectangleF rect)
+		{
+			var textBrush = (e.Item.Selected ? SystemBrushes.HighlightText : SystemBrushes.WindowText);
+
+			var font = m_AffectedFiles.Font;
+
+			if (!first)
+			{
+				e.Graphics.DrawString(", ", font, textBrush, rect, format);
+				rect.Offset(e.Graphics.MeasureString(", ", font).Width, 0);
+			}
+
+			if (file.Explicit)
+				font = new Font(font, FontStyle.Bold);
+
+			var text = file.GetFilename();
+
+			e.Graphics.DrawString(text, font, textBrush, rect, format);
+			rect.Offset(e.Graphics.MeasureString(text, font).Width, 0);
 		}
 	}
 }

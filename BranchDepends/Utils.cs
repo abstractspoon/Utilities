@@ -20,7 +20,9 @@ namespace BranchDepends
 		public bool Explicit = false;
 
 		public override string ToString() {	return FullPath; }
+
 		public string ToLower() { return FullPath.ToLower(); }
+		public string GetFilename() { return Path.GetFileName(FullPath); }
 	}
 
 	class Utils

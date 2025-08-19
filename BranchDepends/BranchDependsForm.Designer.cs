@@ -132,12 +132,17 @@
 			this.m_AffectedFiles.FullRowSelect = true;
 			this.m_AffectedFiles.HideSelection = false;
 			this.m_AffectedFiles.Location = new System.Drawing.Point(96, 240);
+			this.m_AffectedFiles.MultiSelect = false;
 			this.m_AffectedFiles.Name = "m_AffectedFiles";
+			this.m_AffectedFiles.OwnerDraw = true;
 			this.m_AffectedFiles.Size = new System.Drawing.Size(510, 207);
 			this.m_AffectedFiles.Sorting = System.Windows.Forms.SortOrder.Ascending;
 			this.m_AffectedFiles.TabIndex = 5;
 			this.m_AffectedFiles.UseCompatibleStateImageBehavior = false;
 			this.m_AffectedFiles.View = System.Windows.Forms.View.Details;
+			this.m_AffectedFiles.DrawColumnHeader += new System.Windows.Forms.DrawListViewColumnHeaderEventHandler(this.OnDrawResultColumnHeader);
+			this.m_AffectedFiles.DrawItem += new System.Windows.Forms.DrawListViewItemEventHandler(this.OnDrawResult);
+			this.m_AffectedFiles.DrawSubItem += new System.Windows.Forms.DrawListViewSubItemEventHandler(this.OnDrawResultSubItem);
 			// 
 			// columnHeader1
 			// 
