@@ -8,11 +8,11 @@ using System.Diagnostics;
 
 namespace BranchDepends
 {
-	public class FilenameComparer : IEqualityComparer<string>
+	public class CaseInsensitiveComparer : IEqualityComparer<string>
 	{
 		public virtual bool Equals(string x, string y)
 		{
-			return (x.ToLower() == y.ToLower());
+			return (string.Compare(x, y, true) == 0);
 		}
 
 		public virtual int GetHashCode(string obj)
@@ -23,7 +23,33 @@ namespace BranchDepends
 
 	class Utils
 	{
-		public readonly static FilenameComparer FilenameComparer = new FilenameComparer();
+		public readonly static CaseInsensitiveComparer CaseInsensitive = new CaseInsensitiveComparer();
+
+		public static void PrepareFileList(IList<string> fileList)
+		{
+			// Convert all .cpp file to their header equivalent
+			// ie. If the .cpp file has been modified then all
+			//     files which include its .h are potentially affected
+			var fileSet = new HashSet<string>(fileList, Utils.CaseInsensitive);
+			fileList.Clear();
+
+			foreach (var file in fileSet)
+			{
+				string lowerExt = Path.GetExtension(file).ToLower();
+
+				if (lowerExt == ".cpp")
+				{
+					string header = Path.ChangeExtension(file, ".h");
+
+					if (!fileSet.Contains(header) && File.Exists(header))
+						fileList.Add(header);
+				}
+				else if (lowerExt == ".h")
+				{
+					fileList.Add(file);
+				}
+			}
+		}
 
 		public static IDictionary<string, HashSet<string>> GetAllIncludes(string srcDir)
 		{
@@ -64,7 +90,7 @@ namespace BranchDepends
 
 		static IEnumerable<FileInfo> GetFilesByExtensions(DirectoryInfo dirInfo, params string[] extensions)
 		{
-			var allowedExtensions = new HashSet<string>(extensions, FilenameComparer);
+			var allowedExtensions = new HashSet<string>(extensions, CaseInsensitive);
 
 			return dirInfo.EnumerateFiles("*", System.IO.SearchOption.AllDirectories)
 						  .Where(f => allowedExtensions.Contains(f.Extension));
@@ -72,7 +98,7 @@ namespace BranchDepends
 
 		static HashSet<string> ReadIncludes(string fullFilePath)
 		{
-			var includes = new HashSet<string>(FilenameComparer);
+			var includes = new HashSet<string>(CaseInsensitive);
 
 			if (File.Exists(fullFilePath))
 			{
@@ -154,7 +180,7 @@ namespace BranchDepends
 
 			if (!items.TryGetValue(key, out item) && autoAdd)
 			{
-				item = new HashSet<string>(FilenameComparer);
+				item = new HashSet<string>(CaseInsensitive);
 				items[key] = item;
 			}
 

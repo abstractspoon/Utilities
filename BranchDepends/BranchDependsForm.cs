@@ -168,18 +168,22 @@ namespace BranchDepends
 
 			Cursor = Cursors.WaitCursor;
 
+			// Build list of files to analyse
 			var fileList = m_ChangedFiles.CheckedItems.Cast<string>().ToList();
-			fileList = fileList.ConvertAll(file => Path.GetFullPath(Path.Combine(m_CurrentRepository, file)));
-			
-			// Create 'Included By' lookup
+			fileList = fileList.ConvertAll(f => Path.GetFullPath(Path.Combine(m_CurrentRepository, f)));
+
+			Utils.PrepareFileList(fileList);
+
+			// Create 'Includes' lookup
 			m_AllIncludes = Utils.GetAllIncludes(m_CurrentSourceFolder);
 
+			// Create 'Included By' lookup
 			var allIncludedBy = Utils.BuildIncludedBy(m_AllIncludes);
 			
-			// Process file list
+			// Generate map of dependents
 			var allDependents = Utils.GetDependents(fileList, allIncludedBy);
 
-			// Output
+			// Output to results list
 			m_AffectedFiles.Items.Clear();
 
 			foreach (var dependent in allDependents)
