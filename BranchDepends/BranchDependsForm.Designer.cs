@@ -106,6 +106,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.m_ChangedFiles.CheckOnClick = true;
 			this.m_ChangedFiles.FormattingEnabled = true;
+			this.m_ChangedFiles.IntegralHeight = false;
 			this.m_ChangedFiles.Location = new System.Drawing.Point(96, 75);
 			this.m_ChangedFiles.Name = "m_ChangedFiles";
 			this.m_ChangedFiles.Size = new System.Drawing.Size(429, 124);
@@ -114,12 +115,11 @@
 			// 
 			// m_ChangedFilesLabel
 			// 
-			this.m_ChangedFilesLabel.AutoSize = true;
 			this.m_ChangedFilesLabel.Location = new System.Drawing.Point(13, 79);
 			this.m_ChangedFilesLabel.Name = "m_ChangedFilesLabel";
-			this.m_ChangedFilesLabel.Size = new System.Drawing.Size(74, 13);
+			this.m_ChangedFilesLabel.Size = new System.Drawing.Size(74, 34);
 			this.m_ChangedFilesLabel.TabIndex = 4;
-			this.m_ChangedFilesLabel.Text = "Changed Files";
+			this.m_ChangedFilesLabel.Text = "Files differing from \'master\'";
 			// 
 			// m_AffectedFiles
 			// 
@@ -158,9 +158,9 @@
 			// 
 			this.m_AffectedFilesLabel.Location = new System.Drawing.Point(13, 240);
 			this.m_AffectedFilesLabel.Name = "m_AffectedFilesLabel";
-			this.m_AffectedFilesLabel.Size = new System.Drawing.Size(77, 35);
+			this.m_AffectedFilesLabel.Size = new System.Drawing.Size(77, 32);
 			this.m_AffectedFilesLabel.TabIndex = 6;
-			this.m_AffectedFilesLabel.Text = "Files affected by changes";
+			this.m_AffectedFilesLabel.Text = "Potentially affected files";
 			// 
 			// m_AnalyseChanges
 			// 
