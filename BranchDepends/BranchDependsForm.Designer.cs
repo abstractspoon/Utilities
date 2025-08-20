@@ -109,6 +109,7 @@
 			this.m_ChangedFiles.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.m_ChangedFiles.FormattingEnabled = true;
+			this.m_ChangedFiles.HorizontalScrollbar = true;
 			this.m_ChangedFiles.IntegralHeight = false;
 			this.m_ChangedFiles.Location = new System.Drawing.Point(96, 75);
 			this.m_ChangedFiles.Name = "m_ChangedFiles";

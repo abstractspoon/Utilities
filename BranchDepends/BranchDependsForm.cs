@@ -255,15 +255,15 @@ namespace BranchDepends
 
 			e.DrawFocusRectangle(e.Item.Bounds);
 
-			Brush textBrush = (e.Item.Selected ? SystemBrushes.HighlightText : SystemBrushes.WindowText);
-			var format = new StringFormat() { LineAlignment = StringAlignment.Center, FormatFlags = StringFormatFlags.NoWrap };
+			var textColor = (e.Item.Selected ? SystemColors.HighlightText : SystemColors.WindowText);
+			var flags = (TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.SingleLine | TextFormatFlags.PathEllipsis);
 
 			switch (e.ColumnIndex)
 			{
 			case 0:
 				{
 					var text = e.Item.Text.Replace(m_CurrentRepository, "").TrimStart(new[] { '\\'});
-					e.Graphics.DrawString(text, m_AffectedFiles.Font, textBrush, e.Bounds, format);
+					TextRenderer.DrawText(e.Graphics, text, m_AffectedFiles.Font, e.Bounds, textColor, flags);
 				}
 				break;
 
@@ -275,12 +275,12 @@ namespace BranchDepends
 					{
 						HashSet<string> includes = Utils.GetValue(m_AllIncludes, e.Item.Text, false);
 
-						RectangleF textRect = e.Bounds;
+						Rectangle textRect = e.Bounds;
 						bool first = true;
 
 						foreach (var depend in depends)
 						{
-							DrawSubItemTextAndAdvance(depend, includes, first, e, format, ref textRect);
+							DrawSubItemTextAndAdvance(depend, includes, first, e, flags, ref textRect);
 							first = false;
 						}
 					}
@@ -289,25 +289,25 @@ namespace BranchDepends
 			}
 		}
 
-		private void DrawSubItemTextAndAdvance(string depend, HashSet<string> includes, bool first, DrawListViewSubItemEventArgs e, StringFormat format, ref RectangleF rect)
+		private void DrawSubItemTextAndAdvance(string depend, HashSet<string> includes, bool first, DrawListViewSubItemEventArgs e, TextFormatFlags flags, ref Rectangle rect)
 		{
-			var textBrush = (e.Item.Selected ? SystemBrushes.HighlightText : SystemBrushes.WindowText);
+			var textColor = (e.Item.Selected ? SystemColors.HighlightText : SystemColors.WindowText);
 
 			var font = m_AffectedFiles.Font;
 
 			if (!first)
 			{
-				e.Graphics.DrawString(", ", font, textBrush, rect, format);
-				rect.Offset(e.Graphics.MeasureString(", ", font).Width, 0);
+				TextRenderer.DrawText(e.Graphics, ", ", font, rect, textColor, flags);
+				rect.Offset(TextRenderer.MeasureText(", ", font).Width, 0);
 			}
 
- 			if ((includes != null) && includes.Contains(depend))
+			if ((includes != null) && includes.Contains(depend))
  				font = new Font(font, FontStyle.Underline);
 
 			var text = Path.GetFileName(depend);
 
-			e.Graphics.DrawString(text, font, textBrush, rect, format);
-			rect.Offset(e.Graphics.MeasureString(text, font).Width, 0);
+			TextRenderer.DrawText(e.Graphics, text, font, rect, textColor, flags);
+			rect.Offset(TextRenderer.MeasureText(text, font).Width, 0);
 		}
 	}
 }
