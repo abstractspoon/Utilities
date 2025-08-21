@@ -28,7 +28,6 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BranchDependsForm));
 			this.m_RepoLabel = new System.Windows.Forms.Label();
 			this.m_Repositories = new System.Windows.Forms.ComboBox();
 			this.m_BrowseRepo = new System.Windows.Forms.Button();
@@ -213,6 +212,8 @@
 			// 
 			// m_Progress
 			// 
+			this.m_Progress.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.m_Progress.Location = new System.Drawing.Point(96, 450);
 			this.m_Progress.Maximum = 400;
 			this.m_Progress.Name = "m_Progress";
@@ -222,6 +223,7 @@
 			// 
 			// m_ProgressLabel
 			// 
+			this.m_ProgressLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.m_ProgressLabel.AutoSize = true;
 			this.m_ProgressLabel.Location = new System.Drawing.Point(12, 450);
 			this.m_ProgressLabel.Name = "m_ProgressLabel";
