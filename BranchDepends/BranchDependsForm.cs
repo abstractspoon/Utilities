@@ -157,7 +157,7 @@ namespace BranchDepends
 			ClearChangedFileUI();
 			ClearAffectedFileUI();
 
-			var changedFiles = Utils.GetChangedFiles(m_CurrentRepository);
+			var changedFiles = GitUtils.GetChangedFiles(m_CurrentRepository, new string[] { ".h", ".cpp" });
 
 			foreach (var file in changedFiles)
 				m_ChangedFiles.Items.Add(file, true);
@@ -199,8 +199,10 @@ namespace BranchDepends
 			Cursor = Cursors.WaitCursor;
 
 			// Build list of files to analyse
-			var fileList = m_ChangedFiles.CheckedItems.Cast<string>().ToList();
-			fileList = fileList.ConvertAll(f => Path.GetFullPath(Path.Combine(m_CurrentRepository, f)));
+			var changedFiles = m_ChangedFiles.CheckedItems.Cast<string>().ToList();
+			changedFiles = changedFiles.ConvertAll(f => Path.GetFullPath(Path.Combine(m_CurrentRepository, f)));
+
+			var fileList = Utils.GetFilesToAnalyse(changedFiles);
 
 			// Create 'Includes' lookup
 			m_ProgressBase = 0;

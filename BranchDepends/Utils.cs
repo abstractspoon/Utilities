@@ -27,17 +27,15 @@ namespace BranchDepends
 
 		// --------------------------------------------------------
 
-		public static IList<string> GetChangedFiles(string repoDir)
+		public static IList<string> GetFilesToAnalyse(IList<string> changedFiles)
 		{
-			var fileList = GitUtils.GetChangedFiles(repoDir, new string[] { ".h", ".cpp" });
-
 			// Convert all .cpp file to their header equivalent
 			// ie. If the .cpp file has been modified then all
 			//     files which include its .h are potentially affected
-			var fileSet = new HashSet<string>(fileList, Utils.CaseInsensitive);
-			fileList.Clear();
+			var changedSet = new HashSet<string>(changedFiles, Utils.CaseInsensitive);
+			var fileList = new List<string>();
 
-			foreach (var file in fileSet)
+			foreach (var file in changedSet)
 			{
 				string lowerExt = Path.GetExtension(file).ToLower();
 
@@ -45,7 +43,7 @@ namespace BranchDepends
 				{
 					string header = Path.ChangeExtension(file, ".h");
 
-					if (!fileSet.Contains(header) && File.Exists(header))
+					if (!changedSet.Contains(header) && File.Exists(header))
 						fileList.Add(header);
 				}
 				else
