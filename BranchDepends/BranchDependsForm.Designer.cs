@@ -28,6 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BranchDependsForm));
 			this.m_RepoLabel = new System.Windows.Forms.Label();
 			this.m_Repositories = new System.Windows.Forms.ComboBox();
 			this.m_BrowseRepo = new System.Windows.Forms.Button();
