@@ -54,7 +54,7 @@
 			this.m_RepoLabel.AutoSize = true;
 			this.m_RepoLabel.Location = new System.Drawing.Point(12, 15);
 			this.m_RepoLabel.Name = "m_RepoLabel";
-			this.m_RepoLabel.Size = new System.Drawing.Size(89, 21);
+			this.m_RepoLabel.Size = new System.Drawing.Size(59, 13);
 			this.m_RepoLabel.TabIndex = 0;
 			this.m_RepoLabel.Text = "Repository";
 			// 
@@ -64,9 +64,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.m_Repositories.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.m_Repositories.FormattingEnabled = true;
-			this.m_Repositories.Location = new System.Drawing.Point(129, 12);
+			this.m_Repositories.Location = new System.Drawing.Point(96, 12);
 			this.m_Repositories.Name = "m_Repositories";
-			this.m_Repositories.Size = new System.Drawing.Size(753, 29);
+			this.m_Repositories.Size = new System.Drawing.Size(429, 21);
 			this.m_Repositories.Sorted = true;
 			this.m_Repositories.TabIndex = 1;
 			this.m_Repositories.SelectedIndexChanged += new System.EventHandler(this.OnRepositoryChanged);
@@ -74,9 +74,10 @@
 			// m_BrowseRepo
 			// 
 			this.m_BrowseRepo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.m_BrowseRepo.Location = new System.Drawing.Point(885, 12);
+			this.m_BrowseRepo.AutoSize = true;
+			this.m_BrowseRepo.Location = new System.Drawing.Point(531, 10);
 			this.m_BrowseRepo.Name = "m_BrowseRepo";
-			this.m_BrowseRepo.Size = new System.Drawing.Size(90, 31);
+			this.m_BrowseRepo.Size = new System.Drawing.Size(75, 23);
 			this.m_BrowseRepo.TabIndex = 2;
 			this.m_BrowseRepo.Text = "Browse...";
 			this.m_BrowseRepo.UseVisualStyleBackColor = true;
@@ -85,9 +86,9 @@
 			// m_BranchLabel
 			// 
 			this.m_BranchLabel.AutoSize = true;
-			this.m_BranchLabel.Location = new System.Drawing.Point(12, 55);
+			this.m_BranchLabel.Location = new System.Drawing.Point(12, 46);
 			this.m_BranchLabel.Name = "m_BranchLabel";
-			this.m_BranchLabel.Size = new System.Drawing.Size(61, 21);
+			this.m_BranchLabel.Size = new System.Drawing.Size(40, 13);
 			this.m_BranchLabel.TabIndex = 0;
 			this.m_BranchLabel.Text = "Branch";
 			// 
@@ -97,9 +98,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.m_Branches.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.m_Branches.FormattingEnabled = true;
-			this.m_Branches.Location = new System.Drawing.Point(129, 55);
+			this.m_Branches.Location = new System.Drawing.Point(96, 43);
 			this.m_Branches.Name = "m_Branches";
-			this.m_Branches.Size = new System.Drawing.Size(753, 29);
+			this.m_Branches.Size = new System.Drawing.Size(429, 21);
 			this.m_Branches.Sorted = true;
 			this.m_Branches.TabIndex = 1;
 			this.m_Branches.SelectedIndexChanged += new System.EventHandler(this.OnBranchChanged);
@@ -111,17 +112,17 @@
 			this.m_ChangedFiles.FormattingEnabled = true;
 			this.m_ChangedFiles.HorizontalScrollbar = true;
 			this.m_ChangedFiles.IntegralHeight = false;
-			this.m_ChangedFiles.Location = new System.Drawing.Point(129, 97);
+			this.m_ChangedFiles.Location = new System.Drawing.Point(96, 75);
 			this.m_ChangedFiles.Name = "m_ChangedFiles";
-			this.m_ChangedFiles.Size = new System.Drawing.Size(753, 124);
+			this.m_ChangedFiles.Size = new System.Drawing.Size(429, 124);
 			this.m_ChangedFiles.Sorted = true;
 			this.m_ChangedFiles.TabIndex = 3;
 			// 
 			// m_ChangedFilesLabel
 			// 
-			this.m_ChangedFilesLabel.Location = new System.Drawing.Point(12, 97);
+			this.m_ChangedFilesLabel.Location = new System.Drawing.Point(12, 79);
 			this.m_ChangedFilesLabel.Name = "m_ChangedFilesLabel";
-			this.m_ChangedFilesLabel.Size = new System.Drawing.Size(111, 57);
+			this.m_ChangedFilesLabel.Size = new System.Drawing.Size(74, 34);
 			this.m_ChangedFilesLabel.TabIndex = 4;
 			this.m_ChangedFilesLabel.Text = "Files differing from \'master\'";
 			// 
@@ -135,11 +136,11 @@
             this.columnHeader2});
 			this.m_AffectedFiles.FullRowSelect = true;
 			this.m_AffectedFiles.HideSelection = false;
-			this.m_AffectedFiles.Location = new System.Drawing.Point(129, 281);
+			this.m_AffectedFiles.Location = new System.Drawing.Point(96, 240);
 			this.m_AffectedFiles.MultiSelect = false;
 			this.m_AffectedFiles.Name = "m_AffectedFiles";
 			this.m_AffectedFiles.OwnerDraw = true;
-			this.m_AffectedFiles.Size = new System.Drawing.Size(849, 490);
+			this.m_AffectedFiles.Size = new System.Drawing.Size(510, 204);
 			this.m_AffectedFiles.Sorting = System.Windows.Forms.SortOrder.Ascending;
 			this.m_AffectedFiles.TabIndex = 5;
 			this.m_AffectedFiles.UseCompatibleStateImageBehavior = false;
@@ -160,18 +161,19 @@
 			// 
 			// m_AffectedFilesLabel
 			// 
-			this.m_AffectedFilesLabel.Location = new System.Drawing.Point(12, 281);
+			this.m_AffectedFilesLabel.Location = new System.Drawing.Point(12, 240);
 			this.m_AffectedFilesLabel.Name = "m_AffectedFilesLabel";
-			this.m_AffectedFilesLabel.Size = new System.Drawing.Size(111, 56);
+			this.m_AffectedFilesLabel.Size = new System.Drawing.Size(77, 32);
 			this.m_AffectedFilesLabel.TabIndex = 6;
 			this.m_AffectedFilesLabel.Text = "Potentially affected files";
 			// 
 			// m_AnalyseChanges
 			// 
 			this.m_AnalyseChanges.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.m_AnalyseChanges.Location = new System.Drawing.Point(885, 235);
+			this.m_AnalyseChanges.AutoSize = true;
+			this.m_AnalyseChanges.Location = new System.Drawing.Point(531, 208);
 			this.m_AnalyseChanges.Name = "m_AnalyseChanges";
-			this.m_AnalyseChanges.Size = new System.Drawing.Size(93, 31);
+			this.m_AnalyseChanges.Size = new System.Drawing.Size(75, 23);
 			this.m_AnalyseChanges.TabIndex = 7;
 			this.m_AnalyseChanges.Text = "Analyse";
 			this.m_AnalyseChanges.UseVisualStyleBackColor = true;
@@ -180,9 +182,9 @@
 			// m_SourceFolderLabel
 			// 
 			this.m_SourceFolderLabel.AutoSize = true;
-			this.m_SourceFolderLabel.Location = new System.Drawing.Point(12, 237);
+			this.m_SourceFolderLabel.Location = new System.Drawing.Point(12, 211);
 			this.m_SourceFolderLabel.Name = "m_SourceFolderLabel";
-			this.m_SourceFolderLabel.Size = new System.Drawing.Size(111, 21);
+			this.m_SourceFolderLabel.Size = new System.Drawing.Size(73, 13);
 			this.m_SourceFolderLabel.TabIndex = 0;
 			this.m_SourceFolderLabel.Text = "Source Folder";
 			// 
@@ -192,9 +194,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.m_SourceFolders.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.m_SourceFolders.FormattingEnabled = true;
-			this.m_SourceFolders.Location = new System.Drawing.Point(129, 237);
+			this.m_SourceFolders.Location = new System.Drawing.Point(96, 208);
 			this.m_SourceFolders.Name = "m_SourceFolders";
-			this.m_SourceFolders.Size = new System.Drawing.Size(753, 29);
+			this.m_SourceFolders.Size = new System.Drawing.Size(429, 21);
 			this.m_SourceFolders.Sorted = true;
 			this.m_SourceFolders.TabIndex = 1;
 			this.m_SourceFolders.SelectedIndexChanged += new System.EventHandler(this.OnSourceFolderChanged);
@@ -202,9 +204,10 @@
 			// m_RefreshChangeFiles
 			// 
 			this.m_RefreshChangeFiles.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.m_RefreshChangeFiles.Location = new System.Drawing.Point(885, 190);
+			this.m_RefreshChangeFiles.AutoSize = true;
+			this.m_RefreshChangeFiles.Location = new System.Drawing.Point(531, 176);
 			this.m_RefreshChangeFiles.Name = "m_RefreshChangeFiles";
-			this.m_RefreshChangeFiles.Size = new System.Drawing.Size(92, 31);
+			this.m_RefreshChangeFiles.Size = new System.Drawing.Size(75, 23);
 			this.m_RefreshChangeFiles.TabIndex = 7;
 			this.m_RefreshChangeFiles.Text = "Refresh";
 			this.m_RefreshChangeFiles.UseVisualStyleBackColor = true;
@@ -214,10 +217,10 @@
 			// 
 			this.m_Progress.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.m_Progress.Location = new System.Drawing.Point(129, 790);
+			this.m_Progress.Location = new System.Drawing.Point(96, 450);
 			this.m_Progress.Maximum = 400;
 			this.m_Progress.Name = "m_Progress";
-			this.m_Progress.Size = new System.Drawing.Size(849, 26);
+			this.m_Progress.Size = new System.Drawing.Size(510, 20);
 			this.m_Progress.Step = 1;
 			this.m_Progress.TabIndex = 8;
 			// 
@@ -225,9 +228,9 @@
 			// 
 			this.m_ProgressLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.m_ProgressLabel.AutoSize = true;
-			this.m_ProgressLabel.Location = new System.Drawing.Point(12, 796);
+			this.m_ProgressLabel.Location = new System.Drawing.Point(12, 450);
 			this.m_ProgressLabel.Name = "m_ProgressLabel";
-			this.m_ProgressLabel.Size = new System.Drawing.Size(74, 21);
+			this.m_ProgressLabel.Size = new System.Drawing.Size(49, 13);
 			this.m_ProgressLabel.TabIndex = 9;
 			this.m_ProgressLabel.Text = "Progress";
 			// 
@@ -247,9 +250,9 @@
 			// 
 			// BranchDependsForm
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 21F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(990, 828);
+			this.ClientSize = new System.Drawing.Size(618, 482);
 			this.Controls.Add(this.m_ProgressLabel);
 			this.Controls.Add(this.m_Progress);
 			this.Controls.Add(this.m_RepoLabel);
