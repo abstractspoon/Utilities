@@ -74,7 +74,6 @@
 			// m_BrowseRepo
 			// 
 			this.m_BrowseRepo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.m_BrowseRepo.AutoSize = true;
 			this.m_BrowseRepo.Location = new System.Drawing.Point(531, 10);
 			this.m_BrowseRepo.Name = "m_BrowseRepo";
 			this.m_BrowseRepo.Size = new System.Drawing.Size(75, 23);
@@ -170,7 +169,6 @@
 			// m_AnalyseChanges
 			// 
 			this.m_AnalyseChanges.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.m_AnalyseChanges.AutoSize = true;
 			this.m_AnalyseChanges.Location = new System.Drawing.Point(531, 208);
 			this.m_AnalyseChanges.Name = "m_AnalyseChanges";
 			this.m_AnalyseChanges.Size = new System.Drawing.Size(75, 23);
@@ -204,7 +202,6 @@
 			// m_RefreshChangeFiles
 			// 
 			this.m_RefreshChangeFiles.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.m_RefreshChangeFiles.AutoSize = true;
 			this.m_RefreshChangeFiles.Location = new System.Drawing.Point(531, 176);
 			this.m_RefreshChangeFiles.Name = "m_RefreshChangeFiles";
 			this.m_RefreshChangeFiles.Size = new System.Drawing.Size(75, 23);
