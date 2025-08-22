@@ -27,6 +27,8 @@ namespace BranchDepends
 		{
 			InitializeComponent();
 
+			GitUtils.PreferredMasterName = "<master>";
+
 			var repostories = Registry.CurrentUser.GetValue("Repositories")?.ToString();
 
 			if (repostories != null)
@@ -87,17 +89,18 @@ namespace BranchDepends
 
 		private void OnRepositoryChanged(object sender, EventArgs e)
 		{
-			if (m_Repositories.SelectedItem.Equals(m_CurrentRepository))
+			var newRepo = m_Repositories.SelectedItem?.ToString() ?? string.Empty;
+
+			if (newRepo == m_CurrentRepository)
 				return;
 
 			ClearChangedFileUI();
 			ClearAffectedFileUI();
 
-			m_CurrentRepository = m_Repositories.SelectedItem.ToString();
+			m_CurrentRepository = newRepo;
+			m_CurrentBranch = string.Empty;
 
-			var branches = GitUtils.GetBranches(m_CurrentRepository)
-								   .Select(b => b.Replace("master", "<master>"))
-								   .ToArray();	
+			var branches = GitUtils.GetBranches(m_CurrentRepository).ToArray();	
 			
 			m_Branches.Items.Clear();
 			m_Branches.Items.AddRange(branches);
@@ -105,6 +108,7 @@ namespace BranchDepends
 			m_Branches.SelectedItem = GitUtils.GetActiveBranch(m_CurrentRepository);
 
 			var srcFolders = Directory.GetDirectories(m_CurrentRepository).Where(d => !d.Contains(".git")).ToList();
+			srcFolders.Add(m_CurrentRepository);
 
 			m_SourceFolders.Items.Clear();
 			m_SourceFolders.Items.AddRange(srcFolders.ToArray());
@@ -114,9 +118,7 @@ namespace BranchDepends
 
 		private void OnBranchChanged(object sender, EventArgs e)
 		{
-			var newBranch = m_Branches.SelectedItem?
-									  .ToString()
-									  .Replace("<master>", "master");
+			var newBranch = m_Branches.SelectedItem?.ToString()??string.Empty;
 
 			if (newBranch == m_CurrentBranch)
 				return;
@@ -185,10 +187,7 @@ namespace BranchDepends
 		{
 			ClearAffectedFileUI();
 
-			if (m_SourceFolders.SelectedItem == null)
-				m_CurrentSourceFolder = string.Empty;
-			else
-				m_CurrentSourceFolder = m_SourceFolders.SelectedItem.ToString();
+			m_CurrentSourceFolder = m_SourceFolders.SelectedItem?.ToString() ?? m_CurrentRepository;
 		}
 
 		private void OnAnalyseChangedFiles(object sender, EventArgs e)
