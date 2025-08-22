@@ -14,7 +14,7 @@ namespace BranchDepends
 		{
 			var branches = RunGitCommand("branch --all", repoDir);
 
-			branches = branches.Where(b => !b.Contains("master"))
+			branches = branches.Where(b => !b.Contains("HEAD"))
 							   .Where(b => b.StartsWith("remotes/origin/"))
 							   .Select(b => b.Replace("remotes/origin/", ""))
 							   .ToList();
@@ -26,7 +26,7 @@ namespace BranchDepends
 		{
 			var branches = RunGitCommand("branch", repoDir);
 
-			branches = branches.Where(b => !b.Contains("master"))
+			branches = branches.Where(b => !b.Contains("HEAD"))
 							   .Where(b => b.StartsWith("* "))
 							   .Select(b => b.Substring(2))
 							   .ToList();
@@ -36,6 +36,9 @@ namespace BranchDepends
 
 		public static bool SelectBranch(string repoDir, string branch)
 		{
+			if (GetActiveBranch(repoDir) == branch)
+				return true;
+
 			var result = RunGitCommand(string.Format("checkout {0}", branch), repoDir);
 
 			return ((result.Count() > 0) && (GetActiveBranch(repoDir) == branch));

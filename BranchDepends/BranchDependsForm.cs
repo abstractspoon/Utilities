@@ -95,10 +95,12 @@ namespace BranchDepends
 
 			m_CurrentRepository = m_Repositories.SelectedItem.ToString();
 
-			var branches = GitUtils.GetBranches(m_CurrentRepository);
+			var branches = GitUtils.GetBranches(m_CurrentRepository)
+								   .Select(b => b.Replace("master", "<master>"))
+								   .ToArray();	
 			
 			m_Branches.Items.Clear();
-			m_Branches.Items.AddRange(branches.ToArray());
+			m_Branches.Items.AddRange(branches);
 
 			m_Branches.SelectedItem = GitUtils.GetActiveBranch(m_CurrentRepository);
 
@@ -112,7 +114,9 @@ namespace BranchDepends
 
 		private void OnBranchChanged(object sender, EventArgs e)
 		{
-			var newBranch = m_Branches.SelectedItem?.ToString();
+			var newBranch = m_Branches.SelectedItem?
+									  .ToString()
+									  .Replace("<master>", "master");
 
 			if (newBranch == m_CurrentBranch)
 				return;
