@@ -26,6 +26,7 @@ namespace BranchDepends
 		public BranchDependsForm()
 		{
 			InitializeComponent();
+			ScaleByDpi();
 
 			GitUtils.PreferredMasterName = "<master>";
 
@@ -41,6 +42,28 @@ namespace BranchDepends
 				var currentSrcFolder = Registry.CurrentUser.GetValue("CurrentSourceFolder")?.ToString();
 				m_SourceFolders.SelectedItem = currentSrcFolder;
 			}
+		}
+
+		void ScaleByDpi()
+		{
+			var graphics = Graphics.FromHwnd(Handle);
+			float xScale = (graphics.DpiX / 96), yScale = (graphics.DpiY / 96);
+
+			if ((xScale == 1.0f) && (yScale == 1.0f))
+				return;
+
+			this.SuspendLayout();
+
+			this.Size = new Size((int)(this.Width * xScale), (int)(this.Height * yScale));
+			this.MinimumSize = this.Size;
+
+			foreach (Control control in Controls)
+			{
+				control.Location = new Point((int)(control.Left * xScale), (int)(control.Top * yScale));
+				control.Size = new Size((int)(control.Width * xScale), (int)(control.Height * yScale));
+			}
+
+			this.ResumeLayout();
 		}
 
 		public virtual void Report(int percent)
