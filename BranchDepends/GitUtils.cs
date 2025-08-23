@@ -24,10 +24,11 @@ namespace BranchDepends
 		{
 			var branches = RunGitCommand("branch --all", repoDir);
 
-			branches = branches.Where(b => !b.StartsWith(RemoteOriginPrefix))
+			branches = branches.Where(b => !b.Contains("HEAD"))
+							   .Select(b => b.Replace(RemoteOriginPrefix, ""))
 							   .Select(b => b.TrimStart(ActiveBranchPrefixChars))
 							   .Select(b => b.Replace(MasterName, PreferredMasterName))
-							   .ToList();
+							   .Distinct();
 
 			return branches;
 		}
