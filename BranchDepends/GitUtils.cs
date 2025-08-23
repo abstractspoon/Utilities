@@ -20,7 +20,7 @@ namespace BranchDepends
 
 		// -----------------------------------------------------
 
-		public static IList<string> GetBranches(string repoDir)
+		public static IEnumerable<string> GetBranches(string repoDir)
 		{
 			var branches = RunGitCommand("branch --all", repoDir);
 
@@ -39,8 +39,7 @@ namespace BranchDepends
 
 			branches = branches.Where(b => b.StartsWith(ActiveBranchPrefix))
 							   .Select(b => b.TrimStart(ActiveBranchPrefixChars))
-							   .Select(b => b.Replace(MasterName, PreferredMasterName))
-							   .ToList();
+							   .Select(b => b.Replace(MasterName, PreferredMasterName));
 
 			return branches.FirstOrDefault();
 		}
@@ -55,7 +54,7 @@ namespace BranchDepends
 			return ((result.Count() > 0) && (GetActiveBranch(repoDir) == branch));
 		}
 
-		public static IList<string> GetChangedFiles(string repoDir, params string[] extensions)
+		public static IEnumerable<string> GetChangedFiles(string repoDir, params string[] extensions)
 		{
 			var files = RunGitCommand("diff master --name-only", repoDir);
 
@@ -63,13 +62,13 @@ namespace BranchDepends
 			{
 				var allowedExtensions = new HashSet<string>(extensions, Utils.CaseInsensitive);
 
-				files = files.Where(f => allowedExtensions.Contains(Path.GetExtension(f))).ToList();
+				files = files.Where(f => allowedExtensions.Contains(Path.GetExtension(f)));
 			}
 
-			return files.Select(f => f.Replace('/', '\\')).ToList();
+			return files.Select(f => f.Replace('/', '\\'));
 		}
 
-		static IList<string> RunGitCommand(string command, string repoDir)
+		static IEnumerable<string> RunGitCommand(string command, string repoDir)
 		{
 			var results = new List<string>();
 

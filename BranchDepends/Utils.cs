@@ -27,7 +27,7 @@ namespace BranchDepends
 
 		// --------------------------------------------------------
 
-		public static IList<string> GetFilesToAnalyse(IList<string> changedFiles)
+		public static IEnumerable<string> GetFilesToAnalyse(IEnumerable<string> changedFiles)
 		{
 			// Convert all .cpp file to their header equivalent
 			// ie. If the .cpp file has been modified then all
@@ -93,7 +93,7 @@ namespace BranchDepends
 			return allIncludedBy;
 		}
 
-		public static IDictionary<string, HashSet<string>> GetDependents(IList<string> fileList, IDictionary<string, HashSet<string>> allIncludedBy, IProgress<int> progress)
+		public static IDictionary<string, HashSet<string>> GetDependents(IEnumerable<string> fileList, IDictionary<string, HashSet<string>> allIncludedBy, IProgress<int> progress)
 		{
 			var allDependents = new SortedDictionary<string, HashSet<string>>(StringComparer.OrdinalIgnoreCase);
 

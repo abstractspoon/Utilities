@@ -191,7 +191,7 @@ namespace BranchDepends
 			foreach (var file in changedFiles)
 				m_ChangedFiles.Items.Add(file, true);
 
-			m_NumChangedFilesLabel.Text = string.Format("({0})", changedFiles.Count);
+			m_NumChangedFilesLabel.Text = string.Format("({0})", m_ChangedFiles.Items.Count);
 		}
 
 		private void ClearChangedFileUI()
