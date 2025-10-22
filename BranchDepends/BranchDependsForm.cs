@@ -350,4 +350,54 @@ namespace BranchDepends
 				m_ChangedFiles.SetItemChecked(item, false);
 		}
 	}
+
+	////////////////////////////////////////////////////////////////////////////////
+	// This class supports changing the check state of
+	// an unselected item using the mouse with one click
+
+	internal class CheckedListBoxEx : CheckedListBox
+	{
+		const int WM_LBUTTONDOWN = 0x0201;
+
+		protected override void WndProc(ref Message m)
+		{
+			switch (m.Msg)
+			{
+			case WM_LBUTTONDOWN:
+				{
+					// Decode the LParam into (x, y)
+					var pt = new Point(m.LParam.ToInt32() & 0xffff, m.LParam.ToInt32() >> 16);
+
+					// Hit test the item
+					int item = IndexFromPoint(pt);
+
+					if (item == -1)
+						break;
+
+					// If the item is selected then the default processing
+					// will handle the checkbox state if required
+					if (GetSelected(item))
+						break;
+
+					// If the point is outside the checkbox rect then use
+					// the default handling
+					var checkRect = GetItemRectangle(item);
+					checkRect.Width = checkRect.Height;
+
+					if (!checkRect.Contains(pt))
+						break;
+
+					// Do the default processing to select the item
+					base.WndProc(ref m);
+
+					// Toggle the check state
+					SetItemChecked(item, !GetItemChecked(item));
+				}
+				return; // we handled it
+			}
+
+			base.WndProc(ref m);
+		}
+	}
+
 }

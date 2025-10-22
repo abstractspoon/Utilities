@@ -33,7 +33,7 @@
 			this.m_BrowseRepo = new System.Windows.Forms.Button();
 			this.m_BranchLabel = new System.Windows.Forms.Label();
 			this.m_Branches = new System.Windows.Forms.ComboBox();
-			this.m_ChangedFiles = new System.Windows.Forms.CheckedListBox();
+			this.m_ChangedFiles = new CheckedListBoxEx();
 			this.m_ChangedFilesLabel = new System.Windows.Forms.Label();
 			this.m_AffectedFiles = new System.Windows.Forms.ListView();
 			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -311,7 +311,7 @@
 		private System.Windows.Forms.Button m_BrowseRepo;
 		private System.Windows.Forms.Label m_BranchLabel;
 		private System.Windows.Forms.ComboBox m_Branches;
-		private System.Windows.Forms.CheckedListBox m_ChangedFiles;
+		private CheckedListBoxEx m_ChangedFiles;
 		private System.Windows.Forms.Label m_ChangedFilesLabel;
 		private System.Windows.Forms.ListView m_AffectedFiles;
 		private System.Windows.Forms.ColumnHeader columnHeader1;
