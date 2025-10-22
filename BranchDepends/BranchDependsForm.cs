@@ -337,5 +337,17 @@ namespace BranchDepends
 			TextRenderer.DrawText(e.Graphics, text, font, rect, textColor, flags);
 			rect.Offset(TextRenderer.MeasureText(text, font).Width, 0);
 		}
+
+		private void OnSelectAllChangedFiles(object sender, EventArgs e)
+		{
+			for (int item = 0; item < m_ChangedFiles.Items.Count; item++)
+				m_ChangedFiles.SetItemChecked(item, true);
+		}
+
+		private void OnClearAllChangedFiles(object sender, EventArgs e)
+		{
+			for (int item = 0; item < m_ChangedFiles.Items.Count; item++)
+				m_ChangedFiles.SetItemChecked(item, false);
+		}
 	}
 }

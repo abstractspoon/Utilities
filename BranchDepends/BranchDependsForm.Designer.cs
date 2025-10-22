@@ -42,11 +42,13 @@
 			this.m_AnalyseChanges = new System.Windows.Forms.Button();
 			this.m_SourceFolderLabel = new System.Windows.Forms.Label();
 			this.m_SourceFolders = new System.Windows.Forms.ComboBox();
-			this.m_RefreshChangeFiles = new System.Windows.Forms.Button();
+			this.m_RefreshChangedFiles = new System.Windows.Forms.Button();
 			this.m_Progress = new System.Windows.Forms.ProgressBar();
 			this.m_ProgressLabel = new System.Windows.Forms.Label();
 			this.m_NumChangedFilesLabel = new System.Windows.Forms.Label();
 			this.m_NumAffectedFilesLabel = new System.Windows.Forms.Label();
+			this.m_SelectAllChangedFiles = new System.Windows.Forms.Button();
+			this.m_ClearAllChangedFiles = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
 			// m_RepoLabel
@@ -199,16 +201,16 @@
 			this.m_SourceFolders.TabIndex = 1;
 			this.m_SourceFolders.SelectedIndexChanged += new System.EventHandler(this.OnSourceFolderChanged);
 			// 
-			// m_RefreshChangeFiles
+			// m_RefreshChangedFiles
 			// 
-			this.m_RefreshChangeFiles.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.m_RefreshChangeFiles.Location = new System.Drawing.Point(531, 176);
-			this.m_RefreshChangeFiles.Name = "m_RefreshChangeFiles";
-			this.m_RefreshChangeFiles.Size = new System.Drawing.Size(75, 23);
-			this.m_RefreshChangeFiles.TabIndex = 7;
-			this.m_RefreshChangeFiles.Text = "Refresh";
-			this.m_RefreshChangeFiles.UseVisualStyleBackColor = true;
-			this.m_RefreshChangeFiles.Click += new System.EventHandler(this.OnRefreshChangedFiles);
+			this.m_RefreshChangedFiles.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.m_RefreshChangedFiles.Location = new System.Drawing.Point(531, 176);
+			this.m_RefreshChangedFiles.Name = "m_RefreshChangedFiles";
+			this.m_RefreshChangedFiles.Size = new System.Drawing.Size(75, 23);
+			this.m_RefreshChangedFiles.TabIndex = 7;
+			this.m_RefreshChangedFiles.Text = "Refresh";
+			this.m_RefreshChangedFiles.UseVisualStyleBackColor = true;
+			this.m_RefreshChangedFiles.Click += new System.EventHandler(this.OnRefreshChangedFiles);
 			// 
 			// m_Progress
 			// 
@@ -245,6 +247,28 @@
 			this.m_NumAffectedFilesLabel.Size = new System.Drawing.Size(73, 13);
 			this.m_NumAffectedFilesLabel.TabIndex = 10;
 			// 
+			// m_SelectAllChangedFiles
+			// 
+			this.m_SelectAllChangedFiles.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.m_SelectAllChangedFiles.Location = new System.Drawing.Point(531, 75);
+			this.m_SelectAllChangedFiles.Name = "m_SelectAllChangedFiles";
+			this.m_SelectAllChangedFiles.Size = new System.Drawing.Size(75, 23);
+			this.m_SelectAllChangedFiles.TabIndex = 7;
+			this.m_SelectAllChangedFiles.Text = "Select All";
+			this.m_SelectAllChangedFiles.UseVisualStyleBackColor = true;
+			this.m_SelectAllChangedFiles.Click += new System.EventHandler(this.OnSelectAllChangedFiles);
+			// 
+			// m_ClearAllChangedFiles
+			// 
+			this.m_ClearAllChangedFiles.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.m_ClearAllChangedFiles.Location = new System.Drawing.Point(531, 101);
+			this.m_ClearAllChangedFiles.Name = "m_ClearAllChangedFiles";
+			this.m_ClearAllChangedFiles.Size = new System.Drawing.Size(75, 23);
+			this.m_ClearAllChangedFiles.TabIndex = 7;
+			this.m_ClearAllChangedFiles.Text = "Clear All";
+			this.m_ClearAllChangedFiles.UseVisualStyleBackColor = true;
+			this.m_ClearAllChangedFiles.Click += new System.EventHandler(this.OnClearAllChangedFiles);
+			// 
 			// BranchDependsForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -260,7 +284,9 @@
 			this.Controls.Add(this.m_ChangedFilesLabel);
 			this.Controls.Add(this.m_NumChangedFilesLabel);
 			this.Controls.Add(this.m_ChangedFiles);
-			this.Controls.Add(this.m_RefreshChangeFiles);
+			this.Controls.Add(this.m_ClearAllChangedFiles);
+			this.Controls.Add(this.m_SelectAllChangedFiles);
+			this.Controls.Add(this.m_RefreshChangedFiles);
 			this.Controls.Add(this.m_SourceFolderLabel);
 			this.Controls.Add(this.m_SourceFolders);
 			this.Controls.Add(this.m_AnalyseChanges);
@@ -294,11 +320,13 @@
 		private System.Windows.Forms.Button m_AnalyseChanges;
 		private System.Windows.Forms.Label m_SourceFolderLabel;
 		private System.Windows.Forms.ComboBox m_SourceFolders;
-		private System.Windows.Forms.Button m_RefreshChangeFiles;
+		private System.Windows.Forms.Button m_RefreshChangedFiles;
 		private System.Windows.Forms.ProgressBar m_Progress;
 		private System.Windows.Forms.Label m_ProgressLabel;
 		private System.Windows.Forms.Label m_NumChangedFilesLabel;
 		private System.Windows.Forms.Label m_NumAffectedFilesLabel;
+		private System.Windows.Forms.Button m_SelectAllChangedFiles;
+		private System.Windows.Forms.Button m_ClearAllChangedFiles;
 	}
 }
 
