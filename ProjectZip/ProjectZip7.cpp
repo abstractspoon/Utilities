@@ -121,6 +121,9 @@ void CProjectZip7::ProcessFileGroup(const CXmlItem* pXIGroup, CStringArray& aFil
 			_T("ClInclude"),		// vcxproj
 			_T("ResourceCompile"),	// vcxproj
 			_T("Image"),			// vcxproj
+			_T("Library"),			// vcxproj
+			_T("CustomBuild"),		// vcxproj
+			_T("Manifest"),			// vcxproj
 			_T("Compile"),			// csproj
 			_T("EmbeddedResource"),	// csproj
 			_T("Content"),			// csproj
