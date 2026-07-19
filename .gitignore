@@ -259,3 +259,4 @@ paket-files/
 *.tlog
 *.lastbuildstate
 *.unsuccessfulbuild
+*.bak
