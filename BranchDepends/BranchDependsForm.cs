@@ -1,0 +1,403 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Diagnostics;
+using System.Threading.Tasks;
+using System.IO;
+using System.Windows.Forms;
+
+using Microsoft.Win32;
+
+namespace BranchDepends
+{
+	public partial class BranchDependsForm : Form, IProgress<int>
+	{
+		string m_CurrentRepository = string.Empty;
+		string m_CurrentBranch = string.Empty;
+		string m_CurrentSourceFolder = string.Empty;
+
+		int m_ProgressBase = 0;
+
+		IDictionary<string, HashSet<string>> m_AllIncludes; // for Results drawing
+
+		public BranchDependsForm()
+		{
+			InitializeComponent();
+			ScaleByDpi();
+
+			GitUtils.PreferredMasterName = "<master>";
+
+			var repostories = Registry.CurrentUser.GetValue("Repositories")?.ToString();
+
+			if (repostories != null)
+			{
+				m_Repositories.Items.AddRange(repostories.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries));
+
+				var currentRepo = Registry.CurrentUser.GetValue("CurrentRepository")?.ToString();
+				m_Repositories.SelectedItem = currentRepo;
+
+				var currentSrcFolder = Registry.CurrentUser.GetValue("CurrentSourceFolder")?.ToString();
+				m_SourceFolders.SelectedItem = currentSrcFolder;
+			}
+		}
+
+		void ScaleByDpi()
+		{
+			var graphics = Graphics.FromHwnd(Handle);
+			float xScale = (graphics.DpiX / 96), yScale = (graphics.DpiY / 96);
+
+			if ((xScale == 1.0f) && (yScale == 1.0f))
+				return;
+
+			this.SuspendLayout();
+
+			this.Size = new Size((int)(this.Width * xScale), (int)(this.Height * yScale));
+			this.MinimumSize = this.Size;
+
+			foreach (Control control in Controls)
+			{
+				control.Location = new Point((int)(control.Left * xScale), (int)(control.Top * yScale));
+				control.Size = new Size((int)(control.Width * xScale), (int)(control.Height * yScale));
+			}
+
+			this.ResumeLayout();
+		}
+
+		public virtual void Report(int percent)
+		{
+			m_Progress.Value = (m_ProgressBase + percent);
+			m_Progress.Update();
+		}
+
+		protected override void OnFormClosed(FormClosedEventArgs e)
+		{
+			base.OnFormClosed(e);
+
+			Registry.CurrentUser.SetValue("Repositories", string.Join("|", m_Repositories.Items.Cast<string>()));
+			Registry.CurrentUser.SetValue("CurrentRepository", m_CurrentRepository);
+			Registry.CurrentUser.SetValue("CurrentSourceFolder", m_CurrentSourceFolder);
+		}
+
+		private void OnBrowseRepositories(object sender, EventArgs e)
+		{
+			string folderPath = "";
+
+			using (var dialog = new FolderBrowserDialog())
+			{
+				dialog.ShowNewFolderButton = false;
+				dialog.SelectedPath = m_CurrentRepository;
+
+				while (dialog.ShowDialog() == DialogResult.OK)
+				{
+					folderPath = dialog.SelectedPath;
+
+					if (!Directory.Exists(Path.Combine(folderPath, ".git")))
+					{
+						MessageBox.Show("Not a Git repository.", "Branch Dependencies");
+					}
+					else
+					{
+						if (m_Repositories.Items.IndexOf(folderPath) == -1)
+							m_Repositories.Items.Add(folderPath);
+
+						m_Repositories.SelectedItem = folderPath;
+						return;
+					}
+				}
+			}
+		}
+
+		private void OnRepositoryChanged(object sender, EventArgs e)
+		{
+			var newRepo = m_Repositories.SelectedItem?.ToString() ?? string.Empty;
+
+			if (newRepo == m_CurrentRepository)
+				return;
+
+			ClearChangedFileUI();
+			ClearAffectedFileUI();
+
+			m_CurrentRepository = newRepo;
+			m_CurrentBranch = string.Empty;
+
+			var branches = GitUtils.GetBranches(m_CurrentRepository).ToArray();	
+			
+			m_Branches.Items.Clear();
+			m_Branches.Items.AddRange(branches);
+
+			m_Branches.SelectedItem = GitUtils.GetActiveBranch(m_CurrentRepository);
+
+			var srcFolders = Directory.GetDirectories(m_CurrentRepository).Where(d => !d.Contains(".git")).ToList();
+			srcFolders.Add(m_CurrentRepository);
+
+			m_SourceFolders.Items.Clear();
+			m_SourceFolders.Items.AddRange(srcFolders.ToArray());
+
+			m_SourceFolders.SelectedItem = srcFolders.FirstOrDefault();
+		}
+
+		private void OnBranchChanged(object sender, EventArgs e)
+		{
+			var newBranch = m_Branches.SelectedItem?.ToString()??string.Empty;
+
+			if (newBranch == m_CurrentBranch)
+				return;
+
+			ClearChangedFileUI();
+			ClearAffectedFileUI();
+
+			if (string.IsNullOrEmpty(newBranch))
+			{
+				// Shouldn't be possible
+				Debug.Assert(false);
+				return;
+			}
+
+			Cursor = Cursors.WaitCursor;
+
+			if (!GitUtils.SelectBranch(m_CurrentRepository, newBranch))
+			{
+				MessageBox.Show("Unable to switch branch.", "Branch Dependencies");
+				m_Branches.SelectedItem = m_CurrentBranch;
+			}
+			else
+			{
+				m_CurrentBranch = newBranch;
+			}
+
+			RefreshChangedFileUI();
+			Cursor = Cursors.Default;
+		}
+
+		private void OnRefreshChangedFiles(object sender, EventArgs e)
+		{
+			Cursor = Cursors.WaitCursor;
+
+			RefreshChangedFileUI();
+
+			Cursor = Cursors.Default;
+		}
+
+		private void RefreshChangedFileUI()
+		{
+			ClearChangedFileUI();
+			ClearAffectedFileUI();
+
+			var changedFiles = GitUtils.GetChangedFiles(m_CurrentRepository, new string[] { ".h", ".cpp" });
+
+			foreach (var file in changedFiles)
+				m_ChangedFiles.Items.Add(file, true);
+
+			m_NumChangedFilesLabel.Text = string.Format("({0})", m_ChangedFiles.Items.Count);
+		}
+
+		private void ClearChangedFileUI()
+		{
+			m_ChangedFiles.Items.Clear();
+			m_NumChangedFilesLabel.Text = string.Empty;
+		}
+
+		private void ClearAffectedFileUI()
+		{
+			m_AffectedFiles.Items.Clear();
+			m_NumAffectedFilesLabel.Text = string.Empty;
+		}
+
+		private void OnSourceFolderChanged(object sender, EventArgs e)
+		{
+			ClearAffectedFileUI();
+
+			m_CurrentSourceFolder = m_SourceFolders.SelectedItem?.ToString() ?? m_CurrentRepository;
+		}
+
+		private void OnAnalyseChangedFiles(object sender, EventArgs e)
+		{
+			if (string.IsNullOrEmpty(m_CurrentRepository) ||
+				string.IsNullOrEmpty(m_CurrentBranch) ||
+				string.IsNullOrEmpty(m_CurrentSourceFolder))
+			{
+				return;
+			}
+
+			Cursor = Cursors.WaitCursor;
+
+			// Build list of files to analyse
+			var changedFiles = m_ChangedFiles.CheckedItems.Cast<string>().ToList();
+			changedFiles = changedFiles.ConvertAll(f => Path.GetFullPath(Path.Combine(m_CurrentRepository, f)));
+
+			var fileList = Utils.GetFilesToAnalyse(changedFiles);
+
+			// Create 'Includes' lookup
+			m_ProgressBase = 0;
+			m_AllIncludes = Utils.GetAllIncludes(m_CurrentSourceFolder, this);
+
+			// Create 'Included By' lookup
+			m_ProgressBase = 100;
+			var allIncludedBy = Utils.BuildIncludedBy(m_AllIncludes, this);
+			
+			// Generate map of dependents
+			m_ProgressBase = 200;
+			var allDependents = Utils.GetDependents(fileList, allIncludedBy, this);
+
+			// Output to results list
+			m_ProgressBase = 300;
+
+			m_AffectedFiles.Items.Clear();
+			m_NumAffectedFilesLabel.Text = string.Empty;
+
+			int iFile = 0, numFiles = allDependents.Count;
+
+			foreach (var dependent in allDependents)
+			{
+				Report((++iFile * 100) / numFiles);
+
+				var lvi = new ListViewItem(dependent.Key) { Tag = dependent.Value };
+				lvi.SubItems.Add("."); // dummy text to trigger subitem ownerdraw
+
+				m_AffectedFiles.Items.Add(lvi);
+			}
+
+			m_NumAffectedFilesLabel.Text = string.Format("({0})", allDependents.Count);
+			m_Progress.Value = 0;
+
+			Cursor = Cursors.Default;
+		}
+
+		private void OnDrawResultColumnHeader(object sender, DrawListViewColumnHeaderEventArgs e)
+		{
+			e.DrawDefault = true;
+		}
+
+		private void OnDrawResult(object sender, DrawListViewItemEventArgs e)
+		{
+			// Do it all in OnDrawResultSubItem
+		}
+
+		private void OnDrawResultSubItem(object sender, DrawListViewSubItemEventArgs e)
+		{
+			Brush backBrush = (e.Item.Selected ? SystemBrushes.Highlight : SystemBrushes.Window);
+			e.Graphics.FillRectangle(backBrush, e.Bounds);
+
+			e.DrawFocusRectangle(e.Item.Bounds);
+
+			var textColor = (e.Item.Selected ? SystemColors.HighlightText : SystemColors.WindowText);
+			var flags = (TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.SingleLine | TextFormatFlags.PathEllipsis);
+
+			switch (e.ColumnIndex)
+			{
+			case 0:
+				{
+					var text = e.Item.Text.Replace(m_CurrentRepository, "").TrimStart(new[] { '\\'});
+					TextRenderer.DrawText(e.Graphics, text, m_AffectedFiles.Font, e.Bounds, textColor, flags);
+				}
+				break;
+
+			case 1:
+				{
+					var depends = (e.Item.Tag as HashSet<string>);
+
+					if (depends != null)
+					{
+						HashSet<string> includes = Utils.GetValue(m_AllIncludes, e.Item.Text, false);
+
+						Rectangle textRect = e.Bounds;
+						bool first = true;
+
+						foreach (var depend in depends)
+						{
+							DrawSubItemTextAndAdvance(depend, includes, first, e, flags, ref textRect);
+							first = false;
+						}
+					}
+				}
+				break;
+			}
+		}
+
+		private void DrawSubItemTextAndAdvance(string depend, HashSet<string> includes, bool first, DrawListViewSubItemEventArgs e, TextFormatFlags flags, ref Rectangle rect)
+		{
+			var textColor = (e.Item.Selected ? SystemColors.HighlightText : SystemColors.WindowText);
+
+			var font = m_AffectedFiles.Font;
+
+			if (!first)
+			{
+				TextRenderer.DrawText(e.Graphics, ", ", font, rect, textColor, flags);
+				rect.Offset(TextRenderer.MeasureText(", ", font).Width, 0);
+			}
+
+			if ((includes != null) && includes.Contains(depend))
+ 				font = new Font(font, FontStyle.Underline);
+
+			var text = Path.GetFileName(depend);
+
+			TextRenderer.DrawText(e.Graphics, text, font, rect, textColor, flags);
+			rect.Offset(TextRenderer.MeasureText(text, font).Width, 0);
+		}
+
+		private void OnSelectAllChangedFiles(object sender, EventArgs e)
+		{
+			for (int item = 0; item < m_ChangedFiles.Items.Count; item++)
+				m_ChangedFiles.SetItemChecked(item, true);
+		}
+
+		private void OnClearAllChangedFiles(object sender, EventArgs e)
+		{
+			for (int item = 0; item < m_ChangedFiles.Items.Count; item++)
+				m_ChangedFiles.SetItemChecked(item, false);
+		}
+	}
+
+	////////////////////////////////////////////////////////////////////////////////
+	// This class supports changing the check state of
+	// an unselected item using the mouse with one click
+
+	internal class CheckedListBoxEx : CheckedListBox
+	{
+		const int WM_LBUTTONDOWN = 0x0201;
+
+		protected override void WndProc(ref Message m)
+		{
+			switch (m.Msg)
+			{
+			case WM_LBUTTONDOWN:
+				{
+					// Decode the LParam into (x, y)
+					var pt = new Point(m.LParam.ToInt32() & 0xffff, m.LParam.ToInt32() >> 16);
+
+					// Hit test the item
+					int item = IndexFromPoint(pt);
+
+					if (item == -1)
+						break;
+
+					// If the item is selected then the default processing
+					// will handle the checkbox state if required
+					if (GetSelected(item))
+						break;
+
+					// If the point is outside the checkbox rect then use
+					// the default handling
+					var checkRect = GetItemRectangle(item);
+					checkRect.Width = checkRect.Height;
+
+					if (!checkRect.Contains(pt))
+						break;
+
+					// Do the default processing to select the item
+					base.WndProc(ref m);
+
+					// Toggle the check state
+					SetItemChecked(item, !GetItemChecked(item));
+				}
+				return; // we handled it
+			}
+
+			base.WndProc(ref m);
+		}
+	}
+
+}
